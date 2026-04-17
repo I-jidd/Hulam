@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse – HULAM Marketplace</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body
+    class="bg-[#fcfaf7] text-gray-900 selection:bg-[#9cd353]/30 flex flex-col min-h-screen overflow-x-hidden"
+    data-page="browse"
+  >
+    <!-- ═══════════ HEADER ═══════════ -->
+    <header
+      id="main-header"
+      class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent py-4"
+    >
+      <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <a href="index.html" class="flex items-center group">
+          <div
+            class="flex items-center gap-2 transform transition-transform group-hover:scale-105 duration-300"
+          >
+            <div class="flex -space-x-1.5">
+              <div
+                class="w-7 h-9 bg-[#1a5b6e] rounded-md transform -skew-x-12 shadow-sm"
+              ></div>
+              <div
+                class="w-7 h-9 bg-[#9cd353] rounded-md transform -skew-x-12 opacity-90 mix-blend-multiply shadow-sm"
+              ></div>
+            </div>
+            <span
+              id="header-logo-text"
+              class="text-2xl font-extrabold tracking-tighter text-white transition-colors duration-300"
+              >HULAM</span
+            >
+          </div>
+        </a>
+        <nav
+          id="header-nav"
+          class="hidden md:flex items-center gap-10 font-medium text-sm tracking-wide transition-colors text-white/90"
+        >
+          <a href="index.html" class="hover:text-[#9cd353] transition-colors"
+            >Home</a
+          >
+          <a
+            href="browse.html"
+            class="hover:text-[#9cd353] transition-colors nav-link-active"
+            >Browse Items</a
+          >
+        </nav>
+        <div id="auth-logged-out" class="flex items-center gap-4">
+          <button
+            onclick="toggleModal('login-modal', true)"
+            id="header-btn-login"
+            class="hidden sm:block px-6 py-2.5 rounded-full font-semibold transition-all active:scale-95 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
+          >
+            Log In
+          </button>
+          <button
+            onclick="toggleModal('login-modal', true)"
+            class="bg-[#9cd353] text-[#1a5b6e] px-7 py-2.5 rounded-full font-bold shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] hover:bg-[#8bc34a] hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
+          >
+            Sign Up
+          </button>
+        </div>
+        <div id="auth-logged-in" class="hidden items-center gap-4">
+          <button
+            onclick="requireAuth(() => toggleModal('listing-modal', true))"
+            id="header-btn-list"
+            class="hidden sm:flex items-center gap-2 font-bold transition-all hover:scale-105 active:scale-95 text-white hover:text-[#9cd353]"
+          >
+            <i data-lucide="plus" class="w-5 h-5" stroke-width="2.5"></i> List
+            Item
+          </button>
+          <div class="relative group cursor-pointer">
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white border-2 border-white shadow-md"
+            >
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </div>
+            <div
+              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100"
+            >
+              <div class="p-4 border-b border-gray-100">
+                <p
+                  class="font-bold text-gray-900 truncate"
+                  id="user-display-name"
+                >
+                  User
+                </p>
+                <p
+                  class="text-xs text-[#9cd353] font-bold flex items-center gap-1 mt-1"
+                >
+                  <i data-lucide="shield-check" class="w-3 h-3"></i> Scholar
+                  Verified
+                </p>
+              </div>
+              <div class="p-2">
+                <a
+                  href="dashboard.html"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                  ><i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  Dashboard</a
+                >
+                <a
+                  href="messages.html"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                  ><i data-lucide="message-square" class="w-4 h-4"></i>
+                  Messages</a
+                >
+                <div class="h-px bg-gray-100 my-1"></div>
+                <button
+                  onclick="handleLogout()"
+                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium flex items-center gap-2"
+                >
+                  <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════ BROWSE ═══════════ -->
+    <main class="flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full">
+      <div class="mb-10">
+        <h2
+          class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
+        >
+          Browse Marketplace
+        </h2>
+        <p class="text-xl text-gray-500 font-light">
+          Find exactly what you need for your next project.
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div
+        class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row gap-4"
+      >
+        <div class="relative flex-grow">
+          <i
+            data-lucide="search"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+          ></i>
+          <input
+            type="text"
+            id="search-input"
+            onkeyup="filterItems()"
+            placeholder="Search items (e.g. Camera, Calculator)…"
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium"
+          />
+        </div>
+        <div
+          class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 md:pb-0"
+          id="category-filters"
+        ></div>
+      </div>
+
+      <!-- Grid -->
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+        id="browse-grid"
+      ></div>
+
+      <!-- Empty state -->
+      <div id="browse-empty" class="hidden text-center py-20">
+        <div
+          class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <i data-lucide="search-x" class="w-10 h-10 text-gray-400"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
+        <p class="text-gray-500">
+          Try adjusting your search or category filters.
+        </p>
+        <button
+          onclick="clearFilters()"
+          class="mt-6 bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </main>
+
+    <!-- ═══════════ FOOTER ═══════════ -->
+    <footer class="bg-[#0f3440] text-white pt-20 pb-10 px-6 mt-auto w-full">
+      <div
+        class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-12 border-b border-white/10 pb-16 mb-8"
+      >
+        <div class="col-span-2 md:col-span-1">
+          <h4 class="font-extrabold text-2xl tracking-tighter mb-6 text-white">
+            HULAM
+          </h4>
+          <p class="text-white/60 text-sm mb-4 leading-relaxed">
+            The smartest community platform for sharing resources.
+          </p>
+        </div>
+        <div>
+          <h4
+            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+          >
+            Community
+          </h4>
+          <ul class="space-y-4 text-sm font-light text-white/70">
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Guidelines</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Safety</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4
+            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+          >
+            Resources
+          </h4>
+          <ul class="space-y-4 text-sm font-light text-white/70">
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Help Center</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Contact</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h4
+            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+          >
+            Legal
+          </h4>
+          <ul class="space-y-4 text-sm font-light text-white/70">
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Terms of Service</a
+              >
+            </li>
+            <li>
+              <a href="#" class="hover:text-[#9cd353] transition-colors"
+                >Privacy Policy</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div
+          class="col-span-2 md:col-span-1 flex flex-col items-start md:items-end"
+        >
+          <h4
+            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+          >
+            Follow Us
+          </h4>
+          <div class="flex gap-4">
+            <a
+              href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
+              ><i data-lucide="instagram" class="w-4 h-4"></i
+            ></a>
+            <a
+              href="#"
+              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
+              ><i data-lucide="twitter" class="w-4 h-4"></i
+            ></a>
+          </div>
+        </div>
+      </div>
+      <div
+        class="max-w-7xl mx-auto text-center text-white/40 text-sm font-light"
+      >
+        &copy; <span id="current-year"></span> Hulam Marketplace. All rights
+        reserved.
+      </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div
+      id="login-modal"
+      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+    >
+      <div
+        id="login-modal-content"
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out p-8 text-center"
+      >
+        <div
+          class="w-16 h-16 bg-[#1a5b6e]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#1a5b6e]"
+        >
+          <i data-lucide="lock" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+          Welcome Back
+        </h3>
+        <p class="text-gray-500 mb-8">
+          Sign in to rent items or list your own gear.
+        </p>
+        <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1"
+              >Email (use any email)</label
+            >
+            <input
+              type="email"
+              id="login-email"
+              required
+              placeholder="student@university.edu"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-[#1a5b6e] text-white py-4 mt-4 rounded-xl font-bold hover:-translate-y-0.5 transition-all"
+          >
+            Log In
+          </button>
+        </form>
+        <button
+          onclick="toggleModal('login-modal', false)"
+          class="mt-6 text-gray-400 hover:text-gray-600 font-medium text-sm"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- Listing Modal -->
+    <div
+      id="listing-modal"
+      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+    >
+      <div
+        id="listing-modal-content"
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out"
+      >
+        <div
+          class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white"
+        >
+          <div>
+            <h3 class="text-2xl font-extrabold text-[#1a5b6e] tracking-tight">
+              Create a Listing
+            </h3>
+            <p class="text-sm text-gray-500 font-light mt-1">
+              Let our AI help you write the perfect post.
+            </p>
+          </div>
+          <button
+            onclick="toggleModal('listing-modal', false)"
+            class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+        <div class="p-8 overflow-y-auto max-h-[70vh]">
+          <div class="space-y-6">
+            <div>
+              <label
+                class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Item Title</label
+              >
+              <input
+                type="text"
+                id="listing-title"
+                placeholder="e.g., Sony A6400"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all text-gray-900 font-medium"
+              />
+            </div>
+            <button
+              onclick="generateListingDetails()"
+              class="w-full bg-gradient-to-r from-[#1a5b6e] to-[#25768e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(26,91,110,0.3)] transition-all active:scale-[0.98]"
+            >
+              <i
+                data-lucide="sparkles"
+                id="ai-icon"
+                class="w-5 h-5 text-[#9cd353]"
+              ></i>
+              <span id="ai-btn-text">✨ Auto-Fill Details with AI</span>
+            </button>
+            <div>
+              <label
+                class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Description</label
+              >
+              <textarea
+                id="listing-description"
+                rows="3"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none text-gray-900 font-medium"
+              ></textarea>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+              <div>
+                <label
+                  class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                  >Daily Rate (₱)</label
+                >
+                <input
+                  type="number"
+                  id="listing-price"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
+                />
+              </div>
+              <div>
+                <label
+                  class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                  >Deposit (₱)</label
+                >
+                <input
+                  type="number"
+                  id="listing-deposit"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div
+          class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"
+        >
+          <button
+            onclick="toggleModal('listing-modal', false)"
+            class="px-6 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onclick="publishListing()"
+            class="bg-[#9cd353] text-[#1a5b6e] px-8 py-3 rounded-xl font-extrabold hover:bg-[#8bc34a] transition-all shadow-[0_4px_14px_0_rgba(156,211,83,0.39)]"
+          >
+            Publish
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/shared.js"></script>
+    <script>
+      // ─── BROWSE PAGE LOGIC ─────────────────────────────────────────────────
+      let currentCategory = "All";
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderCategoryFilters();
+        renderItemCards(ALL_ITEMS, "browse-grid");
+      });
+
+      function renderCategoryFilters() {
+        const container = document.getElementById("category-filters");
+        container.innerHTML = CATEGORIES.map(
+          (cat) => `
+        <button onclick="setCategory('${cat}')"
+          class="px-5 py-2.5 rounded-full font-bold whitespace-nowrap transition-colors border ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">
+          ${cat}
+        </button>`,
+        ).join("");
+      }
+
+      function setCategory(cat) {
+        currentCategory = cat;
+        renderCategoryFilters();
+        filterItems();
+      }
+
+      function filterItems() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const filtered = ALL_ITEMS.filter((item) => {
+          const matchCat =
+            currentCategory === "All" || item.category === currentCategory;
+          const matchSearch =
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query);
+          return matchCat && matchSearch;
+        });
+        renderItemCards(filtered, "browse-grid");
+      }
+
+      function clearFilters() {
+        document.getElementById("search-input").value = "";
+        setCategory("All");
+      }
+    </script>
+  </body>
+</html>

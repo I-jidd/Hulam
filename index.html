@@ -5,13 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HULAM - Campus Rental Marketplace</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -23,8 +18,6 @@
       body {
         font-family: "Inter", sans-serif;
       }
-
-      /* Custom Animation for Hero Background */
       @keyframes slowPan {
         0% {
           transform: scale(1.05) translate(0, 0);
@@ -36,8 +29,6 @@
       .animate-slowPan {
         animation: slowPan 20s ease-in-out infinite alternate;
       }
-
-      /* Custom ScrollReveal Animations */
       .reveal-up {
         opacity: 0;
         transform: translateY(3rem);
@@ -57,14 +48,24 @@
         opacity: 1;
         transform: translate(0, 0) scale(1);
       }
-
-      /* Hide scrollbar utility */
       .hide-scrollbar::-webkit-scrollbar {
         display: none;
       }
       .hide-scrollbar {
         -ms-overflow-style: none;
         scrollbar-width: none;
+      }
+
+      /* Custom Scrollbar for chat */
+      .chat-scroll::-webkit-scrollbar {
+        width: 6px;
+      }
+      .chat-scroll::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .chat-scroll::-webkit-scrollbar-thumb {
+        background-color: #e5e7eb;
+        border-radius: 20px;
       }
     </style>
   </head>
@@ -105,47 +106,103 @@
         <!-- Nav Links -->
         <nav
           id="header-nav"
-          class="hidden lg:flex items-center gap-10 font-medium text-sm tracking-wide transition-colors text-white/90"
+          class="hidden md:flex items-center gap-10 font-medium text-sm tracking-wide transition-colors text-white/90"
         >
-          <a href="#" class="hover:text-[#9cd353] transition-colors"
-            >How it Works</a
+          <a
+            href="#"
+            onclick="switchView('home')"
+            class="hover:text-[#9cd353] transition-colors"
+            >Home</a
           >
-          <a href="#" class="hover:text-[#9cd353] transition-colors"
+          <a
+            href="#"
+            onclick="switchView('browse')"
+            class="hover:text-[#9cd353] transition-colors"
             >Browse Items</a
-          >
-          <a href="#" class="hover:text-[#9cd353] transition-colors"
-            >Community</a
           >
         </nav>
 
-        <!-- Action Buttons -->
-        <div class="flex items-center gap-4">
+        <!-- Auth Logged OUT -->
+        <div id="auth-logged-out" class="flex items-center gap-4">
           <button
-            onclick="toggleModal(true)"
-            id="header-btn-list"
-            class="hidden md:flex items-center gap-2 font-bold transition-all hover:scale-105 active:scale-95 text-white hover:text-[#9cd353]"
-          >
-            <i data-lucide="plus" class="w-5 h-5" stroke-width="2.5"></i> List
-            Item
-          </button>
-          <button
+            onclick="toggleModal('login-modal', true)"
             id="header-btn-login"
             class="hidden sm:block px-6 py-2.5 rounded-full font-semibold transition-all active:scale-95 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
           >
             Log In
           </button>
           <button
+            onclick="toggleModal('login-modal', true)"
             class="bg-[#9cd353] text-[#1a5b6e] px-7 py-2.5 rounded-full font-bold shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] hover:shadow-[0_6px_20px_rgba(156,211,83,0.23)] hover:bg-[#8bc34a] hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
           >
             Sign Up
           </button>
+        </div>
+
+        <!-- Auth Logged IN -->
+        <div id="auth-logged-in" class="hidden items-center gap-4">
+          <button
+            onclick="toggleModal('listing-modal', true)"
+            id="header-btn-list"
+            class="hidden sm:flex items-center gap-2 font-bold transition-all hover:scale-105 active:scale-95 text-white hover:text-[#9cd353]"
+          >
+            <i data-lucide="plus" class="w-5 h-5" stroke-width="2.5"></i> List
+            Item
+          </button>
+          <div class="relative group cursor-pointer">
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white border-2 border-white shadow-md"
+            >
+              <i data-lucide="user" class="w-5 h-5"></i>
+            </div>
+            <!-- Dropdown -->
+            <div
+              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100"
+            >
+              <div class="p-4 border-b border-gray-100">
+                <p
+                  class="font-bold text-gray-900 truncate"
+                  id="user-display-name"
+                >
+                  User
+                </p>
+                <p
+                  class="text-xs text-[#9cd353] font-bold flex items-center gap-1 mt-1"
+                >
+                  <i data-lucide="shield-check" class="w-3 h-3"></i> Scholar
+                  Verified
+                </p>
+              </div>
+              <div class="p-2">
+                <button
+                  onclick="switchView('dashboard')"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                >
+                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  Dashboard
+                </button>
+                <button
+                  onclick="switchView('messages')"
+                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                >
+                  <i data-lucide="message-square" class="w-4 h-4"></i> Messages
+                </button>
+                <div class="h-px bg-gray-100 my-1"></div>
+                <button
+                  onclick="handleLogout()"
+                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium flex items-center gap-2"
+                >
+                  <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </header>
 
     <!-- HOME VIEW -->
     <div id="home-view" class="block">
-      <!-- Hero Section -->
       <section
         class="relative min-h-[90vh] w-full flex items-center justify-center pt-20 overflow-hidden"
       >
@@ -200,12 +257,13 @@
               class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
             >
               <button
+                onclick="switchView('browse')"
                 class="w-full sm:w-auto bg-[#9cd353] text-[#1a5b6e] px-10 py-5 rounded-full font-extrabold text-lg shadow-[0_0_30px_rgba(156,211,83,0.4)] hover:shadow-[0_0_40px_rgba(156,211,83,0.6)] hover:bg-[#8bc34a] hover:-translate-y-1 active:scale-95 transition-all duration-300"
               >
                 Start Borrowing
               </button>
               <button
-                onclick="toggleModal(true)"
+                onclick="requireAuth(() => toggleModal('listing-modal', true))"
                 class="w-full sm:w-auto bg-white/10 text-white backdrop-blur-md border border-white/20 px-10 py-5 rounded-full font-bold text-lg hover:bg-white/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
               >
                 List your items
@@ -216,11 +274,10 @@
         </div>
       </section>
 
-      <!-- Main Content Area -->
       <div
         class="bg-[#fcfaf7] flex-grow relative z-10 -mt-8 rounded-t-[3rem] px-4 sm:px-6 pb-20"
       >
-        <!-- Why HULAM Section -->
+        <!-- Why HULAM -->
         <section class="py-24 max-w-7xl mx-auto">
           <div class="reveal-up text-center mb-16">
             <h3
@@ -232,16 +289,13 @@
               Designed to make sharing safe, simple, and sustainable.
             </p>
           </div>
-
           <div
             class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4"
             id="features-grid"
-          >
-            <!-- Populated by JS -->
-          </div>
+          ></div>
         </section>
 
-        <!-- Featured Items Section -->
+        <!-- Trending -->
         <section class="py-16 max-w-7xl mx-auto">
           <div class="reveal-up flex items-end justify-between mb-12 px-4">
             <div>
@@ -255,6 +309,7 @@
               </p>
             </div>
             <button
+              onclick="switchView('browse')"
               class="hidden sm:flex text-[#1a5b6e] font-bold hover:text-[#9cd353] transition-colors items-center gap-1 group"
             >
               View all
@@ -264,51 +319,96 @@
               ></i>
             </button>
           </div>
-
           <div
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4"
             id="items-grid"
-          >
-            <!-- Populated by JS -->
-          </div>
-        </section>
-
-        <!-- Community Stories Section -->
-        <section class="py-24 max-w-7xl mx-auto mb-10">
-          <div class="reveal-up text-center mb-16">
-            <h3
-              class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
-            >
-              Community Stories
-            </h3>
-            <p class="text-xl text-gray-500 font-light">
-              See how Hulam is changing campus life.
-            </p>
-          </div>
-
-          <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-6 px-4"
-            id="stories-grid"
-          >
-            <!-- Populated by JS -->
-          </div>
+          ></div>
         </section>
       </div>
     </div>
 
-    <!-- ITEM DETAIL VIEW (Hidden by default) -->
-    <div id="item-detail-view" class="hidden flex-grow bg-gray-50/50">
+    <!-- BROWSE VIEW -->
+    <div
+      id="browse-view"
+      class="hidden flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full"
+    >
+      <div class="mb-10">
+        <h2
+          class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
+        >
+          Browse Marketplace
+        </h2>
+        <p class="text-xl text-gray-500 font-light">
+          Find exactly what you need for your next project.
+        </p>
+      </div>
+
+      <!-- Filters -->
+      <div
+        class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row gap-4"
+      >
+        <div class="relative flex-grow">
+          <i
+            data-lucide="search"
+            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+          ></i>
+          <input
+            type="text"
+            id="search-input"
+            onkeyup="filterItems()"
+            placeholder="Search items (e.g. Camera, Calculator)..."
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium"
+          />
+        </div>
+        <div
+          class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 md:pb-0"
+          id="category-filters"
+        >
+          <!-- Categories injected via JS -->
+        </div>
+      </div>
+
+      <!-- Browse Grid -->
+      <div
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+        id="browse-grid"
+      >
+        <!-- Populated by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="browse-empty" class="hidden text-center py-20">
+        <div
+          class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+        >
+          <i data-lucide="search-x" class="w-10 h-10 text-gray-400"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
+        <p class="text-gray-500">
+          Try adjusting your search or category filters.
+        </p>
+        <button
+          onclick="clearFilters()"
+          class="mt-6 bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- ITEM DETAIL VIEW -->
+    <div id="item-detail-view" class="hidden flex-grow bg-gray-50/50 w-full">
       <main class="max-w-6xl mx-auto px-6 pt-32 pb-20">
         <div class="reveal-none">
           <button
-            onclick="switchView('home')"
+            onclick="switchView('browse')"
             class="flex items-center text-gray-500 hover:text-[#1a5b6e] transition-colors mb-10 font-medium w-fit group"
           >
             <i
               data-lucide="chevron-left"
               class="w-5 h-5 group-hover:-translate-x-1 transition-transform"
             ></i>
-            <span>Back to listings</span>
+            <span>Back to marketplace</span>
           </button>
         </div>
 
@@ -411,6 +511,7 @@
 
             <div class="reveal-up" style="transition-delay: 400ms">
               <button
+                onclick="requireAuth(() => openCheckout())"
                 class="w-full bg-[#1a5b6e] text-white py-5 rounded-2xl font-bold text-lg shadow-[0_8px_20px_rgba(26,91,110,0.2)] hover:shadow-[0_12px_25px_rgba(26,91,110,0.3)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
               >
                 Request to Rent
@@ -425,9 +526,229 @@
       </main>
     </div>
 
+    <!-- DASHBOARD VIEW -->
+    <div
+      id="dashboard-view"
+      class="hidden flex-grow bg-gray-50/50 w-full pt-32 pb-20 px-6"
+    >
+      <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+        <!-- Sidebar -->
+        <div class="w-full md:w-64 shrink-0">
+          <div
+            class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 sticky top-24"
+          >
+            <div
+              class="w-20 h-20 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white text-3xl font-bold mb-4 mx-auto"
+            >
+              U
+            </div>
+            <h3
+              class="text-xl font-bold text-center text-gray-900 truncate"
+              id="dashboard-user-name"
+            >
+              User Name
+            </h3>
+            <p
+              class="text-sm text-center text-[#9cd353] font-bold flex items-center justify-center gap-1 mt-1 mb-6"
+            >
+              <i data-lucide="shield-check" class="w-4 h-4"></i> Scholar
+              Verified
+            </p>
+
+            <div class="space-y-2">
+              <button
+                class="w-full text-left px-4 py-3 bg-gray-50 text-[#1a5b6e] font-bold rounded-xl flex items-center gap-3 transition-colors"
+              >
+                <i data-lucide="shopping-bag" class="w-5 h-5"></i> My Rentals
+              </button>
+              <button
+                class="w-full text-left px-4 py-3 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors"
+              >
+                <i data-lucide="tag" class="w-5 h-5"></i> My Listings
+              </button>
+              <button
+                class="w-full text-left px-4 py-3 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors"
+              >
+                <i data-lucide="settings" class="w-5 h-5"></i> Settings
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div
+          class="flex-grow bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8"
+        >
+          <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">
+            Active Rentals
+          </h2>
+
+          <!-- Mock Active Rental -->
+          <div
+            class="border border-gray-100 rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center shadow-sm hover:shadow-md transition-shadow"
+          >
+            <img
+              src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=200&h=200"
+              alt="Camera"
+              class="w-32 h-32 object-cover rounded-xl bg-gray-50 mix-blend-multiply"
+            />
+            <div class="flex-grow text-center sm:text-left">
+              <div
+                class="flex items-center justify-center sm:justify-start gap-2 mb-2"
+              >
+                <span
+                  class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full"
+                  >Active</span
+                >
+                <span class="text-sm text-gray-500 font-medium"
+                  >Due in 2 days</span
+                >
+              </div>
+              <h4 class="text-xl font-bold text-gray-900 mb-1">
+                Sony A6400 Camera
+              </h4>
+              <p class="text-gray-500 mb-4 text-sm">
+                Rented from: Maria Santos
+              </p>
+              <div class="flex gap-3 justify-center sm:justify-start">
+                <button
+                  onclick="switchView('messages')"
+                  class="bg-[#1a5b6e]/10 text-[#1a5b6e] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#1a5b6e]/20 transition-colors"
+                >
+                  Message Owner
+                </button>
+                <button
+                  class="bg-[#9cd353] text-[#1a5b6e] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#8bc34a] transition-colors"
+                >
+                  Return Item
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGES VIEW -->
+    <div
+      id="messages-view"
+      class="hidden flex-grow bg-gray-50/50 w-full pt-28 pb-10 px-6"
+    >
+      <div
+        class="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-sm border border-gray-100 flex h-[75vh] overflow-hidden"
+      >
+        <!-- Contacts Sidebar -->
+        <div class="w-1/3 border-r border-gray-100 flex flex-col bg-white">
+          <div class="p-6 border-b border-gray-100">
+            <h2 class="text-2xl font-extrabold text-gray-900">Messages</h2>
+          </div>
+          <div class="overflow-y-auto flex-grow chat-scroll">
+            <!-- Active Contact -->
+            <div
+              class="p-4 border-b border-gray-50 bg-[#1a5b6e]/5 cursor-pointer flex items-center gap-4"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0"
+              >
+                MS
+              </div>
+              <div class="overflow-hidden">
+                <h4 class="font-bold text-gray-900 truncate">Maria Santos</h4>
+                <p class="text-sm text-gray-500 truncate">
+                  See you tomorrow at the campus gate!
+                </p>
+              </div>
+            </div>
+            <!-- Other Contact -->
+            <div
+              class="p-4 border-b border-gray-50 cursor-pointer flex items-center gap-4 hover:bg-gray-50 transition"
+            >
+              <div
+                class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold shrink-0"
+              >
+                JD
+              </div>
+              <div class="overflow-hidden">
+                <h4 class="font-bold text-gray-900 truncate">John Doe</h4>
+                <p class="text-sm text-gray-400 truncate">
+                  Thanks for renting the drill.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="w-2/3 flex flex-col bg-[#fcfaf7]">
+          <!-- Chat Header -->
+          <div
+            class="p-5 bg-white border-b border-gray-100 flex items-center justify-between"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold"
+              >
+                MS
+              </div>
+              <div>
+                <h4 class="font-bold text-gray-900">Maria Santos</h4>
+                <p class="text-xs text-gray-500">Sony A6400 Camera Rental</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Messages -->
+          <div class="flex-grow p-6 overflow-y-auto chat-scroll space-y-4">
+            <div class="flex justify-start">
+              <div
+                class="bg-white border border-gray-100 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[70%]"
+              >
+                Hi! I just confirmed your rental request for the camera. When do
+                you want to meet up?
+              </div>
+            </div>
+            <div class="flex justify-end">
+              <div
+                class="bg-[#1a5b6e] text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[70%]"
+              >
+                Thanks! Are you free tomorrow around 10 AM at the main campus
+                library?
+              </div>
+            </div>
+            <div class="flex justify-start">
+              <div
+                class="bg-white border border-gray-100 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[70%]"
+              >
+                Yes, 10 AM works. See you tomorrow at the campus gate! I'll have
+                the camera in a black case.
+              </div>
+            </div>
+          </div>
+
+          <!-- Input Area -->
+          <div class="p-4 bg-white border-t border-gray-100">
+            <div
+              class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full p-2 focus-within:border-[#1a5b6e] focus-within:ring-2 ring-[#1a5b6e]/20 transition-all"
+            >
+              <input
+                type="text"
+                placeholder="Type your message..."
+                class="flex-grow bg-transparent px-4 outline-none text-sm text-gray-700"
+              />
+              <button
+                class="w-10 h-10 rounded-full bg-[#9cd353] text-[#1a5b6e] flex items-center justify-center hover:bg-[#8bc34a] transition-colors shrink-0"
+              >
+                <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- FOOTER -->
     <footer
-      class="bg-[#0f3440] text-white pt-20 pb-10 px-6 relative z-10 mt-auto"
+      class="bg-[#0f3440] text-white pt-20 pb-10 px-6 relative z-10 mt-auto w-full"
     >
       <div
         class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-12 border-b border-white/10 pb-16 mb-8"
@@ -436,23 +757,9 @@
           <h4 class="font-extrabold text-2xl tracking-tighter mb-6 text-white">
             HULAM
           </h4>
-          <ul class="space-y-4 text-sm font-light text-white/70">
-            <li>
-              <a href="#" class="hover:text-[#9cd353] transition-colors"
-                >Company info</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-[#9cd353] transition-colors"
-                >About us</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-[#9cd353] transition-colors"
-                >Careers</a
-              >
-            </li>
-          </ul>
+          <p class="text-white/60 text-sm mb-4 leading-relaxed">
+            The smartest community platform for sharing resources.
+          </p>
         </div>
         <div>
           <h4
@@ -469,11 +776,6 @@
             <li>
               <a href="#" class="hover:text-[#9cd353] transition-colors"
                 >Safety</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-[#9cd353] transition-colors"
-                >Events</a
               >
             </li>
           </ul>
@@ -493,11 +795,6 @@
             <li>
               <a href="#" class="hover:text-[#9cd353] transition-colors"
                 >Contact</a
-              >
-            </li>
-            <li>
-              <a href="#" class="hover:text-[#9cd353] transition-colors"
-                >Blog</a
               >
             </li>
           </ul>
@@ -540,11 +837,6 @@
               class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
               ><i data-lucide="twitter" class="w-4.5 h-4.5"></i
             ></a>
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
-              ><i data-lucide="linkedin" class="w-4.5 h-4.5"></i
-            ></a>
           </div>
         </div>
       </div>
@@ -556,6 +848,8 @@
       </div>
     </footer>
 
+    <!-- MODALS -->
+
     <!-- AI LISTING MODAL -->
     <div
       id="listing-modal"
@@ -565,7 +859,6 @@
         id="listing-modal-content"
         class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out"
       >
-        <!-- Modal Header -->
         <div
           class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white"
         >
@@ -578,27 +871,13 @@
             </p>
           </div>
           <button
-            onclick="toggleModal(false)"
+            onclick="toggleModal('listing-modal', false)"
             class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
           >
             <i data-lucide="x" class="w-5 h-5"></i>
           </button>
         </div>
-
-        <!-- Modal Body -->
         <div class="p-8 overflow-y-auto max-h-[70vh]">
-          <!-- Error Message -->
-          <div
-            id="ai-error"
-            class="hidden mb-6 p-4 bg-red-50 text-red-600 text-sm rounded-2xl border border-red-100 flex items-start gap-3"
-          >
-            <i
-              data-lucide="shield-check"
-              class="w-4.5 h-4.5 mt-0.5 shrink-0"
-            ></i>
-            <p id="ai-error-text" class="font-medium"></p>
-          </div>
-
           <div class="space-y-6">
             <div>
               <label
@@ -608,20 +887,15 @@
               <input
                 type="text"
                 id="listing-title"
-                placeholder="e.g., Sony A6400 Mirrorless Camera"
+                placeholder="e.g., Sony A6400"
                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all text-gray-900 font-medium"
               />
             </div>
-
-            <!-- AI Trigger Button -->
             <button
               id="ai-trigger-btn"
               onclick="generateListingDetails()"
-              class="w-full bg-gradient-to-r from-[#1a5b6e] to-[#25768e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(26,91,110,0.3)] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed group relative overflow-hidden"
+              class="w-full bg-gradient-to-r from-[#1a5b6e] to-[#25768e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(26,91,110,0.3)] transition-all active:scale-[0.98] group relative overflow-hidden"
             >
-              <div
-                class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-in-out"
-              ></div>
               <i
                 data-lucide="sparkles"
                 id="ai-icon"
@@ -631,7 +905,6 @@
                 >✨ Auto-Fill Details with AI</span
               >
             </button>
-
             <div>
               <label
                 class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
@@ -640,11 +913,9 @@
               <textarea
                 id="listing-description"
                 rows="3"
-                placeholder="Describe the condition, what's included, and rules..."
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none text-gray-900 font-medium leading-relaxed"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none text-gray-900 font-medium"
               ></textarea>
             </div>
-
             <div class="grid grid-cols-2 gap-6">
               <div>
                 <label
@@ -654,8 +925,7 @@
                 <input
                   type="number"
                   id="listing-price"
-                  placeholder="0"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all text-gray-900 font-bold text-lg"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
                 />
               </div>
               <div>
@@ -666,28 +936,206 @@
                 <input
                   type="number"
                   id="listing-deposit"
-                  placeholder="0"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all text-gray-900 font-bold text-lg"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
                 />
               </div>
             </div>
           </div>
         </div>
-
-        <!-- Modal Footer -->
         <div
           class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"
         >
           <button
-            onclick="toggleModal(false)"
+            onclick="toggleModal('listing-modal', false)"
             class="px-6 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
           >
             Cancel
           </button>
           <button
-            class="bg-[#9cd353] text-[#1a5b6e] px-8 py-3 rounded-xl font-extrabold hover:bg-[#8bc34a] transition-all shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] hover:shadow-[0_6px_20px_rgba(156,211,83,0.23)] active:scale-95"
+            onclick="publishListing()"
+            class="bg-[#9cd353] text-[#1a5b6e] px-8 py-3 rounded-xl font-extrabold hover:bg-[#8bc34a] transition-all shadow-[0_4px_14px_0_rgba(156,211,83,0.39)]"
           >
-            Publish Listing
+            Publish
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- LOGIN MODAL (MOCK AUTH) -->
+    <div
+      id="login-modal"
+      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+    >
+      <div
+        id="login-modal-content"
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out p-8 text-center"
+      >
+        <div
+          class="w-16 h-16 bg-[#1a5b6e]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#1a5b6e]"
+        >
+          <i data-lucide="lock" class="w-8 h-8"></i>
+        </div>
+        <h3 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+          Welcome Back
+        </h3>
+        <p class="text-gray-500 mb-8">
+          Sign in to rent items or list your own gear.
+        </p>
+
+        <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1"
+              >Email (Use any email)</label
+            >
+            <input
+              type="email"
+              id="login-email"
+              required
+              placeholder="student@university.edu"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+            />
+          </div>
+          <div>
+            <label class="block text-sm font-bold text-gray-700 mb-1"
+              >Password</label
+            >
+            <input
+              type="password"
+              required
+              placeholder="••••••••"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full bg-[#1a5b6e] text-white py-4 mt-4 rounded-xl font-bold shadow-[0_8px_20px_rgba(26,91,110,0.2)] hover:shadow-[0_12px_25px_rgba(26,91,110,0.3)] hover:-translate-y-0.5 transition-all"
+          >
+            Log In
+          </button>
+        </form>
+        <button
+          onclick="toggleModal('login-modal', false)"
+          class="mt-6 text-gray-400 hover:text-gray-600 font-medium text-sm"
+        >
+          Close
+        </button>
+      </div>
+    </div>
+
+    <!-- CHECKOUT MODAL -->
+    <div
+      id="checkout-modal"
+      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+    >
+      <div
+        id="checkout-modal-content"
+        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out"
+      >
+        <div
+          class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white"
+        >
+          <h3 class="text-2xl font-extrabold text-[#1a5b6e] tracking-tight">
+            Secure Booking
+          </h3>
+          <button
+            onclick="toggleModal('checkout-modal', false)"
+            class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100"
+          >
+            <i data-lucide="x" class="w-5 h-5"></i>
+          </button>
+        </div>
+
+        <div id="checkout-form" class="p-8">
+          <div
+            class="flex gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100"
+          >
+            <img
+              id="co-image"
+              src=""
+              class="w-20 h-20 rounded-lg object-cover mix-blend-multiply"
+            />
+            <div>
+              <h4
+                id="co-title"
+                class="font-bold text-gray-900 text-lg line-clamp-1"
+              >
+                Item Title
+              </h4>
+              <p class="text-sm text-gray-500">
+                ₱<span id="co-rate">0</span> / day
+              </p>
+            </div>
+          </div>
+
+          <div class="space-y-4 mb-8">
+            <div>
+              <label class="block text-sm font-bold text-gray-700 mb-1"
+                >Rental Duration (Days)</label
+              >
+              <input
+                type="number"
+                id="co-days"
+                value="1"
+                min="1"
+                onchange="calculateTotal()"
+                class="w-full bg-white border border-gray-200 rounded-xl px-5 py-3 focus:ring-4 focus:border-[#1a5b6e] outline-none font-bold text-lg"
+              />
+            </div>
+          </div>
+
+          <div
+            class="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-8 space-y-3"
+          >
+            <div class="flex justify-between text-gray-600">
+              <span>Rental Fee (<span id="co-calc-days">1</span> days)</span>
+              <span class="font-medium">₱<span id="co-calc-fee">0</span></span>
+            </div>
+            <div class="flex justify-between text-gray-600">
+              <span>Security Deposit (Refundable)</span>
+              <span class="font-medium">₱<span id="co-calc-dep">0</span></span>
+            </div>
+            <div class="h-px bg-gray-200 my-2"></div>
+            <div
+              class="flex justify-between text-[#1a5b6e] font-extrabold text-xl"
+            >
+              <span>Total to Pay</span>
+              <span>₱<span id="co-total">0</span></span>
+            </div>
+          </div>
+
+          <button
+            onclick="confirmBooking()"
+            class="w-full bg-[#9cd353] text-[#1a5b6e] py-4 rounded-xl font-extrabold text-lg hover:bg-[#8bc34a] shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] transition-all active:scale-95"
+          >
+            Confirm & Pay
+          </button>
+        </div>
+
+        <!-- Success State -->
+        <div
+          id="checkout-success"
+          class="hidden p-10 text-center flex flex-col items-center justify-center"
+        >
+          <div
+            class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6"
+          >
+            <i data-lucide="check-circle" class="w-10 h-10"></i>
+          </div>
+          <h3 class="text-3xl font-extrabold text-gray-900 mb-2">
+            Booking Confirmed!
+          </h3>
+          <p class="text-gray-500 mb-8">
+            Your payment is held securely in escrow. Contact the owner to
+            arrange pickup.
+          </p>
+          <button
+            onclick="
+              toggleModal('checkout-modal', false);
+              switchView('dashboard');
+            "
+            class="bg-[#1a5b6e] text-white px-8 py-3 rounded-full font-bold"
+          >
+            Go to Dashboard
           </button>
         </div>
       </div>
@@ -695,15 +1143,19 @@
 
     <script>
       // --- DATA ---
-      const FEATURED_ITEMS = [
+      const CATEGORIES = ["All", "Tech", "Outdoors", "Tools", "Books"];
+      let currentCategory = "All";
+      let currentItemForCheckout = null;
+
+      const ALL_ITEMS = [
         {
           id: 1,
-          title: "Projector",
+          category: "Tech",
+          title: "HD Projector",
           pricePerDay: 150,
           deposit: 500,
-          location: "USC Main Campus",
+          location: "USC Main",
           distance: "3 mins away",
-          ownerType: "scholar",
           rating: 5.0,
           image:
             "https://images.unsplash.com/photo-1535016120720-40c746a6580c?auto=format&fit=crop&q=80&w=400&h=300",
@@ -712,12 +1164,12 @@
         },
         {
           id: 2,
+          category: "Outdoors",
           title: "Camping Tent",
           pricePerDay: 200,
           deposit: 1000,
           location: "Talamban",
           distance: "5 mins away",
-          ownerType: "resident",
           rating: 5.0,
           image:
             "https://images.unsplash.com/photo-1504280650530-9b45df5a5c69?auto=format&fit=crop&q=80&w=400&h=300",
@@ -725,12 +1177,12 @@
         },
         {
           id: 3,
+          category: "Tools",
           title: "Sewing Machine",
           pricePerDay: 100,
           deposit: 800,
           location: "Lahug",
           distance: "15 mins away",
-          ownerType: "scholar",
           rating: 4.8,
           image:
             "https://images.unsplash.com/photo-1594956106602-d9646bb6f780?auto=format&fit=crop&q=80&w=400&h=300",
@@ -739,41 +1191,56 @@
         },
         {
           id: 4,
+          category: "Tools",
           title: "Power Drill Set",
           pricePerDay: 150,
           deposit: 800,
           location: "Cebu City",
           distance: "10 mins away",
-          ownerType: "resident",
           rating: 5.0,
           image:
             "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=400&h=300",
           description:
             "Complete set with various bits. Great for DIY dorm projects.",
         },
-      ];
-
-      const STORIES = [
         {
-          id: 1,
-          name: "Student A",
-          quote: '"Borrowed a power drill for a dorm project!"',
+          id: 5,
+          category: "Tech",
+          title: "Sony A6400 Camera",
+          pricePerDay: 400,
+          deposit: 2000,
+          location: "IT Park",
+          distance: "12 mins away",
+          rating: 4.9,
           image:
-            "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100&h=100",
+            "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "Mirrorless camera ideal for video projects.",
         },
         {
-          id: 2,
-          name: "Student B",
-          quote: '"Rented my camera and covered my coffee cost for the week!"',
+          id: 6,
+          category: "Books",
+          title: "Physics 101 Textbook",
+          pricePerDay: 20,
+          deposit: 300,
+          location: "USC Main",
+          distance: "1 min away",
+          rating: 4.5,
           image:
-            "https://images.unsplash.com/photo-1531123897727-8f129e1bf08c?auto=format&fit=crop&q=80&w=100&h=100",
+            "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "Required textbook for Physics 101. Clean pages.",
         },
         {
-          id: 3,
-          name: "Student C",
-          quote: '"Found a projector instantly for my thesis defense!"',
+          id: 7,
+          category: "Tech",
+          title: "Scientific Calculator",
+          pricePerDay: 50,
+          deposit: 500,
+          location: "Talamban",
+          distance: "8 mins away",
+          rating: 5.0,
           image:
-            "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100",
+            "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "Casio FX-991EX. Essential for engineering midterms.",
         },
       ];
 
@@ -803,181 +1270,311 @@
 
       // --- STATE ---
       let currentView = "home";
-      let isAiLoading = false;
 
-      // --- INITIALIZATION ---
+      // --- INIT ---
       document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("current-year").textContent =
           new Date().getFullYear();
         renderFeatures();
-        renderItems();
-        renderStories();
+        renderItems(ALL_ITEMS.slice(0, 4), "items-grid"); // Homepage trending
+        renderBrowseCategories();
+        renderItems(ALL_ITEMS, "browse-grid"); // Browse page
+        checkAuth();
         lucide.createIcons();
         initScrollReveal();
-        handleScroll(); // initial check
+        handleScroll();
       });
 
-      // --- RENDER FUNCTIONS ---
+      // --- UI RENDERERS ---
       function renderFeatures() {
         const grid = document.getElementById("features-grid");
         grid.innerHTML = FEATURES.map(
-          (feature, idx) => `
-        <div class="reveal-up bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 group border border-gray-100" style="transition-delay: ${idx * 150}ms">
-          <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform group-hover:scale-110 duration-500 ${feature.bg}">
-            <i data-lucide="${feature.icon}" class="w-8 h-8 ${feature.color}"></i>
-          </div>
-          <h4 class="text-2xl font-bold mb-4 tracking-tight">${feature.title}</h4>
-          <p class="text-gray-500 leading-relaxed font-light text-lg">${feature.desc}</p>
-        </div>
-      `,
+          (f, i) => `
+        <div class="reveal-up bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 border border-gray-100" style="transition-delay: ${i * 150}ms">
+          <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 ${f.bg}"><i data-lucide="${f.icon}" class="w-8 h-8 ${f.color}"></i></div>
+          <h4 class="text-2xl font-bold mb-4 tracking-tight">${f.title}</h4>
+          <p class="text-gray-500 leading-relaxed font-light text-lg">${f.desc}</p>
+        </div>`,
         ).join("");
       }
 
-      function renderItems() {
-        const grid = document.getElementById("items-grid");
-        grid.innerHTML = FEATURED_ITEMS.map(
-          (item, idx) => `
-        <div class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full" onclick="openItemDetail(${item.id})" style="transition-delay: ${idx * 100}ms">
+      function renderItems(items, containerId) {
+        const grid = document.getElementById(containerId);
+        const emptyState = document.getElementById("browse-empty");
+
+        if (items.length === 0) {
+          grid.innerHTML = "";
+          if (emptyState) emptyState.classList.remove("hidden");
+          return;
+        }
+
+        if (emptyState) emptyState.classList.add("hidden");
+
+        grid.innerHTML = items
+          .map(
+            (item, i) => `
+        <div class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full" onclick="openItemDetail(${item.id})" style="transition-delay: ${i * 50}ms">
           <div class="relative h-56 bg-gray-50/50 p-6 overflow-hidden">
-            <button class="absolute top-4 right-4 text-gray-300 hover:text-red-500 z-10 bg-white/80 p-2 rounded-full backdrop-blur-md shadow-sm transition-colors hover:scale-110 active:scale-95" onclick="event.stopPropagation()">
-              <i data-lucide="heart" class="w-4.5 h-4.5"></i>
-            </button>
-            <img src="${item.image}" alt="${item.title}" class="w-full h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700 ease-out"/>
+            <img src="${item.image}" class="w-full h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700 ease-out"/>
+            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
           </div>
           <div class="p-6 flex flex-col flex-grow">
-            <div class="flex justify-between items-start mb-3">
-              <h4 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1">${item.title}</h4>
-              <div class="flex items-center gap-1 text-[#9cd353] bg-[#9cd353]/10 px-2 py-1 rounded-md text-sm font-bold shrink-0">
-                <i data-lucide="star" class="w-3.5 h-3.5 fill-current"></i> ${item.rating}
-              </div>
-            </div>
-            <div class="flex items-center text-sm text-gray-500 mb-6 font-medium">
-              <i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-[#1a5b6e]"></i> ${item.distance}
-            </div>
+            <h4 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-2">${item.title}</h4>
+            <div class="flex items-center text-sm text-gray-500 mb-6 font-medium"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-[#1a5b6e]"></i> ${item.distance}</div>
             <div class="mt-auto flex items-end justify-between pt-4 border-t border-gray-100">
-              <div>
-                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Daily Rate</p>
-                <p class="text-2xl font-black text-[#1a5b6e] tracking-tight">₱${item.pricePerDay}</p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">Deposit</p>
-                <p class="text-sm font-bold text-gray-600">₱${item.deposit}</p>
-              </div>
+              <div><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Daily</p><p class="text-2xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p></div>
+              <div class="text-right"><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Deposit</p><p class="text-sm font-bold text-gray-600">₱${item.deposit}</p></div>
             </div>
           </div>
-        </div>
+        </div>`,
+          )
+          .join("");
+        lucide.createIcons();
+      }
+
+      // --- BROWSE LOGIC ---
+      function renderBrowseCategories() {
+        const container = document.getElementById("category-filters");
+        container.innerHTML = CATEGORIES.map(
+          (cat) => `
+        <button onclick="setCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold whitespace-nowrap transition-colors border ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">${cat}</button>
       `,
         ).join("");
       }
 
-      function renderStories() {
-        const grid = document.getElementById("stories-grid");
-        grid.innerHTML = STORIES.map(
-          (story, idx) => `
-        <div class="reveal-up bg-white border border-gray-100 rounded-3xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-lg transition-shadow duration-300" style="transition-delay: ${idx * 150}ms">
-          <div class="flex items-center gap-4 mb-6">
-            <img src="${story.image}" alt="${story.name}" class="w-14 h-14 rounded-full object-cover shadow-sm"/>
-            <div>
-              <p class="font-bold text-gray-900">${story.name}</p>
-              <p class="text-sm text-[#9cd353] font-semibold">Verified User</p>
-            </div>
-          </div>
-          <p class="text-lg text-gray-600 font-light italic leading-relaxed">${story.quote}</p>
-        </div>
-      `,
-        ).join("");
+      function setCategory(cat) {
+        currentCategory = cat;
+        renderBrowseCategories();
+        filterItems();
       }
 
-      // --- NAVIGATION & VIEWS ---
+      function filterItems() {
+        const query = document
+          .getElementById("search-input")
+          .value.toLowerCase();
+        const filtered = ALL_ITEMS.filter((item) => {
+          const matchCat =
+            currentCategory === "All" || item.category === currentCategory;
+          const matchSearch =
+            item.title.toLowerCase().includes(query) ||
+            item.description.toLowerCase().includes(query);
+          return matchCat && matchSearch;
+        });
+        renderItems(filtered, "browse-grid");
+        initScrollReveal();
+      }
+
+      function clearFilters() {
+        document.getElementById("search-input").value = "";
+        setCategory("All");
+      }
+
+      // --- NAVIGATION ---
       function switchView(view) {
         currentView = view;
-        if (view === "home") {
-          document.getElementById("home-view").classList.remove("hidden");
-          document.getElementById("item-detail-view").classList.add("hidden");
-        } else {
-          document.getElementById("home-view").classList.add("hidden");
-          document
-            .getElementById("item-detail-view")
-            .classList.remove("hidden");
-          document.getElementById("item-detail-view").classList.add("flex"); // Add flex back since hidden removes it
-        }
-        window.scrollTo(0, 0);
-        handleScroll(); // Update header style
+        [
+          "home-view",
+          "browse-view",
+          "item-detail-view",
+          "dashboard-view",
+          "messages-view",
+        ].forEach((id) => {
+          const el = document.getElementById(id);
+          if (el) {
+            el.classList.add("hidden");
+            el.classList.remove("flex", "block");
+          }
+        });
 
-        // Reset animations for detail view
-        if (view === "detail") {
-          initScrollReveal();
+        const activeEl = document.getElementById(`${view}-view`);
+        if (activeEl) {
+          activeEl.classList.remove("hidden");
+          if (view === "home") activeEl.classList.add("block");
+          else activeEl.classList.add("flex");
         }
+
+        window.scrollTo(0, 0);
+        handleScroll();
+        initScrollReveal();
       }
 
       function openItemDetail(id) {
-        const item = FEATURED_ITEMS.find((i) => i.id === id);
-        if (!item) return;
+        currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
+        if (!currentItemForCheckout) return;
 
-        document.getElementById("detail-image").src = item.image;
-        document.getElementById("detail-title").textContent = item.title;
+        document.getElementById("detail-image").src =
+          currentItemForCheckout.image;
+        document.getElementById("detail-title").textContent =
+          currentItemForCheckout.title;
         document.getElementById("detail-price").textContent =
-          `₱${item.pricePerDay}`;
+          `₱${currentItemForCheckout.pricePerDay}`;
         document.getElementById("detail-rating").textContent =
-          item.rating.toFixed(1);
+          currentItemForCheckout.rating.toFixed(1);
         document.getElementById("detail-description").textContent =
-          item.description;
-        document.getElementById("detail-location").textContent = item.location;
-        document.getElementById("detail-distance").textContent = item.distance;
+          currentItemForCheckout.description;
+        document.getElementById("detail-location").textContent =
+          currentItemForCheckout.location;
+        document.getElementById("detail-distance").textContent =
+          currentItemForCheckout.distance;
         document.getElementById("detail-deposit").textContent =
-          `₱${item.deposit} (Refundable)`;
+          `₱${currentItemForCheckout.deposit} (Refundable)`;
 
-        switchView("detail");
+        switchView("item-detail");
       }
 
-      // --- SCROLL EFFECTS ---
-      window.addEventListener("scroll", handleScroll);
+      // --- MODALS & CHECKOUT ---
+      function toggleModal(modalId, show) {
+        const modal = document.getElementById(modalId);
+        const content = document.getElementById(`${modalId}-content`);
 
+        if (modalId === "checkout-modal" && show) {
+          document.getElementById("checkout-form").classList.remove("hidden");
+          document.getElementById("checkout-success").classList.add("hidden");
+        }
+
+        if (show) {
+          modal.classList.remove("hidden");
+          setTimeout(() => {
+            modal.classList.remove("opacity-0", "pointer-events-none");
+            content.classList.remove("translate-y-8");
+          }, 10);
+        } else {
+          modal.classList.add("opacity-0", "pointer-events-none");
+          content.classList.add("translate-y-8");
+          setTimeout(() => modal.classList.add("hidden"), 300);
+        }
+      }
+
+      function openCheckout() {
+        if (!currentItemForCheckout) return;
+        document.getElementById("co-image").src = currentItemForCheckout.image;
+        document.getElementById("co-title").textContent =
+          currentItemForCheckout.title;
+        document.getElementById("co-rate").textContent =
+          currentItemForCheckout.pricePerDay;
+        document.getElementById("co-days").value = 1;
+        calculateTotal();
+        toggleModal("checkout-modal", true);
+      }
+
+      function calculateTotal() {
+        if (!currentItemForCheckout) return;
+        const days = parseInt(document.getElementById("co-days").value) || 1;
+        const rate = currentItemForCheckout.pricePerDay;
+        const dep = currentItemForCheckout.deposit;
+        const fee = days * rate;
+
+        document.getElementById("co-calc-days").textContent = days;
+        document.getElementById("co-calc-fee").textContent = fee;
+        document.getElementById("co-calc-dep").textContent = dep;
+        document.getElementById("co-total").textContent = fee + dep;
+      }
+
+      function confirmBooking() {
+        document.getElementById("checkout-form").classList.add("hidden");
+        document.getElementById("checkout-success").classList.remove("hidden");
+      }
+
+      function publishListing() {
+        toggleModal("listing-modal", false);
+        alert("Your item has been successfully published!");
+        switchView("dashboard");
+      }
+
+      // --- AUTHENTICATION (MOCK) ---
+      function checkAuth() {
+        const user = localStorage.getItem("hulam_user");
+        if (user) {
+          document.getElementById("auth-logged-out").classList.add("hidden");
+          document.getElementById("auth-logged-in").classList.remove("hidden");
+          document.getElementById("auth-logged-in").classList.add("flex");
+          document.getElementById("dashboard-user-name").textContent =
+            user.split("@")[0];
+          document.getElementById("user-display-name").textContent =
+            user.split("@")[0];
+        } else {
+          document.getElementById("auth-logged-in").classList.add("hidden");
+          document.getElementById("auth-logged-in").classList.remove("flex");
+          document.getElementById("auth-logged-out").classList.remove("hidden");
+          document.getElementById("auth-logged-out").classList.add("flex");
+        }
+        handleScroll();
+      }
+
+      function handleLogin(e) {
+        e.preventDefault();
+        const email = document.getElementById("login-email").value;
+        localStorage.setItem("hulam_user", email);
+        toggleModal("login-modal", false);
+        checkAuth();
+        switchView("dashboard");
+      }
+
+      function handleLogout() {
+        localStorage.removeItem("hulam_user");
+        checkAuth();
+        switchView("home");
+      }
+
+      function requireAuth(actionFunction) {
+        if (localStorage.getItem("hulam_user")) {
+          actionFunction();
+        } else {
+          toggleModal("login-modal", true);
+        }
+      }
+
+      // --- SCROLL EFFECTS & UTILS ---
+      window.addEventListener("scroll", handleScroll);
       function handleScroll() {
         const header = document.getElementById("main-header");
         const logoText = document.getElementById("header-logo-text");
         const nav = document.getElementById("header-nav");
-        const btnList = document.getElementById("header-btn-list");
-        const btnLogin = document.getElementById("header-btn-login");
 
-        const isScrolled = window.scrollY > 20 || currentView === "detail";
+        const isScrolled = window.scrollY > 20 || currentView !== "home";
 
         if (isScrolled) {
           header.classList.remove("bg-transparent", "py-4");
           header.classList.add(
-            "bg-white/80",
+            "bg-white/90",
             "backdrop-blur-lg",
             "border-b",
             "border-gray-200/50",
             "shadow-sm",
             "py-2",
           );
-
           logoText.classList.replace("text-white", "text-[#1a5b6e]");
           nav.classList.replace("text-white/90", "text-gray-600");
 
-          btnList.classList.replace("text-white", "text-[#1a5b6e]");
-
-          btnLogin.classList.replace("bg-white/20", "bg-gray-100");
-          btnLogin.classList.replace("text-white", "text-[#1a5b6e]");
+          const btnList = document.getElementById("header-btn-list");
+          const btnLogin = document.getElementById("header-btn-login");
+          if (btnList)
+            btnList.classList.replace("text-white", "text-[#1a5b6e]");
+          if (btnLogin) {
+            btnLogin.classList.replace("bg-white/20", "bg-gray-100");
+            btnLogin.classList.replace("text-white", "text-[#1a5b6e]");
+          }
         } else {
           header.classList.add("bg-transparent", "py-4");
           header.classList.remove(
-            "bg-white/80",
+            "bg-white/90",
             "backdrop-blur-lg",
             "border-b",
             "border-gray-200/50",
             "shadow-sm",
             "py-2",
           );
-
           logoText.classList.replace("text-[#1a5b6e]", "text-white");
           nav.classList.replace("text-gray-600", "text-white/90");
 
-          btnList.classList.replace("text-[#1a5b6e]", "text-white");
-
-          btnLogin.classList.replace("bg-gray-100", "bg-white/20");
-          btnLogin.classList.replace("text-[#1a5b6e]", "text-white");
+          const btnList = document.getElementById("header-btn-list");
+          const btnLogin = document.getElementById("header-btn-login");
+          if (btnList)
+            btnList.classList.replace("text-[#1a5b6e]", "text-white");
+          if (btnLogin) {
+            btnLogin.classList.replace("bg-gray-100", "bg-white/20");
+            btnLogin.classList.replace("text-[#1a5b6e]", "text-white");
+          }
         }
       }
 
@@ -994,125 +1591,39 @@
               }
             });
           },
-          { threshold: 0.15, rootMargin: "50px" },
+          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
         );
-
         elements.forEach((el) => observer.observe(el));
-      }
-
-      // --- MODAL ---
-      function toggleModal(show) {
-        const modal = document.getElementById("listing-modal");
-        const content = document.getElementById("listing-modal-content");
-
-        if (show) {
-          modal.classList.remove("hidden");
-          // Small delay to allow block render before opacity transition
-          setTimeout(() => {
-            modal.classList.remove("opacity-0", "pointer-events-none");
-            content.classList.remove("translate-y-8");
-          }, 10);
-        } else {
-          modal.classList.add("opacity-0", "pointer-events-none");
-          content.classList.add("translate-y-8");
-          setTimeout(() => {
-            modal.classList.add("hidden");
-          }, 300); // match duration
-        }
       }
 
       // --- GEMINI API INTEGRATION ---
       async function generateListingDetails() {
-        const titleInput = document.getElementById("listing-title");
-        const descInput = document.getElementById("listing-description");
-        const priceInput = document.getElementById("listing-price");
-        const depositInput = document.getElementById("listing-deposit");
-
-        const errorBox = document.getElementById("ai-error");
-        const errorText = document.getElementById("ai-error-text");
-
-        const btnIcon = document.getElementById("ai-icon");
-        const btnText = document.getElementById("ai-btn-text");
-        const triggerBtn = document.getElementById("ai-trigger-btn");
-
-        if (!titleInput.value.trim()) {
-          errorBox.classList.remove("hidden");
-          errorText.textContent = "Please enter an item title first.";
+        const title = document.getElementById("listing-title").value;
+        if (!title.trim()) {
+          alert("Please enter a title");
           return;
         }
 
-        // Set Loading State
-        isAiLoading = true;
-        errorBox.classList.add("hidden");
-        triggerBtn.disabled = true;
+        const btnIcon = document.getElementById("ai-icon");
+        const btnText = document.getElementById("ai-btn-text");
+
         btnIcon.setAttribute("data-lucide", "loader-2");
         btnIcon.classList.add("animate-spin");
         btnText.textContent = "Analyzing market data...";
         lucide.createIcons();
 
-        const promptText = `Act as an expert rental marketplace copywriter for a platform called HULAM in the Philippines. I am listing an item named "${titleInput.value}".
-      Generate a professional, engaging description (2-3 sentences), a realistic daily rental price in Philippine Pesos (integer), and a security deposit in Philippine Pesos (integer, usually 5-10x the daily price).`;
+        // Simulate API call for static demo
+        setTimeout(() => {
+          document.getElementById("listing-description").value =
+            `A high quality ${title} in excellent condition. Perfect for student projects. Must be returned with all original accessories.`;
+          document.getElementById("listing-price").value = 150;
+          document.getElementById("listing-deposit").value = 500;
 
-        const payload = {
-          contents: [{ parts: [{ text: promptText }] }],
-          generationConfig: {
-            responseMimeType: "application/json",
-            responseSchema: {
-              type: "OBJECT",
-              properties: {
-                description: { type: "STRING" },
-                pricePerDay: { type: "INTEGER" },
-                deposit: { type: "INTEGER" },
-              },
-              required: ["description", "pricePerDay", "deposit"],
-            },
-          },
-        };
-
-        const fetchWithRetry = async (url, options, retries = 5) => {
-          const delays = [1000, 2000, 4000, 8000, 16000];
-          for (let i = 0; i < retries; i++) {
-            try {
-              const response = await fetch(url, options);
-              if (!response.ok)
-                throw new Error(`HTTP error! status: ${response.status}`);
-              return await response.json();
-            } catch (e) {
-              if (i === retries - 1) throw e;
-              await new Promise((res) => setTimeout(res, delays[i]));
-            }
-          }
-        };
-
-        try {
-          const apiKey = ""; // API Key handled by environment at runtime
-          const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
-          const result = await fetchWithRetry(url, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload),
-          });
-
-          const text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-          if (text) {
-            const data = JSON.parse(text);
-            if (data.description) descInput.value = data.description;
-            if (data.pricePerDay) priceInput.value = data.pricePerDay;
-            if (data.deposit) depositInput.value = data.deposit;
-          }
-        } catch (error) {
-          errorBox.classList.remove("hidden");
-          errorText.textContent =
-            "Failed to connect to AI. Please try writing the details manually.";
-        } finally {
-          // Reset Loading State
-          isAiLoading = false;
-          triggerBtn.disabled = false;
           btnIcon.setAttribute("data-lucide", "sparkles");
           btnIcon.classList.remove("animate-spin");
           btnText.textContent = "✨ Auto-Fill Details with AI";
           lucide.createIcons();
-        }
+        }, 1500);
       }
     </script>
   </body>
