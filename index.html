@@ -330,74 +330,76 @@
     <!-- BROWSE VIEW -->
     <div
       id="browse-view"
-      class="hidden flex-grow pt-32 pb-20 px-6 max-w-7xl mx-auto w-full"
+      class="hidden pt-32 pb-20 px-6 w-full"
     >
-      <div class="mb-10">
-        <h2
-          class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
-        >
-          Browse Marketplace
-        </h2>
-        <p class="text-xl text-gray-500 font-light">
-          Find exactly what you need for your next project.
-        </p>
-      </div>
+      <div class="max-w-7xl mx-auto">
 
-      <!-- Filters -->
-      <div
-        class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row gap-4"
-      >
-        <div class="relative flex-grow">
-          <i
-            data-lucide="search"
-            class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
-          ></i>
-          <input
-            type="text"
-            id="search-input"
-            onkeyup="filterItems()"
-            placeholder="Search items (e.g. Camera, Calculator)..."
-            class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium"
-          />
+        <div class="mb-10">
+          <h2
+            class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
+          >
+            Browse Marketplace
+          </h2>
+          <p class="text-xl text-gray-500 font-light">
+            Find exactly what you need for your next project.
+          </p>
         </div>
+
+        <!-- Filters -->
         <div
-          class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 md:pb-0"
-          id="category-filters"
+          class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row gap-4"
         >
-          <!-- Categories injected via JS -->
+          <div class="relative flex-grow">
+            <i
+              data-lucide="search"
+              class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+            ></i>
+            <input
+              type="text"
+              id="search-input"
+              onkeyup="filterItems()"
+              placeholder="Search items (e.g. Camera, Calculator)..."
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium"
+            />
+          </div>
+          <div
+            class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 md:pb-0"
+            id="category-filters"
+          >
+          </div>
         </div>
-      </div>
 
-      <!-- Browse Grid -->
-      <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
-        id="browse-grid"
-      >
-        <!-- Populated by JS -->
-      </div>
-
-      <!-- Empty State -->
-      <div id="browse-empty" class="hidden text-center py-20">
+        <!-- Browse Grid -->
         <div
-          class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          id="browse-grid"
         >
-          <i data-lucide="search-x" class="w-10 h-10 text-gray-400"></i>
         </div>
-        <h3 class="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
-        <p class="text-gray-500">
-          Try adjusting your search or category filters.
-        </p>
-        <button
-          onclick="clearFilters()"
-          class="mt-6 bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors"
-        >
-          Clear Filters
-        </button>
+
+        <!-- Empty State -->
+        <div id="browse-empty" class="hidden text-center py-20">
+          <div
+            class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+          >
+            <i data-lucide="search-x" class="w-10 h-10 text-gray-400"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
+          <p class="text-gray-500">
+            Try adjusting your search or category filters.
+          </p>
+          <button
+            onclick="clearFilters()"
+            class="mt-6 bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors"
+          >
+            Clear Filters
+          </button>
+        </div>
+
       </div>
     </div>
 
     <!-- ITEM DETAIL VIEW -->
-    <div id="item-detail-view" class="hidden flex-grow bg-gray-50/50 w-full">
+    <div id="item-detail-view" class="hidden bg-gray-50/50 w-full">
       <main class="max-w-6xl mx-auto px-6 pt-32 pb-20">
         <div class="reveal-none">
           <button
@@ -426,7 +428,7 @@
                 id="detail-image"
                 src=""
                 alt="Item"
-                class="w-full h-full object-contain mix-blend-multiply transform group-hover:scale-105 transition-transform duration-700 ease-out"
+                class="w-full h-full object-cover rounded-2xl transform group-hover:scale-105 transition-transform duration-700 ease-out"
               />
             </div>
           </div>
@@ -479,7 +481,7 @@
                   >
                     <i
                       data-lucide="map-pin"
-                      class="w-4.5 h-4.5 text-[#1a5b6e]"
+                      class="w-4 h-4 text-[#1a5b6e]"
                     ></i>
                   </div>
                   <div>
@@ -496,7 +498,7 @@
                   >
                     <i
                       data-lucide="shield-check"
-                      class="w-4.5 h-4.5 text-[#9cd353]"
+                      class="w-4 h-4 text-[#9cd353]"
                     ></i>
                   </div>
                   <div>
@@ -529,7 +531,7 @@
     <!-- DASHBOARD VIEW -->
     <div
       id="dashboard-view"
-      class="hidden flex-grow bg-gray-50/50 w-full pt-32 pb-20 px-6"
+      class="hidden bg-gray-50/50 w-full pt-32 pb-20 px-6"
     >
       <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
         <!-- Sidebar -->
@@ -590,7 +592,7 @@
             <img
               src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=200&h=200"
               alt="Camera"
-              class="w-32 h-32 object-cover rounded-xl bg-gray-50 mix-blend-multiply"
+              class="w-32 h-32 object-cover rounded-xl bg-gray-50"
             />
             <div class="flex-grow text-center sm:text-left">
               <div
@@ -632,7 +634,7 @@
     <!-- MESSAGES VIEW -->
     <div
       id="messages-view"
-      class="hidden flex-grow bg-gray-50/50 w-full pt-28 pb-10 px-6"
+      class="hidden bg-gray-50/50 w-full pt-28 pb-10 px-6"
     >
       <div
         class="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-sm border border-gray-100 flex h-[75vh] overflow-hidden"
@@ -830,12 +832,12 @@
             <a
               href="#"
               class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
-              ><i data-lucide="instagram" class="w-4.5 h-4.5"></i
+              ><i data-lucide="instagram" class="w-4 h-4"></i
             ></a>
             <a
               href="#"
               class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
-              ><i data-lucide="twitter" class="w-4.5 h-4.5"></i
+              ><i data-lucide="twitter" class="w-4 h-4"></i
             ></a>
           </div>
         </div>
@@ -961,7 +963,7 @@
       </div>
     </div>
 
-    <!-- LOGIN MODAL (MOCK AUTH) -->
+    <!-- LOGIN MODAL -->
     <div
       id="login-modal"
       class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
@@ -1052,7 +1054,7 @@
             <img
               id="co-image"
               src=""
-              class="w-20 h-20 rounded-lg object-cover mix-blend-multiply"
+              class="w-20 h-20 rounded-lg object-cover"
             />
             <div>
               <h4
@@ -1129,10 +1131,7 @@
             arrange pickup.
           </p>
           <button
-            onclick="
-              toggleModal('checkout-modal', false);
-              switchView('dashboard');
-            "
+            onclick="toggleModal('checkout-modal', false); switchView('dashboard');"
             class="bg-[#1a5b6e] text-white px-8 py-3 rounded-full font-bold"
           >
             Go to Dashboard
@@ -1157,10 +1156,8 @@
           location: "USC Main",
           distance: "3 mins away",
           rating: 5.0,
-          image:
-            "https://images.unsplash.com/photo-1535016120720-40c746a6580c?auto=format&fit=crop&q=80&w=400&h=300",
-          description:
-            "High definition projector, perfect for movie nights or presentations.",
+          image: "https://images.unsplash.com/photo-1535016120720-40c746a6580c?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "High definition projector, perfect for movie nights or presentations.",
         },
         {
           id: 2,
@@ -1171,8 +1168,7 @@
           location: "Talamban",
           distance: "5 mins away",
           rating: 5.0,
-          image:
-            "https://images.unsplash.com/photo-1504280650530-9b45df5a5c69?auto=format&fit=crop&q=80&w=400&h=300",
+          image: "https://images.unsplash.com/photo-1504280650530-9b45df5a5c69?auto=format&fit=crop&q=80&w=400&h=300",
           description: "Good for 4 persons. Easy to set up and highly durable.",
         },
         {
@@ -1184,10 +1180,8 @@
           location: "Lahug",
           distance: "15 mins away",
           rating: 4.8,
-          image:
-            "https://images.unsplash.com/photo-1594956106602-d9646bb6f780?auto=format&fit=crop&q=80&w=400&h=300",
-          description:
-            "Portable sewing machine for quick fixes and design projects.",
+          image: "https://images.unsplash.com/photo-1594956106602-d9646bb6f780?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "Portable sewing machine for quick fixes and design projects.",
         },
         {
           id: 4,
@@ -1198,10 +1192,8 @@
           location: "Cebu City",
           distance: "10 mins away",
           rating: 5.0,
-          image:
-            "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=400&h=300",
-          description:
-            "Complete set with various bits. Great for DIY dorm projects.",
+          image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=400&h=300",
+          description: "Complete set with various bits. Great for DIY dorm projects.",
         },
         {
           id: 5,
@@ -1212,8 +1204,7 @@
           location: "IT Park",
           distance: "12 mins away",
           rating: 4.9,
-          image:
-            "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400&h=300",
+          image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400&h=300",
           description: "Mirrorless camera ideal for video projects.",
         },
         {
@@ -1225,8 +1216,7 @@
           location: "USC Main",
           distance: "1 min away",
           rating: 4.5,
-          image:
-            "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400&h=300",
+          image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400&h=300",
           description: "Required textbook for Physics 101. Clean pages.",
         },
         {
@@ -1238,8 +1228,7 @@
           location: "Talamban",
           distance: "8 mins away",
           rating: 5.0,
-          image:
-            "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=400&h=300",
+          image: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=400&h=300",
           description: "Casio FX-991EX. Essential for engineering midterms.",
         },
       ];
@@ -1273,12 +1262,11 @@
 
       // --- INIT ---
       document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("current-year").textContent =
-          new Date().getFullYear();
+        document.getElementById("current-year").textContent = new Date().getFullYear();
         renderFeatures();
-        renderItems(ALL_ITEMS.slice(0, 4), "items-grid"); // Homepage trending
+        renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
         renderBrowseCategories();
-        renderItems(ALL_ITEMS, "browse-grid"); // Browse page
+        renderItems(ALL_ITEMS, "browse-grid");
         checkAuth();
         lucide.createIcons();
         initScrollReveal();
@@ -1290,11 +1278,11 @@
         const grid = document.getElementById("features-grid");
         grid.innerHTML = FEATURES.map(
           (f, i) => `
-        <div class="reveal-up bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 border border-gray-100" style="transition-delay: ${i * 150}ms">
-          <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 ${f.bg}"><i data-lucide="${f.icon}" class="w-8 h-8 ${f.color}"></i></div>
-          <h4 class="text-2xl font-bold mb-4 tracking-tight">${f.title}</h4>
-          <p class="text-gray-500 leading-relaxed font-light text-lg">${f.desc}</p>
-        </div>`,
+          <div class="reveal-up bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 border border-gray-100" style="transition-delay: ${i * 150}ms">
+            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 ${f.bg}"><i data-lucide="${f.icon}" class="w-8 h-8 ${f.color}"></i></div>
+            <h4 class="text-2xl font-bold mb-4 tracking-tight">${f.title}</h4>
+            <p class="text-gray-500 leading-relaxed font-light text-lg">${f.desc}</p>
+          </div>`
         ).join("");
       }
 
@@ -1310,25 +1298,23 @@
 
         if (emptyState) emptyState.classList.add("hidden");
 
-        grid.innerHTML = items
-          .map(
-            (item, i) => `
-        <div class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full" onclick="openItemDetail(${item.id})" style="transition-delay: ${i * 50}ms">
-          <div class="relative h-56 bg-gray-50/50 p-6 overflow-hidden">
-            <img src="${item.image}" class="w-full h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700 ease-out"/>
-            <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
-          </div>
-          <div class="p-6 flex flex-col flex-grow">
-            <h4 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-2">${item.title}</h4>
-            <div class="flex items-center text-sm text-gray-500 mb-6 font-medium"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-[#1a5b6e]"></i> ${item.distance}</div>
-            <div class="mt-auto flex items-end justify-between pt-4 border-t border-gray-100">
-              <div><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Daily</p><p class="text-2xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p></div>
-              <div class="text-right"><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Deposit</p><p class="text-sm font-bold text-gray-600">₱${item.deposit}</p></div>
+        grid.innerHTML = items.map(
+          (item, i) => `
+          <div class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full" onclick="openItemDetail(${item.id})" style="transition-delay: ${i * 50}ms">
+            <div class="relative h-56 bg-gray-50/50 overflow-hidden">
+              <img src="${item.image}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"/>
+              <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
             </div>
-          </div>
-        </div>`,
-          )
-          .join("");
+            <div class="p-6 flex flex-col flex-grow">
+              <h4 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-2">${item.title}</h4>
+              <div class="flex items-center text-sm text-gray-500 mb-6 font-medium"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-[#1a5b6e]"></i> ${item.distance}</div>
+              <div class="mt-auto flex items-end justify-between pt-4 border-t border-gray-100">
+                <div><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Daily</p><p class="text-2xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p></div>
+                <div class="text-right"><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Deposit</p><p class="text-sm font-bold text-gray-600">₱${item.deposit}</p></div>
+              </div>
+            </div>
+          </div>`
+        ).join("");
         lucide.createIcons();
       }
 
@@ -1337,8 +1323,7 @@
         const container = document.getElementById("category-filters");
         container.innerHTML = CATEGORIES.map(
           (cat) => `
-        <button onclick="setCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold whitespace-nowrap transition-colors border ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">${cat}</button>
-      `,
+          <button onclick="setCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold whitespace-nowrap transition-colors border ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">${cat}</button>`
         ).join("");
       }
 
@@ -1349,12 +1334,9 @@
       }
 
       function filterItems() {
-        const query = document
-          .getElementById("search-input")
-          .value.toLowerCase();
+        const query = document.getElementById("search-input").value.toLowerCase();
         const filtered = ALL_ITEMS.filter((item) => {
-          const matchCat =
-            currentCategory === "All" || item.category === currentCategory;
+          const matchCat = currentCategory === "All" || item.category === currentCategory;
           const matchSearch =
             item.title.toLowerCase().includes(query) ||
             item.description.toLowerCase().includes(query);
@@ -1372,13 +1354,7 @@
       // --- NAVIGATION ---
       function switchView(view) {
         currentView = view;
-        [
-          "home-view",
-          "browse-view",
-          "item-detail-view",
-          "dashboard-view",
-          "messages-view",
-        ].forEach((id) => {
+        ["home-view", "browse-view", "item-detail-view", "dashboard-view", "messages-view"].forEach((id) => {
           const el = document.getElementById(id);
           if (el) {
             el.classList.add("hidden");
@@ -1389,8 +1365,7 @@
         const activeEl = document.getElementById(`${view}-view`);
         if (activeEl) {
           activeEl.classList.remove("hidden");
-          if (view === "home") activeEl.classList.add("block");
-          else activeEl.classList.add("flex");
+          activeEl.classList.add("block"); // ✅ FIXED: always block, never flex
         }
 
         window.scrollTo(0, 0);
@@ -1402,22 +1377,14 @@
         currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
         if (!currentItemForCheckout) return;
 
-        document.getElementById("detail-image").src =
-          currentItemForCheckout.image;
-        document.getElementById("detail-title").textContent =
-          currentItemForCheckout.title;
-        document.getElementById("detail-price").textContent =
-          `₱${currentItemForCheckout.pricePerDay}`;
-        document.getElementById("detail-rating").textContent =
-          currentItemForCheckout.rating.toFixed(1);
-        document.getElementById("detail-description").textContent =
-          currentItemForCheckout.description;
-        document.getElementById("detail-location").textContent =
-          currentItemForCheckout.location;
-        document.getElementById("detail-distance").textContent =
-          currentItemForCheckout.distance;
-        document.getElementById("detail-deposit").textContent =
-          `₱${currentItemForCheckout.deposit} (Refundable)`;
+        document.getElementById("detail-image").src = currentItemForCheckout.image;
+        document.getElementById("detail-title").textContent = currentItemForCheckout.title;
+        document.getElementById("detail-price").textContent = `₱${currentItemForCheckout.pricePerDay}`;
+        document.getElementById("detail-rating").textContent = currentItemForCheckout.rating.toFixed(1);
+        document.getElementById("detail-description").textContent = currentItemForCheckout.description;
+        document.getElementById("detail-location").textContent = currentItemForCheckout.location;
+        document.getElementById("detail-distance").textContent = currentItemForCheckout.distance;
+        document.getElementById("detail-deposit").textContent = `₱${currentItemForCheckout.deposit} (Refundable)`;
 
         switchView("item-detail");
       }
@@ -1448,10 +1415,8 @@
       function openCheckout() {
         if (!currentItemForCheckout) return;
         document.getElementById("co-image").src = currentItemForCheckout.image;
-        document.getElementById("co-title").textContent =
-          currentItemForCheckout.title;
-        document.getElementById("co-rate").textContent =
-          currentItemForCheckout.pricePerDay;
+        document.getElementById("co-title").textContent = currentItemForCheckout.title;
+        document.getElementById("co-rate").textContent = currentItemForCheckout.pricePerDay;
         document.getElementById("co-days").value = 1;
         calculateTotal();
         toggleModal("checkout-modal", true);
@@ -1488,10 +1453,8 @@
           document.getElementById("auth-logged-out").classList.add("hidden");
           document.getElementById("auth-logged-in").classList.remove("hidden");
           document.getElementById("auth-logged-in").classList.add("flex");
-          document.getElementById("dashboard-user-name").textContent =
-            user.split("@")[0];
-          document.getElementById("user-display-name").textContent =
-            user.split("@")[0];
+          document.getElementById("dashboard-user-name").textContent = user.split("@")[0];
+          document.getElementById("user-display-name").textContent = user.split("@")[0];
         } else {
           document.getElementById("auth-logged-in").classList.add("hidden");
           document.getElementById("auth-logged-in").classList.remove("flex");
@@ -1524,7 +1487,7 @@
         }
       }
 
-      // --- SCROLL EFFECTS & UTILS ---
+      // --- SCROLL EFFECTS ---
       window.addEventListener("scroll", handleScroll);
       function handleScroll() {
         const header = document.getElementById("main-header");
@@ -1535,42 +1498,26 @@
 
         if (isScrolled) {
           header.classList.remove("bg-transparent", "py-4");
-          header.classList.add(
-            "bg-white/90",
-            "backdrop-blur-lg",
-            "border-b",
-            "border-gray-200/50",
-            "shadow-sm",
-            "py-2",
-          );
+          header.classList.add("bg-white/90", "backdrop-blur-lg", "border-b", "border-gray-200/50", "shadow-sm", "py-2");
           logoText.classList.replace("text-white", "text-[#1a5b6e]");
           nav.classList.replace("text-white/90", "text-gray-600");
 
           const btnList = document.getElementById("header-btn-list");
           const btnLogin = document.getElementById("header-btn-login");
-          if (btnList)
-            btnList.classList.replace("text-white", "text-[#1a5b6e]");
+          if (btnList) btnList.classList.replace("text-white", "text-[#1a5b6e]");
           if (btnLogin) {
             btnLogin.classList.replace("bg-white/20", "bg-gray-100");
             btnLogin.classList.replace("text-white", "text-[#1a5b6e]");
           }
         } else {
           header.classList.add("bg-transparent", "py-4");
-          header.classList.remove(
-            "bg-white/90",
-            "backdrop-blur-lg",
-            "border-b",
-            "border-gray-200/50",
-            "shadow-sm",
-            "py-2",
-          );
+          header.classList.remove("bg-white/90", "backdrop-blur-lg", "border-b", "border-gray-200/50", "shadow-sm", "py-2");
           logoText.classList.replace("text-[#1a5b6e]", "text-white");
           nav.classList.replace("text-gray-600", "text-white/90");
 
           const btnList = document.getElementById("header-btn-list");
           const btnLogin = document.getElementById("header-btn-login");
-          if (btnList)
-            btnList.classList.replace("text-[#1a5b6e]", "text-white");
+          if (btnList) btnList.classList.replace("text-[#1a5b6e]", "text-white");
           if (btnLogin) {
             btnLogin.classList.replace("bg-gray-100", "bg-white/20");
             btnLogin.classList.replace("text-[#1a5b6e]", "text-white");
@@ -1579,9 +1526,7 @@
       }
 
       function initScrollReveal() {
-        const elements = document.querySelectorAll(
-          ".reveal-up, .reveal-right, .reveal-none",
-        );
+        const elements = document.querySelectorAll(".reveal-up, .reveal-right, .reveal-none");
         const observer = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
@@ -1591,12 +1536,12 @@
               }
             });
           },
-          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
         );
         elements.forEach((el) => observer.observe(el));
       }
 
-      // --- GEMINI API INTEGRATION ---
+      // --- AI LISTING ---
       async function generateListingDetails() {
         const title = document.getElementById("listing-title").value;
         if (!title.trim()) {
@@ -1612,7 +1557,6 @@
         btnText.textContent = "Analyzing market data...";
         lucide.createIcons();
 
-        // Simulate API call for static demo
         setTimeout(() => {
           document.getElementById("listing-description").value =
             `A high quality ${title} in excellent condition. Perfect for student projects. Must be returned with all original accessories.`;

@@ -201,7 +201,7 @@ function renderItemCards(items, containerId, detailBasePath = '') {
        class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full"
        style="transition-delay:${i * 50}ms">
       <div class="relative h-56 bg-gray-50/50 p-6 overflow-hidden">
-        <img src="${item.image}" class="w-full h-full object-contain mix-blend-multiply transform group-hover:scale-110 transition-transform duration-700 ease-out" alt="${item.title}"/>
+        <img src="${item.image}" class="w-full h-full object-cover rounded-2xl transform group-hover:scale-110 transition-transform duration-700 ease-out" alt="${item.title}"/>
         <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
       </div>
       <div class="p-6 flex flex-col flex-grow">
