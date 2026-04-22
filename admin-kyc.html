@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin – KYC Verification | HULAM</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+
+      .hide-scrollbar::-webkit-scrollbar { display: none; }
+      .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+      /* Sidebar */
+      .sidebar-link { transition: all 0.2s; }
+      .sidebar-link.active { background: rgba(156,211,83,0.12); color: #1a5b6e; font-weight: 700; }
+      .sidebar-link:not(.active):hover { background: rgba(255,255,255,0.06); }
+
+      /* Status badges */
+      .badge-pending  { background:#fef9c3; color:#854d0e; }
+      .badge-approved { background:#dcfce7; color:#166534; }
+      .badge-rejected { background:#fee2e2; color:#991b1b; }
+      .badge-reviewing { background:#e0f2fe; color:#0369a1; }
+
+      /* Slide-in modal */
+      #kyc-modal { transition: opacity 0.3s, transform 0.3s; }
+      #kyc-modal.open { opacity:1; pointer-events:all; transform:translateX(0); }
+      #kyc-modal.closed { opacity:0; pointer-events:none; transform:translateX(2rem); }
+
+      /* Table row hover */
+      tbody tr { transition: background 0.15s; }
+      tbody tr:hover { background: #f8fdf3; }
+
+      /* Stats card */
+      .stat-card { background: white; border: 1px solid #f0fdf4; }
+
+      /* ID image placeholder shimmer */
+      @keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }
+      .shimmer { background: linear-gradient(90deg,#f0f0f0 25%,#e0e0e0 50%,#f0f0f0 75%); background-size:800px 100%; animation: shimmer 1.5s infinite; }
+
+      /* Admin pin screen */
+      #pin-screen { backdrop-filter: blur(12px); }
+
+      .pin-dot { width:14px; height:14px; border-radius:50%; background:#d1d5db; transition:background 0.2s; }
+      .pin-dot.filled { background:#1a5b6e; }
+
+      /* Approve/Reject animation */
+      @keyframes pop { 0%{transform:scale(1)} 50%{transform:scale(1.15)} 100%{transform:scale(1)} }
+      .pop { animation: pop 0.25s ease; }
+    </style>
+  </head>
+  <body class="bg-[#f4f7f6] text-gray-900 flex min-h-screen overflow-x-hidden">
+
+    <!-- ══════════════════════════════════════
+         PIN / LOGIN SCREEN
+    ══════════════════════════════════════ -->
+    <div id="pin-screen" class="fixed inset-0 z-[200] bg-[#0f3440]/80 flex items-center justify-center">
+      <div class="bg-white rounded-[2rem] p-10 w-full max-w-sm text-center shadow-2xl">
+        <div class="flex items-center justify-center gap-2 mb-6">
+          <div class="flex -space-x-1.5">
+            <div class="w-6 h-8 bg-[#1a5b6e] rounded-md transform -skew-x-12"></div>
+            <div class="w-6 h-8 bg-[#9cd353] rounded-md transform -skew-x-12 opacity-90 mix-blend-multiply"></div>
+          </div>
+          <span class="text-xl font-extrabold tracking-tighter text-[#1a5b6e]">HULAM</span>
+        </div>
+        <div class="w-14 h-14 bg-[#1a5b6e]/10 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <i data-lucide="shield-check" class="w-7 h-7 text-[#1a5b6e]"></i>
+        </div>
+        <h2 class="text-2xl font-extrabold text-gray-900 mb-1">Admin Access</h2>
+        <p class="text-sm text-gray-500 mb-8">Enter your 4-digit admin PIN to continue.</p>
+
+        <!-- PIN dots -->
+        <div class="flex justify-center gap-3 mb-6" id="pin-dots">
+          <div class="pin-dot" id="dot-0"></div>
+          <div class="pin-dot" id="dot-1"></div>
+          <div class="pin-dot" id="dot-2"></div>
+          <div class="pin-dot" id="dot-3"></div>
+        </div>
+
+        <!-- Error msg -->
+        <p id="pin-error" class="text-red-500 text-xs font-semibold mb-4 hidden">Incorrect PIN. Try again.</p>
+
+        <!-- Numpad -->
+        <div class="grid grid-cols-3 gap-3">
+          <script>
+            // Render numpad inline
+            const nums = [1,2,3,4,5,6,7,8,9,'',0,'⌫'];
+            document.write(nums.map(n => n === '' ? `<div></div>` :
+              `<button onclick="pinInput('${n}')" class="h-14 rounded-2xl font-bold text-lg transition-all active:scale-95 ${n === '⌫' ? 'bg-red-50 text-red-500 hover:bg-red-100' : 'bg-gray-50 text-gray-800 hover:bg-gray-100'}">${n}</button>`
+            ).join(''));
+          </script>
+        </div>
+        <p class="text-xs text-gray-400 mt-6">Demo PIN: <strong>1234</strong></p>
+      </div>
+    </div>
+
+    <!-- ══════════════════════════════════════
+         SIDEBAR
+    ══════════════════════════════════════ -->
+    <aside class="w-64 shrink-0 bg-[#0f3440] text-white flex flex-col min-h-screen sticky top-0 h-screen">
+      <!-- Logo -->
+      <div class="px-6 py-6 border-b border-white/10">
+        <div class="flex items-center gap-2">
+          <div class="flex -space-x-1.5">
+            <div class="w-6 h-8 bg-[#1a5b6e] rounded-md transform -skew-x-12"></div>
+            <div class="w-6 h-8 bg-[#9cd353] rounded-md transform -skew-x-12 opacity-90 mix-blend-multiply"></div>
+          </div>
+          <span class="text-xl font-extrabold tracking-tighter">HULAM</span>
+        </div>
+        <p class="text-xs text-white/40 mt-1 font-medium uppercase tracking-widest">Admin Panel</p>
+      </div>
+
+      <!-- Nav -->
+      <nav class="flex-grow px-4 py-6 space-y-1">
+        <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 text-sm" onclick="setPage('dashboard', this)">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Overview
+        </a>
+        <a href="#" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm" onclick="setPage('kyc', this)">
+          <i data-lucide="user-check" class="w-4 h-4"></i> KYC Verification
+          <span id="pending-count-badge" class="ml-auto bg-[#9cd353] text-[#0f3440] text-xs font-black px-2 py-0.5 rounded-full">3</span>
+        </a>
+        <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 text-sm" onclick="setPage('users', this)">
+          <i data-lucide="users" class="w-4 h-4"></i> Users
+        </a>
+        <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 text-sm" onclick="setPage('listings', this)">
+          <i data-lucide="package" class="w-4 h-4"></i> Listings
+        </a>
+        <a href="#" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-white/60 text-sm" onclick="setPage('reports', this)">
+          <i data-lucide="flag" class="w-4 h-4"></i> Reports
+        </a>
+      </nav>
+
+      <!-- Admin info -->
+      <div class="px-4 py-4 border-t border-white/10">
+        <div class="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5">
+          <div class="w-9 h-9 rounded-full bg-[#9cd353] flex items-center justify-center text-[#0f3440] font-black text-sm">A</div>
+          <div>
+            <p class="font-bold text-sm text-white">Admin</p>
+            <p class="text-xs text-white/40">CMU-HULAM</p>
+          </div>
+          <button onclick="lockAdmin()" class="ml-auto text-white/30 hover:text-white/70 transition-colors" title="Lock">
+            <i data-lucide="lock" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ══════════════════════════════════════
+         MAIN CONTENT
+    ══════════════════════════════════════ -->
+    <main class="flex-grow flex flex-col min-h-screen overflow-y-auto">
+
+      <!-- Top bar -->
+      <div class="bg-white border-b border-gray-100 px-8 py-4 flex items-center justify-between sticky top-0 z-10">
+        <div>
+          <h1 class="text-xl font-extrabold text-gray-900">KYC Verification</h1>
+          <p class="text-sm text-gray-500">Review and verify member identity submissions.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs text-gray-400 font-medium">Central Mindanao University</span>
+          <div class="w-px h-5 bg-gray-200"></div>
+          <span class="text-xs font-bold text-[#1a5b6e]" id="current-date"></span>
+        </div>
+      </div>
+
+      <div class="p-8 flex-grow">
+
+        <!-- Stats Row -->
+        <div class="grid grid-cols-4 gap-4 mb-8">
+          <div class="stat-card rounded-2xl p-5 shadow-sm">
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Total Submissions</p>
+            <p class="text-3xl font-black text-gray-900" id="stat-total">8</p>
+            <p class="text-xs text-gray-400 mt-1">All time</p>
+          </div>
+          <div class="stat-card rounded-2xl p-5 shadow-sm border-l-4 border-yellow-400">
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Pending Review</p>
+            <p class="text-3xl font-black text-yellow-600" id="stat-pending">3</p>
+            <p class="text-xs text-gray-400 mt-1">Awaiting action</p>
+          </div>
+          <div class="stat-card rounded-2xl p-5 shadow-sm border-l-4 border-green-500">
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Approved</p>
+            <p class="text-3xl font-black text-green-600" id="stat-approved">4</p>
+            <p class="text-xs text-gray-400 mt-1">Verified members</p>
+          </div>
+          <div class="stat-card rounded-2xl p-5 shadow-sm border-l-4 border-red-400">
+            <p class="text-xs text-gray-400 font-bold uppercase tracking-wide mb-2">Rejected</p>
+            <p class="text-3xl font-black text-red-500" id="stat-rejected">1</p>
+            <p class="text-xs text-gray-400 mt-1">Needs resubmission</p>
+          </div>
+        </div>
+
+        <!-- Filter & Search -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-4 mb-6 flex flex-col sm:flex-row gap-3 items-center">
+          <div class="relative flex-grow">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400"></i>
+            <input id="search-input" type="text" placeholder="Search by name, email, or student ID…"
+              class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#9cd353]/40 focus:border-[#1a5b6e]"
+              oninput="filterTable()" />
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button onclick="filterStatus('all')" id="filter-all" class="filter-btn active-filter px-4 py-2.5 rounded-xl text-sm font-bold bg-[#1a5b6e] text-white">All</button>
+            <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 hover:bg-gray-100">Pending</button>
+            <button onclick="filterStatus('reviewing')" id="filter-reviewing" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 hover:bg-gray-100">Reviewing</button>
+            <button onclick="filterStatus('approved')" id="filter-approved" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 hover:bg-gray-100">Approved</button>
+            <button onclick="filterStatus('rejected')" id="filter-rejected" class="filter-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-gray-50 text-gray-600 hover:bg-gray-100">Rejected</button>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100 text-xs text-gray-500 font-bold uppercase tracking-wider">
+                <th class="px-6 py-4 text-left">Applicant</th>
+                <th class="px-6 py-4 text-left">Type</th>
+                <th class="px-6 py-4 text-left">Student / Member ID</th>
+                <th class="px-6 py-4 text-left">Submitted</th>
+                <th class="px-6 py-4 text-left">Status</th>
+                <th class="px-6 py-4 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody id="kyc-table-body">
+              <!-- Injected by JS -->
+            </tbody>
+          </table>
+          <div id="table-empty" class="hidden py-20 text-center text-gray-400">
+            <i data-lucide="inbox" class="w-10 h-10 mx-auto mb-3 text-gray-300"></i>
+            <p class="font-semibold">No submissions found</p>
+          </div>
+        </div>
+
+      </div><!-- /p-8 -->
+    </main>
+
+    <!-- ══════════════════════════════════════
+         KYC DETAIL SIDE PANEL
+    ══════════════════════════════════════ -->
+    <div id="kyc-modal" class="closed fixed top-0 right-0 h-full w-[480px] bg-white shadow-2xl z-[100] flex flex-col border-l border-gray-100 overflow-y-auto hide-scrollbar">
+      <!-- Header -->
+      <div class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+        <div>
+          <h2 class="text-xl font-extrabold text-gray-900" id="modal-name">—</h2>
+          <p class="text-xs text-gray-400 mt-0.5" id="modal-email">—</p>
+        </div>
+        <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-gray-50 hover:bg-gray-100 flex items-center justify-center text-gray-400 transition-colors">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <div class="p-8 space-y-7 flex-grow">
+
+        <!-- Status -->
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-wide">Current Status</span>
+          <span id="modal-status-badge" class="px-3 py-1 rounded-full text-xs font-black">—</span>
+        </div>
+
+        <!-- Applicant Info -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Applicant Information</p>
+          <div class="bg-gray-50 rounded-2xl p-5 space-y-3 border border-gray-100">
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">Full Name</span>
+              <span class="text-sm font-bold text-gray-900" id="modal-fullname">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">Email</span>
+              <span class="text-sm font-bold text-gray-900" id="modal-email2">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">Member Type</span>
+              <span class="text-sm font-bold text-gray-900" id="modal-type">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">ID Number</span>
+              <span class="text-sm font-bold text-gray-900 font-mono" id="modal-idno">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">Department / Org</span>
+              <span class="text-sm font-bold text-gray-900" id="modal-dept">—</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-sm text-gray-500">Submitted</span>
+              <span class="text-sm font-bold text-gray-900" id="modal-date">—</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ID Document -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Submitted ID Document</p>
+          <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 aspect-[16/9] flex items-center justify-center relative">
+            <!-- Simulated ID card display -->
+            <div id="modal-id-display" class="w-full h-full flex items-center justify-center flex-col gap-2 text-gray-300 p-6">
+              <i data-lucide="id-card" class="w-12 h-12"></i>
+              <p class="text-sm font-medium text-center" id="modal-id-label">—</p>
+            </div>
+          </div>
+          <p class="text-xs text-gray-400 mt-2 flex items-center gap-1">
+            <i data-lucide="info" class="w-3 h-3"></i>
+            <span id="modal-id-type-label">—</span>
+          </p>
+        </div>
+
+        <!-- Selfie -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Selfie with ID</p>
+          <div class="rounded-2xl overflow-hidden border border-gray-200 bg-gray-50 h-32 flex items-center justify-center text-gray-300 flex-col gap-1">
+            <i data-lucide="camera" class="w-8 h-8"></i>
+            <p class="text-xs font-medium" id="modal-selfie-label">—</p>
+          </div>
+        </div>
+
+        <!-- Notes from applicant -->
+        <div id="notes-section" class="hidden">
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Applicant Notes</p>
+          <div class="bg-yellow-50 border border-yellow-100 rounded-2xl p-4 text-sm text-yellow-800" id="modal-notes">—</div>
+        </div>
+
+        <!-- Rejection reason (shown if rejected) -->
+        <div id="rejection-section" class="hidden">
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Rejection Reason</p>
+          <div class="bg-red-50 border border-red-100 rounded-2xl p-4 text-sm text-red-700" id="modal-rejection">—</div>
+        </div>
+
+        <!-- Checklist -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Verification Checklist</p>
+          <div class="space-y-2" id="checklist">
+            <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" id="chk-id" class="w-4 h-4 accent-[#1a5b6e] rounded" />
+              <span class="text-sm text-gray-700">Valid ID document submitted</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" id="chk-selfie" class="w-4 h-4 accent-[#1a5b6e] rounded" />
+              <span class="text-sm text-gray-700">Selfie matches ID photo</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" id="chk-enrolled" class="w-4 h-4 accent-[#1a5b6e] rounded" />
+              <span class="text-sm text-gray-700">Active student / member verified</span>
+            </label>
+            <label class="flex items-center gap-3 p-3 rounded-xl hover:bg-gray-50 cursor-pointer">
+              <input type="checkbox" id="chk-info" class="w-4 h-4 accent-[#1a5b6e] rounded" />
+              <span class="text-sm text-gray-700">Name and ID number match</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Admin Notes -->
+        <div>
+          <p class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3">Admin Notes <span class="text-gray-300 font-normal normal-case">(optional)</span></p>
+          <textarea id="admin-notes" rows="3" placeholder="Add internal notes about this submission…"
+            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#9cd353]/40 focus:border-[#1a5b6e] resize-none"></textarea>
+        </div>
+
+        <!-- Rejection Reason (shown when rejecting) -->
+        <div id="reject-reason-box" class="hidden">
+          <p class="text-xs font-bold text-red-400 uppercase tracking-wide mb-3">Rejection Reason <span class="text-red-300">*</span></p>
+          <select id="reject-reason-select" class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-red-300 focus:border-red-400 mb-3">
+            <option value="">Select a reason…</option>
+            <option value="Blurry or unclear ID photo submitted.">Blurry or unclear ID photo</option>
+            <option value="ID document is expired.">ID is expired</option>
+            <option value="Name on ID does not match the registered name.">Name mismatch</option>
+            <option value="Selfie photo does not match the ID.">Selfie doesn't match ID</option>
+            <option value="Student ID is not from Central Mindanao University.">Non-CMU ID submitted</option>
+            <option value="Incomplete submission — missing required documents.">Incomplete submission</option>
+            <option value="Other — see admin notes.">Other (see admin notes)</option>
+          </select>
+        </div>
+
+      </div><!-- /p-8 -->
+
+      <!-- Action Buttons -->
+      <div class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex gap-3 sticky bottom-0" id="modal-actions">
+        <button onclick="startReview()" id="btn-review"
+          class="flex-1 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="eye" class="w-4 h-4"></i> Mark Reviewing
+        </button>
+        <button onclick="toggleRejectBox()" id="btn-reject"
+          class="flex-1 bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold text-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+          <i data-lucide="x-circle" class="w-4 h-4"></i> Reject
+        </button>
+        <button onclick="approveKYC()" id="btn-approve"
+          class="flex-1 bg-[#9cd353] text-[#1a5b6e] px-4 py-3 rounded-xl font-extrabold text-sm hover:bg-[#8bc34a] transition-colors shadow-[0_4px_14px_rgba(156,211,83,0.35)] flex items-center justify-center gap-2">
+          <i data-lucide="check-circle" class="w-4 h-4"></i> Approve
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal backdrop -->
+    <div id="modal-backdrop" onclick="closeModal()" class="hidden fixed inset-0 bg-black/20 z-[99] backdrop-blur-sm"></div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 z-[300] transition-all duration-300 opacity-0 translate-y-4 pointer-events-none">
+      <div class="bg-gray-900 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-semibold">
+        <i data-lucide="check-circle" id="toast-icon" class="w-5 h-5 text-[#9cd353]"></i>
+        <span id="toast-msg">Action completed.</span>
+      </div>
+    </div>
+
+    <script>
+      // ══════════════════════════════════════
+      // DATA
+      // ══════════════════════════════════════
+      const KYC_SUBMISSIONS = [
+        {
+          id: 1, name: "Ana Marie Reyes", email: "ana.reyes@cmu.edu.ph",
+          type: "Student", idNo: "2021-04-83721", dept: "BSIT – College of Information Technology",
+          submitted: "Apr 18, 2026", status: "pending",
+          idType: "CMU Student ID", selfie: "Selfie submitted (Apr 18)",
+          notes: "I lost my original ID but this is a certified true copy.",
+        },
+        {
+          id: 2, name: "Marco Villanueva", email: "marco.v@cmu.edu.ph",
+          type: "Student", idNo: "2022-06-11245", dept: "BSCE – College of Engineering",
+          submitted: "Apr 19, 2026", status: "pending",
+          idType: "CMU Student ID", selfie: "Selfie submitted (Apr 19)",
+          notes: null,
+        },
+        {
+          id: 3, name: "JPCS – CMU Chapter", email: "jpcs.cmu@org.ph",
+          type: "Student Org", idNo: "ORG-JPCS-2024", dept: "College of Information Technology",
+          submitted: "Apr 20, 2026", status: "pending",
+          idType: "DTI / SEC Registration + Accreditation Letter", selfie: "Representative selfie submitted",
+          notes: "We are renewing our registration. Attaching new DSA accreditation.",
+        },
+        {
+          id: 4, name: "Rosalie Dimayuga", email: "rosalie.d@cmu.edu.ph",
+          type: "Student", idNo: "2020-01-56789", dept: "BSN – College of Nursing",
+          submitted: "Apr 10, 2026", status: "approved",
+          idType: "CMU Student ID", selfie: "Selfie submitted (Apr 10)",
+          notes: null,
+        },
+        {
+          id: 5, name: "Jayson Nacua", email: "jayson.n@community.ph",
+          type: "Community Member", idNo: "GOV-ID-789234",
+          dept: "N/A", submitted: "Apr 12, 2026", status: "approved",
+          idType: "Government-issued PhilSys ID", selfie: "Selfie submitted (Apr 12)",
+          notes: null,
+        },
+        {
+          id: 6, name: "Lenie Oquias", email: "lenie.o@cmu.edu.ph",
+          type: "Student", idNo: "2023-08-99012", dept: "BSED – College of Education",
+          submitted: "Apr 14, 2026", status: "approved",
+          idType: "CMU Student ID", selfie: "Selfie submitted (Apr 14)",
+          notes: null,
+        },
+        {
+          id: 7, name: "Renz Caballero", email: "renz.c@cmu.edu.ph",
+          type: "Student", idNo: "2023-09-44231", dept: "BSCS – College of Information Technology",
+          submitted: "Apr 16, 2026", status: "approved",
+          idType: "CMU Student ID", selfie: "Selfie submitted (Apr 16)",
+          notes: null,
+        },
+        {
+          id: 8, name: "Glenda Tomas", email: "glenda.t@gmail.com",
+          type: "Community Member", idNo: "DL-0032-78921",
+          dept: "N/A", submitted: "Apr 11, 2026", status: "rejected",
+          idType: "Driver's License", selfie: "Selfie submitted (Apr 11)",
+          notes: null, rejectionReason: "Selfie photo does not match the ID.",
+        },
+      ];
+
+      let activeFilter = 'all';
+      let activeSearch = '';
+      let currentEntry = null;
+      let showRejectBox = false;
+
+      // ══════════════════════════════════════
+      // PIN
+      // ══════════════════════════════════════
+      let pinValue = '';
+      const CORRECT_PIN = '1234';
+
+      function pinInput(val) {
+        if (val === '⌫') {
+          pinValue = pinValue.slice(0, -1);
+        } else if (pinValue.length < 4) {
+          pinValue += val;
+        }
+        updatePinDots();
+        if (pinValue.length === 4) {
+          setTimeout(() => {
+            if (pinValue === CORRECT_PIN) {
+              document.getElementById('pin-screen').style.display = 'none';
+              showToast('Welcome, Admin!', 'check-circle');
+            } else {
+              document.getElementById('pin-error').classList.remove('hidden');
+              pinValue = '';
+              updatePinDots();
+              setTimeout(() => document.getElementById('pin-error').classList.add('hidden'), 2000);
+            }
+          }, 200);
+        }
+      }
+
+      function updatePinDots() {
+        for (let i = 0; i < 4; i++) {
+          const dot = document.getElementById(`dot-${i}`);
+          dot.classList.toggle('filled', i < pinValue.length);
+        }
+      }
+
+      function lockAdmin() {
+        pinValue = '';
+        updatePinDots();
+        document.getElementById('pin-screen').style.display = 'flex';
+        closeModal();
+      }
+
+      // ══════════════════════════════════════
+      // TABLE RENDER
+      // ══════════════════════════════════════
+      function getFiltered() {
+        return KYC_SUBMISSIONS.filter(s => {
+          const matchFilter = activeFilter === 'all' || s.status === activeFilter;
+          const q = activeSearch.toLowerCase();
+          const matchSearch = !q || s.name.toLowerCase().includes(q)
+            || s.email.toLowerCase().includes(q) || s.idNo.toLowerCase().includes(q);
+          return matchFilter && matchSearch;
+        });
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('kyc-table-body');
+        const empty = document.getElementById('table-empty');
+        const filtered = getFiltered();
+
+        updateStats();
+
+        if (filtered.length === 0) {
+          tbody.innerHTML = '';
+          empty.classList.remove('hidden');
+          return;
+        }
+        empty.classList.add('hidden');
+
+        tbody.innerHTML = filtered.map(s => `
+          <tr class="border-b border-gray-50 cursor-pointer" onclick="openModal(${s.id})">
+            <td class="px-6 py-4">
+              <div class="flex items-center gap-3">
+                <div class="w-9 h-9 rounded-full flex items-center justify-center font-black text-sm shrink-0 ${avatarColor(s.type)}">
+                  ${s.name.split(' ').map(n=>n[0]).join('').slice(0,2)}
+                </div>
+                <div>
+                  <p class="font-bold text-gray-900">${s.name}</p>
+                  <p class="text-xs text-gray-400">${s.email}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-full text-xs font-bold ${typeStyle(s.type)}">${s.type}</span>
+            </td>
+            <td class="px-6 py-4 font-mono text-sm text-gray-600">${s.idNo}</td>
+            <td class="px-6 py-4 text-sm text-gray-500">${s.submitted}</td>
+            <td class="px-6 py-4">
+              <span class="px-3 py-1 rounded-full text-xs font-black badge-${s.status} capitalize">${s.status}</span>
+            </td>
+            <td class="px-6 py-4">
+              <button onclick="event.stopPropagation(); openModal(${s.id})"
+                class="px-4 py-2 rounded-xl text-xs font-bold bg-gray-50 hover:bg-[#1a5b6e] hover:text-white text-gray-600 transition-all border border-gray-200 hover:border-[#1a5b6e]">
+                Review
+              </button>
+            </td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      }
+
+      function updateStats() {
+        const all = KYC_SUBMISSIONS;
+        document.getElementById('stat-total').textContent = all.length;
+        document.getElementById('stat-pending').textContent = all.filter(s=>s.status==='pending').length;
+        document.getElementById('stat-approved').textContent = all.filter(s=>s.status==='approved').length;
+        document.getElementById('stat-rejected').textContent = all.filter(s=>s.status==='rejected').length;
+        const pending = all.filter(s=>s.status==='pending').length;
+        const badge = document.getElementById('pending-count-badge');
+        badge.textContent = pending;
+        badge.style.display = pending > 0 ? '' : 'none';
+      }
+
+      function avatarColor(type) {
+        if (type === 'Student') return 'bg-blue-100 text-blue-700';
+        if (type === 'Student Org') return 'bg-purple-100 text-purple-700';
+        return 'bg-green-100 text-green-700';
+      }
+
+      function typeStyle(type) {
+        if (type === 'Student') return 'bg-blue-50 text-blue-700';
+        if (type === 'Student Org') return 'bg-purple-50 text-purple-700';
+        return 'bg-green-50 text-green-700';
+      }
+
+      // ══════════════════════════════════════
+      // FILTERS
+      // ══════════════════════════════════════
+      function filterStatus(status) {
+        activeFilter = status;
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('bg-[#1a5b6e]','text-white');
+          b.classList.add('bg-gray-50','text-gray-600');
+        });
+        const btn = document.getElementById(`filter-${status}`);
+        btn.classList.add('bg-[#1a5b6e]','text-white');
+        btn.classList.remove('bg-gray-50','text-gray-600');
+        renderTable();
+      }
+
+      function filterTable() {
+        activeSearch = document.getElementById('search-input').value;
+        renderTable();
+      }
+
+      // ══════════════════════════════════════
+      // MODAL
+      // ══════════════════════════════════════
+      function openModal(id) {
+        currentEntry = KYC_SUBMISSIONS.find(s => s.id === id);
+        if (!currentEntry) return;
+
+        // Reset checkboxes
+        ['chk-id','chk-selfie','chk-enrolled','chk-info'].forEach(c => {
+          document.getElementById(c).checked = currentEntry.status === 'approved';
+        });
+
+        // Fill fields
+        document.getElementById('modal-name').textContent = currentEntry.name;
+        document.getElementById('modal-email').textContent = currentEntry.email;
+        document.getElementById('modal-fullname').textContent = currentEntry.name;
+        document.getElementById('modal-email2').textContent = currentEntry.email;
+        document.getElementById('modal-type').textContent = currentEntry.type;
+        document.getElementById('modal-idno').textContent = currentEntry.idNo;
+        document.getElementById('modal-dept').textContent = currentEntry.dept;
+        document.getElementById('modal-date').textContent = currentEntry.submitted;
+        document.getElementById('modal-id-label').textContent = currentEntry.idType;
+        document.getElementById('modal-id-type-label').textContent = `Document type: ${currentEntry.idType}`;
+        document.getElementById('modal-selfie-label').textContent = currentEntry.selfie;
+        document.getElementById('admin-notes').value = '';
+
+        // Status badge
+        const badge = document.getElementById('modal-status-badge');
+        badge.textContent = currentEntry.status.charAt(0).toUpperCase() + currentEntry.status.slice(1);
+        badge.className = `px-3 py-1 rounded-full text-xs font-black badge-${currentEntry.status}`;
+
+        // Notes
+        const notesSection = document.getElementById('notes-section');
+        if (currentEntry.notes) {
+          notesSection.classList.remove('hidden');
+          document.getElementById('modal-notes').textContent = currentEntry.notes;
+        } else {
+          notesSection.classList.add('hidden');
+        }
+
+        // Rejection
+        const rejSec = document.getElementById('rejection-section');
+        if (currentEntry.rejectionReason) {
+          rejSec.classList.remove('hidden');
+          document.getElementById('modal-rejection').textContent = currentEntry.rejectionReason;
+        } else {
+          rejSec.classList.add('hidden');
+        }
+
+        // Buttons
+        const actions = document.getElementById('modal-actions');
+        if (currentEntry.status === 'approved') {
+          actions.innerHTML = `<div class="flex-1 text-center text-sm text-green-600 font-bold flex items-center justify-center gap-2"><i data-lucide="check-circle" class="w-5 h-5"></i> This submission has been approved.</div>`;
+        } else if (currentEntry.status === 'rejected') {
+          actions.innerHTML = `
+            <button onclick="resetStatus()" class="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="rotate-ccw" class="w-4 h-4"></i> Reset to Pending
+            </button>
+            <button onclick="approveKYC()" class="flex-1 bg-[#9cd353] text-[#1a5b6e] px-4 py-3 rounded-xl font-extrabold text-sm hover:bg-[#8bc34a] transition-colors shadow-[0_4px_14px_rgba(156,211,83,0.35)] flex items-center justify-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Approve
+            </button>`;
+        } else {
+          actions.innerHTML = `
+            <button onclick="startReview()" id="btn-review" class="flex-1 bg-blue-50 text-blue-700 px-4 py-3 rounded-xl font-bold text-sm hover:bg-blue-100 transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="eye" class="w-4 h-4"></i> Mark Reviewing
+            </button>
+            <button onclick="toggleRejectBox()" id="btn-reject" class="flex-1 bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold text-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2">
+              <i data-lucide="x-circle" class="w-4 h-4"></i> Reject
+            </button>
+            <button onclick="approveKYC()" id="btn-approve" class="flex-1 bg-[#9cd353] text-[#1a5b6e] px-4 py-3 rounded-xl font-extrabold text-sm hover:bg-[#8bc34a] transition-colors shadow-[0_4px_14px_rgba(156,211,83,0.35)] flex items-center justify-center gap-2">
+              <i data-lucide="check-circle" class="w-4 h-4"></i> Approve
+            </button>`;
+        }
+
+        showRejectBox = false;
+        document.getElementById('reject-reason-box')?.classList.add('hidden');
+
+        // Show modal
+        const modal = document.getElementById('kyc-modal');
+        const backdrop = document.getElementById('modal-backdrop');
+        modal.classList.remove('closed');
+        modal.classList.add('open');
+        backdrop.classList.remove('hidden');
+        lucide.createIcons();
+      }
+
+      function closeModal() {
+        const modal = document.getElementById('kyc-modal');
+        const backdrop = document.getElementById('modal-backdrop');
+        modal.classList.remove('open');
+        modal.classList.add('closed');
+        backdrop.classList.add('hidden');
+        currentEntry = null;
+      }
+
+      // ══════════════════════════════════════
+      // ACTIONS
+      // ══════════════════════════════════════
+      function startReview() {
+        if (!currentEntry) return;
+        currentEntry.status = 'reviewing';
+        showToast(`${currentEntry.name} marked as Reviewing.`, 'eye');
+        updateEntryAndRefresh();
+      }
+
+      function toggleRejectBox() {
+        showRejectBox = !showRejectBox;
+        const box = document.getElementById('reject-reason-box');
+        if (showRejectBox) {
+          box.classList.remove('hidden');
+          const btn = document.getElementById('btn-reject');
+          if (btn) { btn.textContent = 'Confirm Reject'; btn.onclick = rejectKYC; btn.className = 'flex-1 bg-red-600 text-white px-4 py-3 rounded-xl font-bold text-sm hover:bg-red-700 transition-colors flex items-center justify-center gap-2'; }
+        } else {
+          box.classList.add('hidden');
+          const btn = document.getElementById('btn-reject');
+          if (btn) { btn.innerHTML = '<i data-lucide="x-circle" class="w-4 h-4"></i> Reject'; btn.onclick = toggleRejectBox; btn.className = 'flex-1 bg-red-50 text-red-600 px-4 py-3 rounded-xl font-bold text-sm hover:bg-red-100 transition-colors flex items-center justify-center gap-2'; }
+        }
+        lucide.createIcons();
+      }
+
+      function rejectKYC() {
+        if (!currentEntry) return;
+        const reason = document.getElementById('reject-reason-select').value;
+        if (!reason) { alert('Please select a rejection reason.'); return; }
+        currentEntry.status = 'rejected';
+        currentEntry.rejectionReason = reason;
+        showToast(`${currentEntry.name} rejected.`, 'x-circle');
+        updateEntryAndRefresh();
+        closeModal();
+      }
+
+      function approveKYC() {
+        if (!currentEntry) return;
+        const checks = ['chk-id','chk-selfie','chk-enrolled','chk-info'];
+        const allChecked = checks.every(c => document.getElementById(c)?.checked);
+        if (!allChecked) {
+          showToast('Please complete the verification checklist first.', 'alert-circle');
+          return;
+        }
+        currentEntry.status = 'approved';
+        currentEntry.rejectionReason = null;
+        showToast(`${currentEntry.name} approved! ✓`, 'check-circle');
+        updateEntryAndRefresh();
+        closeModal();
+      }
+
+      function resetStatus() {
+        if (!currentEntry) return;
+        currentEntry.status = 'pending';
+        currentEntry.rejectionReason = null;
+        showToast(`${currentEntry.name} reset to Pending.`, 'rotate-ccw');
+        updateEntryAndRefresh();
+        closeModal();
+      }
+
+      function updateEntryAndRefresh() {
+        const idx = KYC_SUBMISSIONS.findIndex(s => s.id === currentEntry?.id);
+        if (idx >= 0) KYC_SUBMISSIONS[idx] = currentEntry;
+        renderTable();
+      }
+
+      // ══════════════════════════════════════
+      // TOAST
+      // ══════════════════════════════════════
+      function showToast(msg, icon = 'check-circle') {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        document.getElementById('toast-icon').setAttribute('data-lucide', icon);
+        lucide.createIcons();
+        toast.classList.remove('opacity-0','translate-y-4','pointer-events-none');
+        setTimeout(() => {
+          toast.classList.add('opacity-0','translate-y-4','pointer-events-none');
+        }, 3000);
+      }
+
+      // ══════════════════════════════════════
+      // SIDEBAR PAGE SWITCH (demo)
+      // ══════════════════════════════════════
+      function setPage(page, el) {
+        document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+        el.classList.add('active');
+        if (page !== 'kyc') showToast(`"${el.textContent.trim()}" — coming soon!`, 'construction');
+      }
+
+      // ══════════════════════════════════════
+      // INIT
+      // ══════════════════════════════════════
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('current-date').textContent = new Date().toLocaleDateString('en-PH', { weekday:'short', year:'numeric', month:'long', day:'numeric' });
+        renderTable();
+        lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
