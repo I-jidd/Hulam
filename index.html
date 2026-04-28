@@ -4,50 +4,54 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HULAM - Campus Rental Marketplace</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
       rel="stylesheet"
     />
-
     <style>
-      body {
-        font-family: "Inter", sans-serif;
+      * {
+        box-sizing: border-box;
       }
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+
       @keyframes slowPan {
         0% {
           transform: scale(1.05) translate(0, 0);
         }
         100% {
-          transform: scale(1.1) translate(-1%, 2%);
+          transform: scale(1.12) translate(-1.5%, 2%);
         }
       }
       .animate-slowPan {
-        animation: slowPan 20s ease-in-out infinite alternate;
+        animation: slowPan 22s ease-in-out infinite alternate;
       }
+
       .reveal-up {
         opacity: 0;
-        transform: translateY(3rem);
-        transition: all 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(2.5rem);
+        transition: all 800ms cubic-bezier(0.22, 1, 0.36, 1);
       }
       .reveal-right {
         opacity: 0;
-        transform: translateX(-3rem);
-        transition: all 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateX(-2.5rem);
+        transition: all 800ms cubic-bezier(0.22, 1, 0.36, 1);
       }
       .reveal-none {
         opacity: 0;
-        transform: scale(0.95);
-        transition: all 1000ms cubic-bezier(0.22, 1, 0.36, 1);
+        transform: scale(0.96);
+        transition: all 800ms cubic-bezier(0.22, 1, 0.36, 1);
       }
       .reveal-visible {
-        opacity: 1;
-        transform: translate(0, 0) scale(1);
+        opacity: 1 !important;
+        transform: translate(0, 0) scale(1) !important;
       }
+
       .hide-scrollbar::-webkit-scrollbar {
         display: none;
       }
@@ -56,9 +60,8 @@
         scrollbar-width: none;
       }
 
-      /* Custom Scrollbar for chat */
       .chat-scroll::-webkit-scrollbar {
-        width: 6px;
+        width: 5px;
       }
       .chat-scroll::-webkit-scrollbar-track {
         background: transparent;
@@ -67,20 +70,82 @@
         background-color: #e5e7eb;
         border-radius: 20px;
       }
+
+      .nav-link-active {
+        color: #9cd353 !important;
+      }
+
+      /* Image fallback */
+      img {
+        background: #f3f4f6;
+      }
+
+      /* Card hover fix - avoid content shift */
+      .item-card {
+        will-change: transform;
+      }
+
+      /* Smooth modal backdrop */
+      .modal-backdrop {
+        backdrop-filter: blur(8px);
+      }
+
+      /* Toast */
+      #toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%) translateY(6rem);
+        background: #1a5b6e;
+        color: white;
+        padding: 1rem 2rem;
+        border-radius: 9999px;
+        font-weight: 700;
+        z-index: 9999;
+        transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+        white-space: nowrap;
+        box-shadow: 0 8px 30px rgba(26, 91, 110, 0.4);
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+      #toast.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* Dashboard tab active state */
+      .dash-tab-active {
+        background: #f0f7f9;
+        color: #1a5b6e !important;
+        font-weight: 700;
+      }
+
+      /* Listing image preview */
+      #listing-img-preview {
+        transition: opacity 0.3s;
+      }
     </style>
   </head>
   <body
-    class="bg-[#fcfaf7] text-gray-900 selection:bg-[#9cd353]/30 flex flex-col min-h-screen overflow-x-hidden"
+    class="bg-[#f8f9fa] text-gray-900 selection:bg-[#9cd353]/30 flex flex-col min-h-screen overflow-x-hidden"
   >
-    <!-- HEADER -->
+    <!-- TOAST -->
+    <div id="toast">
+      <i data-lucide="check-circle" class="w-5 h-5 text-[#9cd353]"></i>
+      <span id="toast-msg">Action completed!</span>
+    </div>
+
+    <!-- ═══════════════════════ HEADER ═══════════════════════ -->
     <header
       id="main-header"
       class="fixed top-0 w-full z-50 transition-all duration-300 bg-transparent py-4"
     >
-      <div class="max-w-7xl mx-auto px-6 flex items-center justify-between">
+      <div
+        class="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4"
+      >
         <!-- Logo -->
         <div
-          class="flex items-center cursor-pointer group"
+          class="flex items-center cursor-pointer group shrink-0"
           onclick="switchView('home')"
         >
           <div
@@ -88,15 +153,15 @@
           >
             <div class="flex -space-x-1.5">
               <div
-                class="w-7 h-9 bg-[#1a5b6e] rounded-md transform -skew-x-12 shadow-sm"
+                class="w-6 h-8 bg-[#1a5b6e] rounded-md transform -skew-x-12 shadow-sm"
               ></div>
               <div
-                class="w-7 h-9 bg-[#9cd353] rounded-md transform -skew-x-12 opacity-90 mix-blend-multiply shadow-sm"
+                class="w-6 h-8 bg-[#9cd353] rounded-md transform -skew-x-12 opacity-90 mix-blend-multiply shadow-sm"
               ></div>
             </div>
             <h1
               id="header-logo-text"
-              class="text-2xl font-extrabold tracking-tighter text-white transition-colors duration-300"
+              class="text-xl font-extrabold tracking-tighter text-white transition-colors duration-300"
             >
               HULAM
             </h1>
@@ -106,7 +171,7 @@
         <!-- Nav Links -->
         <nav
           id="header-nav"
-          class="hidden md:flex items-center gap-10 font-medium text-sm tracking-wide transition-colors text-white/90"
+          class="hidden md:flex items-center gap-8 font-semibold text-sm tracking-wide transition-colors text-white/90"
         >
           <a
             href="#"
@@ -123,41 +188,41 @@
         </nav>
 
         <!-- Auth Logged OUT -->
-        <div id="auth-logged-out" class="flex items-center gap-4">
+        <div id="auth-logged-out" class="flex items-center gap-3">
           <button
             onclick="toggleModal('login-modal', true)"
             id="header-btn-login"
-            class="hidden sm:block px-6 py-2.5 rounded-full font-semibold transition-all active:scale-95 bg-white/20 text-white backdrop-blur-md hover:bg-white/30"
+            class="hidden sm:block px-5 py-2 rounded-full font-semibold transition-all active:scale-95 bg-white/20 text-white backdrop-blur-md hover:bg-white/30 text-sm"
           >
             Log In
           </button>
           <button
             onclick="toggleModal('login-modal', true)"
-            class="bg-[#9cd353] text-[#1a5b6e] px-7 py-2.5 rounded-full font-bold shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] hover:shadow-[0_6px_20px_rgba(156,211,83,0.23)] hover:bg-[#8bc34a] hover:-translate-y-0.5 transition-all duration-200 active:scale-95"
+            class="bg-[#9cd353] text-[#1a5b6e] px-5 py-2 rounded-full font-bold shadow-[0_4px_14px_0_rgba(156,211,83,0.4)] hover:shadow-[0_6px_20px_rgba(156,211,83,0.3)] hover:bg-[#8bc34a] hover:-translate-y-0.5 transition-all duration-200 active:scale-95 text-sm"
           >
             Sign Up
           </button>
         </div>
 
         <!-- Auth Logged IN -->
-        <div id="auth-logged-in" class="hidden items-center gap-4">
+        <div id="auth-logged-in" class="hidden items-center gap-3">
           <button
-            onclick="toggleModal('listing-modal', true)"
+            onclick="requireAuth(() => toggleModal('listing-modal', true))"
             id="header-btn-list"
-            class="hidden sm:flex items-center gap-2 font-bold transition-all hover:scale-105 active:scale-95 text-white hover:text-[#9cd353]"
+            class="hidden sm:flex items-center gap-1.5 font-bold transition-all hover:scale-105 active:scale-95 text-white hover:text-[#9cd353] text-sm"
           >
-            <i data-lucide="plus" class="w-5 h-5" stroke-width="2.5"></i> List
+            <i data-lucide="plus" class="w-4 h-4" stroke-width="2.5"></i> List
             Item
           </button>
           <div class="relative group cursor-pointer">
             <div
-              class="w-10 h-10 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white border-2 border-white shadow-md"
+              class="w-9 h-9 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white border-2 border-white shadow-md"
             >
-              <i data-lucide="user" class="w-5 h-5"></i>
+              <i data-lucide="user" class="w-4 h-4"></i>
             </div>
             <!-- Dropdown -->
             <div
-              class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100"
+              class="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50"
             >
               <div class="p-4 border-b border-gray-100">
                 <p
@@ -176,21 +241,28 @@
               <div class="p-2">
                 <button
                   onclick="switchView('dashboard')"
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                  class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-2 font-medium transition-colors"
                 >
-                  <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                  <i
+                    data-lucide="layout-dashboard"
+                    class="w-4 h-4 text-[#1a5b6e]"
+                  ></i>
                   Dashboard
                 </button>
                 <button
                   onclick="switchView('messages')"
-                  class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center gap-2"
+                  class="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 rounded-xl flex items-center gap-2 font-medium transition-colors"
                 >
-                  <i data-lucide="message-square" class="w-4 h-4"></i> Messages
+                  <i
+                    data-lucide="message-square"
+                    class="w-4 h-4 text-[#1a5b6e]"
+                  ></i>
+                  Messages
                 </button>
                 <div class="h-px bg-gray-100 my-1"></div>
                 <button
                   onclick="handleLogout()"
-                  class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg font-medium flex items-center gap-2"
+                  class="w-full text-left px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 rounded-xl font-medium flex items-center gap-2 transition-colors"
                 >
                   <i data-lucide="log-out" class="w-4 h-4"></i> Log Out
                 </button>
@@ -201,116 +273,156 @@
       </div>
     </header>
 
-    <!-- HOME VIEW -->
+    <!-- ═══════════════════════ HOME VIEW ═══════════════════════ -->
     <div id="home-view" class="block">
+      <!-- Hero -->
       <section
-        class="relative min-h-[90vh] w-full flex items-center justify-center pt-20 overflow-hidden"
+        class="relative min-h-[88vh] w-full flex items-center justify-center pt-20 overflow-hidden"
       >
-        <div class="absolute inset-0 z-0 p-4 sm:p-6 lg:p-8">
+        <div class="absolute inset-0 z-0 p-3 sm:p-5">
           <div
-            class="w-full h-full rounded-[2.5rem] overflow-hidden relative shadow-2xl"
+            class="w-full h-full rounded-[2rem] overflow-hidden relative shadow-2xl"
           >
             <img
-              src="http://googleusercontent.com/image_collection/image_retrieval/14558002082219535216"
-              alt="Students sharing"
+              src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&q=80&w=1400&h=900"
+              alt="Students sharing resources"
               class="w-full h-full object-cover animate-slowPan"
+              onerror="
+                this.src =
+                  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=1400&h=900'
+              "
             />
             <div
-              class="absolute inset-0 bg-gradient-to-t from-[#1a5b6e]/90 via-[#1a5b6e]/60 to-transparent"
+              class="absolute inset-0 bg-gradient-to-t from-[#0f3440]/95 via-[#1a5b6e]/65 to-[#1a5b6e]/20"
             ></div>
           </div>
         </div>
 
-        <div class="relative z-10 text-center px-6 max-w-4xl mx-auto mt-10">
+        <div class="relative z-10 text-center px-5 max-w-4xl mx-auto">
           <div class="reveal-up" style="transition-delay: 100ms">
             <div
-              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[#9cd353] text-sm font-bold tracking-widest uppercase mb-8 shadow-xl"
+              class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur border border-white/20 text-[#9cd353] text-xs font-bold tracking-widest uppercase mb-6 shadow-lg"
             >
-              <i data-lucide="sparkles" class="w-4 h-4"></i> Campus Marketplace
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Campus
+              Marketplace · Cebu
             </div>
           </div>
-
           <div class="reveal-up" style="transition-delay: 200ms">
             <h2
-              class="text-6xl md:text-8xl font-extrabold text-white mb-8 tracking-tighter leading-[1.05]"
+              class="text-5xl md:text-7xl font-extrabold text-white mb-6 tracking-tighter leading-[1.05]"
             >
-              Borrow what you need. <br class="hidden md:block" />
+              Borrow what you need.<br class="hidden md:block" />
               <span
                 class="text-transparent bg-clip-text bg-gradient-to-r from-[#9cd353] to-green-300"
+                >Rent what you own.</span
               >
-                Rent what you own.
-              </span>
             </h2>
           </div>
-
           <div class="reveal-up" style="transition-delay: 300ms">
             <p
-              class="text-white/80 text-xl md:text-2xl mb-12 max-w-2xl mx-auto font-light leading-relaxed"
+              class="text-white/75 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light leading-relaxed"
             >
-              Join the smartest community platform for sharing resources, saving
+              The smartest student community for sharing resources, saving
               money, and reducing campus waste.
             </p>
           </div>
-
           <div class="reveal-up" style="transition-delay: 400ms">
             <div
-              class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6"
+              class="flex flex-col sm:flex-row items-center justify-center gap-4"
             >
               <button
                 onclick="switchView('browse')"
-                class="w-full sm:w-auto bg-[#9cd353] text-[#1a5b6e] px-10 py-5 rounded-full font-extrabold text-lg shadow-[0_0_30px_rgba(156,211,83,0.4)] hover:shadow-[0_0_40px_rgba(156,211,83,0.6)] hover:bg-[#8bc34a] hover:-translate-y-1 active:scale-95 transition-all duration-300"
+                class="w-full sm:w-auto bg-[#9cd353] text-[#1a5b6e] px-9 py-4 rounded-full font-extrabold text-base shadow-[0_0_30px_rgba(156,211,83,0.45)] hover:shadow-[0_0_45px_rgba(156,211,83,0.6)] hover:bg-[#8bc34a] hover:-translate-y-1 active:scale-95 transition-all duration-300"
               >
                 Start Borrowing
               </button>
               <button
                 onclick="requireAuth(() => toggleModal('listing-modal', true))"
-                class="w-full sm:w-auto bg-white/10 text-white backdrop-blur-md border border-white/20 px-10 py-5 rounded-full font-bold text-lg hover:bg-white/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
+                class="w-full sm:w-auto bg-white/10 text-white backdrop-blur border border-white/25 px-9 py-4 rounded-full font-bold text-base hover:bg-white/20 hover:-translate-y-1 active:scale-95 transition-all duration-300 flex items-center justify-center gap-2"
               >
                 List your items
-                <i data-lucide="arrow-right" class="w-5 h-5"></i>
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
               </button>
+            </div>
+          </div>
+
+          <!-- Stats Bar -->
+          <div class="reveal-up mt-14" style="transition-delay: 550ms">
+            <div class="flex items-center justify-center gap-8 md:gap-16">
+              <div class="text-center">
+                <p class="text-2xl font-black text-white">500+</p>
+                <p
+                  class="text-xs text-white/60 font-medium uppercase tracking-wide"
+                >
+                  Students
+                </p>
+              </div>
+              <div class="w-px h-8 bg-white/20"></div>
+              <div class="text-center">
+                <p class="text-2xl font-black text-white">₱200K+</p>
+                <p
+                  class="text-xs text-white/60 font-medium uppercase tracking-wide"
+                >
+                  Saved
+                </p>
+              </div>
+              <div class="w-px h-8 bg-white/20"></div>
+              <div class="text-center">
+                <p class="text-2xl font-black text-white">4.9★</p>
+                <p
+                  class="text-xs text-white/60 font-medium uppercase tracking-wide"
+                >
+                  Rating
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
+      <!-- Content section -->
       <div
-        class="bg-[#fcfaf7] flex-grow relative z-10 -mt-8 rounded-t-[3rem] px-4 sm:px-6 pb-20"
+        class="bg-[#f8f9fa] relative z-10 -mt-10 rounded-t-[2.5rem] px-4 sm:px-6 pb-24"
       >
         <!-- Why HULAM -->
-        <section class="py-24 max-w-7xl mx-auto">
-          <div class="reveal-up text-center mb-16">
+        <section class="pt-24 pb-16 max-w-6xl mx-auto">
+          <div class="reveal-up text-center mb-14">
+            <span
+              class="text-xs font-bold uppercase tracking-widest text-[#1a5b6e] bg-[#1a5b6e]/8 px-4 py-1.5 rounded-full"
+              >Why Choose Us</span
+            >
             <h3
-              class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
+              class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mt-4 mb-3"
             >
               Why HULAM?
             </h3>
-            <p class="text-xl text-gray-500 font-light max-w-2xl mx-auto">
-              Designed to make sharing safe, simple, and sustainable.
+            <p class="text-lg text-gray-500 font-light max-w-xl mx-auto">
+              Designed to make sharing safe, simple, and sustainable for every
+              student.
             </p>
           </div>
           <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-8 px-4"
+            class="grid grid-cols-1 md:grid-cols-3 gap-6"
             id="features-grid"
           ></div>
         </section>
 
         <!-- Trending -->
-        <section class="py-16 max-w-7xl mx-auto">
-          <div class="reveal-up flex items-end justify-between mb-12 px-4">
+        <section class="pb-16 max-w-6xl mx-auto">
+          <div class="reveal-up flex items-end justify-between mb-10">
             <div>
               <h3
-                class="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-3"
+                class="text-3xl md:text-4xl font-extrabold text-gray-900 tracking-tight mb-2"
               >
                 Trending Near You
               </h3>
-              <p class="text-xl text-gray-500 font-light">
-                Discover what your peers are sharing.
+              <p class="text-gray-500 font-light">
+                Discover what your peers are sharing right now.
               </p>
             </div>
             <button
               onclick="switchView('browse')"
-              class="hidden sm:flex text-[#1a5b6e] font-bold hover:text-[#9cd353] transition-colors items-center gap-1 group"
+              class="hidden sm:flex text-[#1a5b6e] font-bold hover:text-[#9cd353] transition-colors items-center gap-1 group text-sm"
             >
               View all
               <i
@@ -320,456 +432,614 @@
             </button>
           </div>
           <div
-            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-4"
+            class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
             id="items-grid"
           ></div>
+        </section>
+
+        <!-- CTA Banner -->
+        <section class="max-w-6xl mx-auto">
+          <div
+            class="reveal-none bg-gradient-to-br from-[#1a5b6e] to-[#0f3440] rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative"
+          >
+            <div
+              class="absolute top-0 right-0 w-64 h-64 bg-[#9cd353]/10 rounded-full -translate-y-1/2 translate-x-1/4 blur-2xl"
+            ></div>
+            <div class="text-center md:text-left relative z-10">
+              <h3
+                class="text-3xl md:text-4xl font-extrabold text-white tracking-tight mb-3"
+              >
+                Have something to share?
+              </h3>
+              <p class="text-white/70 text-lg font-light">
+                Turn your idle gear into extra income today.
+              </p>
+            </div>
+            <button
+              onclick="requireAuth(() => toggleModal('listing-modal', true))"
+              class="shrink-0 bg-[#9cd353] text-[#0f3440] px-10 py-4 rounded-full font-extrabold text-base shadow-[0_0_30px_rgba(156,211,83,0.3)] hover:bg-[#8bc34a] hover:-translate-y-1 transition-all duration-300 active:scale-95 flex items-center gap-2 relative z-10"
+            >
+              <i data-lucide="plus" class="w-5 h-5"></i> List an Item Free
+            </button>
+          </div>
         </section>
       </div>
     </div>
 
-    <!-- BROWSE VIEW -->
-    <div
-      id="browse-view"
-      class="hidden pt-32 pb-20 px-6 w-full"
-    >
-      <div class="max-w-7xl mx-auto">
-
-        <div class="mb-10">
-          <h2
-            class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4"
-          >
+    <!-- ═══════════════════════ BROWSE VIEW ═══════════════════════ -->
+    <div id="browse-view" class="hidden pt-28 pb-20 px-5 w-full min-h-screen">
+      <div class="max-w-6xl mx-auto">
+        <div class="mb-8">
+          <h2 class="text-4xl font-extrabold text-gray-900 tracking-tight mb-2">
             Browse Marketplace
           </h2>
-          <p class="text-xl text-gray-500 font-light">
-            Find exactly what you need for your next project.
+          <p class="text-gray-500 font-light">
+            Find exactly what you need for your next project or adventure.
           </p>
         </div>
 
-        <!-- Filters -->
+        <!-- Search + Filter -->
         <div
-          class="bg-white p-4 sm:p-6 rounded-3xl shadow-sm border border-gray-100 mb-10 flex flex-col md:flex-row gap-4"
+          class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 mb-8 flex flex-col sm:flex-row gap-3"
         >
           <div class="relative flex-grow">
             <i
               data-lucide="search"
-              class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5"
+              class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4"
             ></i>
             <input
               type="text"
               id="search-input"
-              onkeyup="filterItems()"
-              placeholder="Search items (e.g. Camera, Calculator)..."
-              class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-12 pr-4 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium"
+              oninput="filterItems()"
+              placeholder="Search items (e.g. Camera, Tent)..."
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-11 pr-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
             />
           </div>
           <div
-            class="flex gap-2 overflow-x-auto hide-scrollbar pb-2 md:pb-0"
+            class="flex gap-2 overflow-x-auto hide-scrollbar shrink-0"
             id="category-filters"
-          >
-          </div>
+          ></div>
         </div>
 
         <!-- Browse Grid -->
         <div
-          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
           id="browse-grid"
-        >
-        </div>
+        ></div>
 
         <!-- Empty State -->
         <div id="browse-empty" class="hidden text-center py-20">
           <div
-            class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6"
+            class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5"
           >
-            <i data-lucide="search-x" class="w-10 h-10 text-gray-400"></i>
+            <i data-lucide="search-x" class="w-8 h-8 text-gray-400"></i>
           </div>
-          <h3 class="text-2xl font-bold text-gray-900 mb-2">No items found</h3>
-          <p class="text-gray-500">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">No items found</h3>
+          <p class="text-gray-500 text-sm mb-6">
             Try adjusting your search or category filters.
           </p>
           <button
             onclick="clearFilters()"
-            class="mt-6 bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors"
+            class="bg-gray-100 text-gray-700 px-6 py-2.5 rounded-full font-bold hover:bg-gray-200 transition-colors text-sm"
           >
             Clear Filters
           </button>
         </div>
-
       </div>
     </div>
 
-    <!-- ITEM DETAIL VIEW -->
-    <div id="item-detail-view" class="hidden bg-gray-50/50 w-full">
-      <main class="max-w-6xl mx-auto px-6 pt-32 pb-20">
-        <div class="reveal-none">
+    <!-- ═══════════════════════ ITEM DETAIL VIEW ═══════════════════════ -->
+    <div id="item-detail-view" class="hidden w-full min-h-screen">
+      <main class="max-w-5xl mx-auto px-5 pt-28 pb-20">
+        <div class="reveal-none mb-8">
           <button
             onclick="switchView('browse')"
-            class="flex items-center text-gray-500 hover:text-[#1a5b6e] transition-colors mb-10 font-medium w-fit group"
+            class="flex items-center text-gray-500 hover:text-[#1a5b6e] transition-colors font-medium group text-sm"
           >
             <i
               data-lucide="chevron-left"
-              class="w-5 h-5 group-hover:-translate-x-1 transition-transform"
+              class="w-4 h-4 group-hover:-translate-x-1 transition-transform"
             ></i>
-            <span>Back to marketplace</span>
+            Back to marketplace
           </button>
         </div>
 
         <div
-          class="bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-100 overflow-hidden flex flex-col lg:flex-row p-4 sm:p-8 gap-8 lg:gap-16"
+          class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden"
         >
-          <div class="reveal-right w-full lg:w-1/2">
+          <!-- Image Banner -->
+          <div class="relative h-72 sm:h-96 overflow-hidden bg-gray-100">
+            <img
+              id="detail-image"
+              src=""
+              alt="Item"
+              class="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700 ease-out"
+              onerror="
+                this.src =
+                  'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=800&h=500'
+              "
+            />
             <div
-              class="bg-gray-100/50 rounded-3xl overflow-hidden relative group aspect-[4/3] flex items-center justify-center p-8"
+              class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"
+            ></div>
+            <div
+              id="detail-category-badge"
+              class="absolute top-5 left-5 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1.5 rounded-full shadow text-gray-700"
+            ></div>
+            <div
+              class="absolute top-5 right-5 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1.5 rounded-full shadow flex items-center gap-1"
             >
-              <div
-                class="absolute inset-0 bg-[#1a5b6e]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"
-              ></div>
-              <img
-                id="detail-image"
-                src=""
-                alt="Item"
-                class="w-full h-full object-cover rounded-2xl transform group-hover:scale-105 transition-transform duration-700 ease-out"
-              />
+              <i
+                data-lucide="star"
+                class="w-3.5 h-3.5 fill-[#9cd353] text-[#9cd353]"
+              ></i>
+              <span id="detail-rating">5.0</span>
             </div>
           </div>
 
-          <div class="w-full lg:w-1/2 flex flex-col justify-center">
-            <div class="reveal-up" style="transition-delay: 100ms">
-              <div
-                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#1a5b6e]/5 text-[#1a5b6e] text-sm font-semibold mb-4"
-              >
-                <i
-                  data-lucide="star"
-                  class="w-3.5 h-3.5 fill-current text-[#9cd353]"
-                ></i>
-                <span id="detail-rating">5.0</span> Rating
-              </div>
-              <h1
-                id="detail-title"
-                class="text-4xl sm:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight leading-tight"
-              >
-                Title
-              </h1>
-            </div>
+          <!-- Content -->
+          <div class="p-7 sm:p-10">
+            <div class="flex flex-col lg:flex-row gap-10">
+              <!-- Left -->
+              <div class="flex-grow">
+                <h1
+                  id="detail-title"
+                  class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-4"
+                ></h1>
+                <p
+                  id="detail-description"
+                  class="text-gray-600 text-base leading-relaxed mb-8"
+                ></p>
 
-            <div class="reveal-up" style="transition-delay: 200ms">
-              <div class="flex items-end gap-3 mb-8">
-                <span
-                  id="detail-price"
-                  class="text-5xl font-black text-[#1a5b6e] tracking-tighter"
-                  >₱0</span
-                >
-                <span class="text-gray-500 font-medium mb-1.5 text-lg"
-                  >/ day</span
-                >
-              </div>
-              <p
-                id="detail-description"
-                class="text-gray-600 text-lg leading-relaxed mb-10 font-light"
-              >
-                Description goes here...
-              </p>
-            </div>
-
-            <div class="reveal-up" style="transition-delay: 300ms">
-              <div
-                class="bg-gray-50/80 p-6 rounded-2xl mb-10 border border-gray-100/50 space-y-4"
-              >
-                <div class="flex items-center gap-4 text-gray-700">
+                <div class="grid grid-cols-2 gap-4">
                   <div
-                    class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0"
+                    class="bg-gray-50 rounded-2xl p-4 flex items-center gap-3"
                   >
-                    <i
-                      data-lucide="map-pin"
-                      class="w-4 h-4 text-[#1a5b6e]"
-                    ></i>
+                    <div
+                      class="w-9 h-9 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0"
+                    >
+                      <i
+                        data-lucide="map-pin"
+                        class="w-4 h-4 text-[#1a5b6e]"
+                      ></i>
+                    </div>
+                    <div>
+                      <p
+                        class="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-0.5"
+                      >
+                        Location
+                      </p>
+                      <p
+                        id="detail-location"
+                        class="font-bold text-gray-900 text-sm"
+                      ></p>
+                      <p id="detail-distance" class="text-xs text-gray-500"></p>
+                    </div>
                   </div>
-                  <div>
-                    <p id="detail-location" class="font-semibold">Location</p>
-                    <p id="detail-distance" class="text-sm text-gray-500">
-                      Distance
-                    </p>
-                  </div>
-                </div>
-                <div class="h-px w-full bg-gray-200/60"></div>
-                <div class="flex items-center gap-4 text-gray-700">
                   <div
-                    class="w-10 h-10 rounded-full bg-white shadow-sm flex items-center justify-center shrink-0"
+                    class="bg-gray-50 rounded-2xl p-4 flex items-center gap-3"
                   >
-                    <i
-                      data-lucide="shield-check"
-                      class="w-4 h-4 text-[#9cd353]"
-                    ></i>
-                  </div>
-                  <div>
-                    <p class="font-semibold">Security Deposit</p>
-                    <p id="detail-deposit" class="text-sm text-gray-500">
-                      ₱0 (Refundable)
-                    </p>
+                    <div
+                      class="w-9 h-9 bg-white rounded-full shadow-sm flex items-center justify-center shrink-0"
+                    >
+                      <i
+                        data-lucide="shield-check"
+                        class="w-4 h-4 text-[#9cd353]"
+                      ></i>
+                    </div>
+                    <div>
+                      <p
+                        class="text-xs text-gray-400 font-semibold uppercase tracking-wide mb-0.5"
+                      >
+                        Security Deposit
+                      </p>
+                      <p
+                        id="detail-deposit"
+                        class="font-bold text-gray-900 text-sm"
+                      ></p>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div class="reveal-up" style="transition-delay: 400ms">
-              <button
-                onclick="requireAuth(() => openCheckout())"
-                class="w-full bg-[#1a5b6e] text-white py-5 rounded-2xl font-bold text-lg shadow-[0_8px_20px_rgba(26,91,110,0.2)] hover:shadow-[0_12px_25px_rgba(26,91,110,0.3)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
-              >
-                Request to Rent
-                <i
-                  data-lucide="arrow-right"
-                  class="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                ></i>
-              </button>
+              <!-- Right - Booking Card -->
+              <div class="lg:w-72 shrink-0">
+                <div
+                  class="bg-gray-50 rounded-2xl p-6 border border-gray-100 sticky top-28"
+                >
+                  <p
+                    class="text-xs text-gray-400 font-bold uppercase tracking-wide mb-1"
+                  >
+                    Daily Rate
+                  </p>
+                  <div class="flex items-end gap-2 mb-6">
+                    <span
+                      id="detail-price"
+                      class="text-4xl font-black text-[#1a5b6e] tracking-tighter"
+                      >₱0</span
+                    >
+                    <span class="text-gray-500 font-medium mb-1">/ day</span>
+                  </div>
+                  <button
+                    onclick="requireAuth(() => openCheckout())"
+                    class="w-full bg-[#1a5b6e] text-white py-4 rounded-2xl font-bold text-base shadow-[0_8px_20px_rgba(26,91,110,0.25)] hover:shadow-[0_12px_28px_rgba(26,91,110,0.35)] hover:-translate-y-1 active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
+                  >
+                    Request to Rent
+                    <i
+                      data-lucide="arrow-right"
+                      class="w-4 h-4 group-hover:translate-x-1 transition-transform"
+                    ></i>
+                  </button>
+                  <p class="text-xs text-gray-400 text-center mt-3 font-medium">
+                    No charge until confirmed
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </main>
     </div>
 
-    <!-- DASHBOARD VIEW -->
+    <!-- ═══════════════════════ DASHBOARD VIEW ═══════════════════════ -->
     <div
       id="dashboard-view"
-      class="hidden bg-gray-50/50 w-full pt-32 pb-20 px-6"
+      class="hidden w-full pt-28 pb-20 px-5 min-h-screen bg-[#f8f9fa]"
     >
-      <div class="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+      <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
         <!-- Sidebar -->
-        <div class="w-full md:w-64 shrink-0">
+        <div class="w-full md:w-56 shrink-0">
           <div
-            class="bg-white rounded-[2rem] shadow-sm border border-gray-100 p-6 sticky top-24"
+            class="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24 shadow-sm"
           >
             <div
-              class="w-20 h-20 rounded-full bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white text-3xl font-bold mb-4 mx-auto"
+              class="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1a5b6e] to-[#25768e] flex items-center justify-center text-white text-2xl font-bold mb-4 mx-auto"
+              id="dash-avatar"
             >
               U
             </div>
             <h3
-              class="text-xl font-bold text-center text-gray-900 truncate"
+              class="text-lg font-bold text-center text-gray-900 truncate"
               id="dashboard-user-name"
             >
               User Name
             </h3>
             <p
-              class="text-sm text-center text-[#9cd353] font-bold flex items-center justify-center gap-1 mt-1 mb-6"
+              class="text-xs text-center text-[#9cd353] font-bold flex items-center justify-center gap-1 mt-1 mb-5"
             >
-              <i data-lucide="shield-check" class="w-4 h-4"></i> Scholar
+              <i data-lucide="shield-check" class="w-3 h-3"></i> Scholar
               Verified
             </p>
-
-            <div class="space-y-2">
+            <div class="space-y-1">
               <button
-                class="w-full text-left px-4 py-3 bg-gray-50 text-[#1a5b6e] font-bold rounded-xl flex items-center gap-3 transition-colors"
+                onclick="showDashTab('rentals')"
+                id="tab-rentals"
+                class="dash-tab w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-2.5 text-sm transition-colors font-semibold text-[#1a5b6e] bg-[#1a5b6e]/8"
               >
-                <i data-lucide="shopping-bag" class="w-5 h-5"></i> My Rentals
+                <i data-lucide="shopping-bag" class="w-4 h-4"></i> My Rentals
               </button>
               <button
-                class="w-full text-left px-4 py-3 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors"
+                onclick="showDashTab('listings')"
+                id="tab-listings"
+                class="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-2.5 text-sm transition-colors font-medium text-gray-600 hover:bg-gray-50"
               >
-                <i data-lucide="tag" class="w-5 h-5"></i> My Listings
+                <i data-lucide="tag" class="w-4 h-4"></i> My Listings
               </button>
               <button
-                class="w-full text-left px-4 py-3 text-gray-600 font-medium hover:bg-gray-50 hover:text-gray-900 rounded-xl flex items-center gap-3 transition-colors"
+                onclick="showDashTab('settings')"
+                id="tab-settings"
+                class="w-full text-left px-4 py-2.5 rounded-xl flex items-center gap-2.5 text-sm transition-colors font-medium text-gray-600 hover:bg-gray-50"
               >
-                <i data-lucide="settings" class="w-5 h-5"></i> Settings
+                <i data-lucide="settings" class="w-4 h-4"></i> Settings
+              </button>
+            </div>
+            <div class="mt-4 pt-4 border-t border-gray-100">
+              <button
+                onclick="requireAuth(() => toggleModal('listing-modal', true))"
+                class="w-full bg-[#9cd353] text-[#1a5b6e] py-2.5 rounded-xl font-extrabold text-xs hover:bg-[#8bc34a] transition-all flex items-center justify-center gap-1.5"
+              >
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> List New Item
               </button>
             </div>
           </div>
         </div>
 
-        <!-- Main Content -->
-        <div
-          class="flex-grow bg-white rounded-[2rem] shadow-sm border border-gray-100 p-8"
-        >
-          <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-8">
-            Active Rentals
-          </h2>
-
-          <!-- Mock Active Rental -->
+        <!-- Main -->
+        <div class="flex-grow">
+          <!-- Rentals Tab -->
           <div
-            class="border border-gray-100 rounded-2xl p-6 flex flex-col sm:flex-row gap-6 items-center shadow-sm hover:shadow-md transition-shadow"
+            id="dash-rentals"
+            class="bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
           >
-            <img
-              src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=200&h=200"
-              alt="Camera"
-              class="w-32 h-32 object-cover rounded-xl bg-gray-50"
-            />
-            <div class="flex-grow text-center sm:text-left">
-              <div
-                class="flex items-center justify-center sm:justify-start gap-2 mb-2"
+            <h2
+              class="text-2xl font-extrabold text-gray-900 tracking-tight mb-6"
+            >
+              Active Rentals
+            </h2>
+            <div
+              class="border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 items-center hover:border-[#1a5b6e]/20 transition-colors"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=200&h=200"
+                alt="Camera"
+                class="w-24 h-24 object-cover rounded-xl bg-gray-100 shrink-0"
+              />
+              <div class="flex-grow text-center sm:text-left">
+                <div
+                  class="flex items-center justify-center sm:justify-start gap-2 mb-2"
+                >
+                  <span
+                    class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full"
+                    >Active</span
+                  >
+                  <span class="text-sm text-gray-500 font-medium"
+                    >Due in 2 days</span
+                  >
+                </div>
+                <h4 class="text-lg font-bold text-gray-900 mb-1">
+                  Sony A6400 Camera
+                </h4>
+                <p class="text-gray-500 mb-4 text-sm">
+                  Rented from: <span class="font-semibold">Maria Santos</span>
+                </p>
+                <div
+                  class="flex gap-2 justify-center sm:justify-start flex-wrap"
+                >
+                  <button
+                    onclick="switchView('messages')"
+                    class="bg-[#1a5b6e]/10 text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#1a5b6e]/20 transition-colors"
+                  >
+                    Message Owner
+                  </button>
+                  <button
+                    class="bg-[#9cd353] text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#8bc34a] transition-colors"
+                  >
+                    Return Item
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Listings Tab -->
+          <div
+            id="dash-listings"
+            class="hidden bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
+          >
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-extrabold text-gray-900 tracking-tight">
+                My Listings
+              </h2>
+              <button
+                onclick="requireAuth(() => toggleModal('listing-modal', true))"
+                class="bg-[#9cd353] text-[#1a5b6e] px-5 py-2 rounded-xl font-bold text-xs hover:bg-[#8bc34a] transition-all flex items-center gap-1.5"
               >
-                <span
-                  class="bg-green-100 text-green-700 text-xs font-bold px-3 py-1 rounded-full"
-                  >Active</span
-                >
-                <span class="text-sm text-gray-500 font-medium"
-                  >Due in 2 days</span
-                >
+                <i data-lucide="plus" class="w-3.5 h-3.5"></i> New Listing
+              </button>
+            </div>
+            <div
+              id="my-listings-grid"
+              class="grid grid-cols-1 sm:grid-cols-2 gap-4"
+            >
+              <!-- Filled by JS -->
+            </div>
+            <div id="my-listings-empty" class="hidden text-center py-14">
+              <div
+                class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <i data-lucide="package" class="w-7 h-7 text-gray-400"></i>
               </div>
-              <h4 class="text-xl font-bold text-gray-900 mb-1">
-                Sony A6400 Camera
-              </h4>
-              <p class="text-gray-500 mb-4 text-sm">
-                Rented from: Maria Santos
+              <h3 class="text-lg font-bold text-gray-900 mb-2">
+                No listings yet
+              </h3>
+              <p class="text-gray-500 text-sm mb-5">
+                Start earning by listing your items.
               </p>
-              <div class="flex gap-3 justify-center sm:justify-start">
-                <button
-                  onclick="switchView('messages')"
-                  class="bg-[#1a5b6e]/10 text-[#1a5b6e] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#1a5b6e]/20 transition-colors"
+              <button
+                onclick="requireAuth(() => toggleModal('listing-modal', true))"
+                class="bg-[#1a5b6e] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#25768e] transition-colors"
+              >
+                Create First Listing
+              </button>
+            </div>
+          </div>
+
+          <!-- Settings Tab -->
+          <div
+            id="dash-settings"
+            class="hidden bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
+          >
+            <h2
+              class="text-2xl font-extrabold text-gray-900 tracking-tight mb-6"
+            >
+              Settings
+            </h2>
+            <div class="space-y-4 max-w-md">
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1.5"
+                  >Display Name</label
                 >
-                  Message Owner
-                </button>
-                <button
-                  class="bg-[#9cd353] text-[#1a5b6e] px-4 py-2 rounded-lg font-bold text-sm hover:bg-[#8bc34a] transition-colors"
-                >
-                  Return Item
-                </button>
+                <input
+                  type="text"
+                  id="settings-name"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none"
+                />
               </div>
+              <div>
+                <label class="block text-sm font-bold text-gray-700 mb-1.5"
+                  >Email</label
+                >
+                <input
+                  type="email"
+                  id="settings-email"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none"
+                />
+              </div>
+              <button
+                class="bg-[#1a5b6e] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#25768e] transition-colors"
+              >
+                Save Changes
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- MESSAGES VIEW -->
+    <!-- ═══════════════════════ MESSAGES VIEW ═══════════════════════ -->
     <div
       id="messages-view"
-      class="hidden bg-gray-50/50 w-full pt-28 pb-10 px-6"
+      class="hidden w-full pt-24 pb-10 px-5 min-h-screen bg-[#f8f9fa]"
     >
-      <div
-        class="max-w-6xl mx-auto bg-white rounded-[2rem] shadow-sm border border-gray-100 flex h-[75vh] overflow-hidden"
-      >
-        <!-- Contacts Sidebar -->
-        <div class="w-1/3 border-r border-gray-100 flex flex-col bg-white">
-          <div class="p-6 border-b border-gray-100">
-            <h2 class="text-2xl font-extrabold text-gray-900">Messages</h2>
-          </div>
-          <div class="overflow-y-auto flex-grow chat-scroll">
-            <!-- Active Contact -->
-            <div
-              class="p-4 border-b border-gray-50 bg-[#1a5b6e]/5 cursor-pointer flex items-center gap-4"
-            >
-              <div
-                class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0"
-              >
-                MS
-              </div>
-              <div class="overflow-hidden">
-                <h4 class="font-bold text-gray-900 truncate">Maria Santos</h4>
-                <p class="text-sm text-gray-500 truncate">
-                  See you tomorrow at the campus gate!
-                </p>
-              </div>
-            </div>
-            <!-- Other Contact -->
-            <div
-              class="p-4 border-b border-gray-50 cursor-pointer flex items-center gap-4 hover:bg-gray-50 transition"
-            >
-              <div
-                class="w-12 h-12 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold shrink-0"
-              >
-                JD
-              </div>
-              <div class="overflow-hidden">
-                <h4 class="font-bold text-gray-900 truncate">John Doe</h4>
-                <p class="text-sm text-gray-400 truncate">
-                  Thanks for renting the drill.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Chat Area -->
-        <div class="w-2/3 flex flex-col bg-[#fcfaf7]">
-          <!-- Chat Header -->
+      <div class="max-w-5xl mx-auto">
+        <div
+          class="bg-white rounded-2xl shadow-sm border border-gray-100 flex overflow-hidden"
+          style="height: calc(100vh - 8rem)"
+        >
+          <!-- Contacts Sidebar -->
           <div
-            class="p-5 bg-white border-b border-gray-100 flex items-center justify-between"
+            class="w-72 border-r border-gray-100 flex flex-col bg-white shrink-0 hidden sm:flex"
           >
-            <div class="flex items-center gap-3">
+            <div class="p-5 border-b border-gray-100">
+              <h2 class="text-xl font-extrabold text-gray-900">Messages</h2>
+            </div>
+            <div class="overflow-y-auto flex-grow chat-scroll">
               <div
-                class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold"
+                class="p-4 border-b border-gray-50 bg-[#1a5b6e]/5 cursor-pointer flex items-center gap-3"
+              >
+                <div
+                  class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold shrink-0 text-sm"
+                >
+                  MS
+                </div>
+                <div class="overflow-hidden min-w-0">
+                  <h4 class="font-bold text-gray-900 truncate text-sm">
+                    Maria Santos
+                  </h4>
+                  <p class="text-xs text-gray-500 truncate">
+                    See you tomorrow at the campus gate!
+                  </p>
+                </div>
+              </div>
+              <div
+                class="p-4 border-b border-gray-50 cursor-pointer flex items-center gap-3 hover:bg-gray-50 transition"
+              >
+                <div
+                  class="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 font-bold shrink-0 text-sm"
+                >
+                  JD
+                </div>
+                <div class="overflow-hidden min-w-0">
+                  <h4 class="font-bold text-gray-900 truncate text-sm">
+                    John Doe
+                  </h4>
+                  <p class="text-xs text-gray-400 truncate">
+                    Thanks for renting the drill.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Chat Area -->
+          <div class="flex-grow flex flex-col bg-[#f8f9fa] min-w-0">
+            <!-- Chat Header -->
+            <div
+              class="p-4 bg-white border-b border-gray-100 flex items-center gap-3 shrink-0"
+            >
+              <div
+                class="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-bold text-sm"
               >
                 MS
               </div>
               <div>
-                <h4 class="font-bold text-gray-900">Maria Santos</h4>
+                <h4 class="font-bold text-gray-900 text-sm">Maria Santos</h4>
                 <p class="text-xs text-gray-500">Sony A6400 Camera Rental</p>
               </div>
             </div>
-          </div>
 
-          <!-- Messages -->
-          <div class="flex-grow p-6 overflow-y-auto chat-scroll space-y-4">
-            <div class="flex justify-start">
-              <div
-                class="bg-white border border-gray-100 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[70%]"
-              >
-                Hi! I just confirmed your rental request for the camera. When do
-                you want to meet up?
+            <!-- Messages -->
+            <div class="flex-grow p-5 overflow-y-auto chat-scroll space-y-3">
+              <div class="flex justify-start">
+                <div
+                  class="bg-white border border-gray-100 text-gray-700 px-4 py-3 rounded-2xl rounded-tl-md shadow-sm max-w-[75%] text-sm leading-relaxed"
+                >
+                  Hi! I just confirmed your rental request for the camera. When
+                  do you want to meet up?
+                </div>
+              </div>
+              <div class="flex justify-end">
+                <div
+                  class="bg-[#1a5b6e] text-white px-4 py-3 rounded-2xl rounded-tr-md shadow-sm max-w-[75%] text-sm leading-relaxed"
+                >
+                  Thanks! Are you free tomorrow around 10 AM at the main campus
+                  library?
+                </div>
+              </div>
+              <div class="flex justify-start">
+                <div
+                  class="bg-white border border-gray-100 text-gray-700 px-4 py-3 rounded-2xl rounded-tl-md shadow-sm max-w-[75%] text-sm leading-relaxed"
+                >
+                  Yes, 10 AM works. See you tomorrow at the campus gate! I'll
+                  have the camera in a black case.
+                </div>
               </div>
             </div>
-            <div class="flex justify-end">
-              <div
-                class="bg-[#1a5b6e] text-white px-5 py-3 rounded-2xl rounded-tr-none shadow-sm max-w-[70%]"
-              >
-                Thanks! Are you free tomorrow around 10 AM at the main campus
-                library?
-              </div>
-            </div>
-            <div class="flex justify-start">
-              <div
-                class="bg-white border border-gray-100 text-gray-700 px-5 py-3 rounded-2xl rounded-tl-none shadow-sm max-w-[70%]"
-              >
-                Yes, 10 AM works. See you tomorrow at the campus gate! I'll have
-                the camera in a black case.
-              </div>
-            </div>
-          </div>
 
-          <!-- Input Area -->
-          <div class="p-4 bg-white border-t border-gray-100">
-            <div
-              class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full p-2 focus-within:border-[#1a5b6e] focus-within:ring-2 ring-[#1a5b6e]/20 transition-all"
-            >
-              <input
-                type="text"
-                placeholder="Type your message..."
-                class="flex-grow bg-transparent px-4 outline-none text-sm text-gray-700"
-              />
-              <button
-                class="w-10 h-10 rounded-full bg-[#9cd353] text-[#1a5b6e] flex items-center justify-center hover:bg-[#8bc34a] transition-colors shrink-0"
+            <!-- Input -->
+            <div class="p-4 bg-white border-t border-gray-100 shrink-0">
+              <div
+                class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full p-1.5 focus-within:border-[#1a5b6e] focus-within:ring-2 ring-[#1a5b6e]/20 transition-all"
               >
-                <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
-              </button>
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  class="flex-grow bg-transparent px-3 outline-none text-sm text-gray-700 font-medium"
+                />
+                <button
+                  class="w-9 h-9 rounded-full bg-[#9cd353] text-[#1a5b6e] flex items-center justify-center hover:bg-[#8bc34a] transition-colors shrink-0"
+                >
+                  <i data-lucide="send" class="w-4 h-4 ml-0.5"></i>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- FOOTER -->
+    <!-- ═══════════════════════ FOOTER ═══════════════════════ -->
     <footer
-      class="bg-[#0f3440] text-white pt-20 pb-10 px-6 relative z-10 mt-auto w-full"
+      class="bg-[#0f3440] text-white pt-16 pb-8 px-5 relative z-10 mt-auto w-full"
     >
       <div
-        class="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-12 border-b border-white/10 pb-16 mb-8"
+        class="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-10 border-b border-white/10 pb-12 mb-8"
       >
         <div class="col-span-2 md:col-span-1">
-          <h4 class="font-extrabold text-2xl tracking-tighter mb-6 text-white">
-            HULAM
-          </h4>
-          <p class="text-white/60 text-sm mb-4 leading-relaxed">
-            The smartest community platform for sharing resources.
+          <div class="flex items-center gap-2 mb-4">
+            <div class="flex -space-x-1">
+              <div
+                class="w-5 h-7 bg-[#1a5b6e] rounded transform -skew-x-12"
+              ></div>
+              <div
+                class="w-5 h-7 bg-[#9cd353] rounded transform -skew-x-12 opacity-90"
+              ></div>
+            </div>
+            <h4 class="font-extrabold text-lg tracking-tighter text-white">
+              HULAM
+            </h4>
+          </div>
+          <p class="text-white/50 text-sm leading-relaxed">
+            The smartest community platform for sharing resources on campus.
           </p>
         </div>
         <div>
           <h4
-            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+            class="font-bold mb-4 tracking-wide uppercase text-xs text-white/80"
           >
             Community
           </h4>
-          <ul class="space-y-4 text-sm font-light text-white/70">
+          <ul class="space-y-3 text-sm font-light text-white/60">
             <li>
               <a href="#" class="hover:text-[#9cd353] transition-colors"
                 >Guidelines</a
@@ -784,11 +1054,11 @@
         </div>
         <div>
           <h4
-            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+            class="font-bold mb-4 tracking-wide uppercase text-xs text-white/80"
           >
             Resources
           </h4>
-          <ul class="space-y-4 text-sm font-light text-white/70">
+          <ul class="space-y-3 text-sm font-light text-white/60">
             <li>
               <a href="#" class="hover:text-[#9cd353] transition-colors"
                 >Help Center</a
@@ -803,11 +1073,11 @@
         </div>
         <div>
           <h4
-            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
+            class="font-bold mb-4 tracking-wide uppercase text-xs text-white/80"
           >
             Legal
           </h4>
-          <ul class="space-y-4 text-sm font-light text-white/70">
+          <ul class="space-y-3 text-sm font-light text-white/60">
             <li>
               <a href="#" class="hover:text-[#9cd353] transition-colors"
                 >Terms of Service</a
@@ -820,144 +1090,194 @@
             </li>
           </ul>
         </div>
-        <div
-          class="col-span-2 md:col-span-1 flex flex-col items-start md:items-end"
-        >
-          <h4
-            class="font-bold mb-6 tracking-wide uppercase text-sm text-white/90"
-          >
-            Follow Us
-          </h4>
-          <div class="flex gap-4">
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
-              ><i data-lucide="instagram" class="w-4 h-4"></i
-            ></a>
-            <a
-              href="#"
-              class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-[#9cd353] hover:text-[#1a5b6e] transition-all"
-              ><i data-lucide="twitter" class="w-4 h-4"></i
-            ></a>
-          </div>
-        </div>
       </div>
       <div
-        class="max-w-7xl mx-auto text-center text-white/40 text-sm font-light"
+        class="max-w-6xl mx-auto text-center text-white/30 text-sm font-light"
       >
-        &copy; <span id="current-year"></span> Hulam Marketplace. All rights
-        reserved.
+        &copy; <span id="current-year"></span> Hulam Marketplace. Built for
+        students, by students.
       </div>
     </footer>
 
-    <!-- MODALS -->
+    <!-- ═══════════════════════ MODALS ═══════════════════════ -->
 
-    <!-- AI LISTING MODAL -->
+    <!-- LISTING MODAL -->
     <div
       id="listing-modal"
-      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+      class="fixed inset-0 bg-[#0f3440]/70 z-[100] flex items-center justify-center p-4 modal-backdrop transition-opacity duration-300 opacity-0 pointer-events-none hidden"
     >
       <div
         id="listing-modal-content"
-        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out"
+        class="bg-white rounded-3xl shadow-2xl w-full max-w-lg flex flex-col transform translate-y-8 transition-transform duration-500 ease-out max-h-[90vh]"
       >
         <div
-          class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white"
+          class="px-7 py-5 border-b border-gray-100 flex items-center justify-between shrink-0"
         >
           <div>
-            <h3 class="text-2xl font-extrabold text-[#1a5b6e] tracking-tight">
+            <h3 class="text-xl font-extrabold text-[#1a5b6e] tracking-tight">
               Create a Listing
             </h3>
-            <p class="text-sm text-gray-500 font-light mt-1">
-              Let our AI help you write the perfect post.
+            <p class="text-xs text-gray-400 font-medium mt-0.5">
+              Let AI help you write the perfect post
             </p>
           </div>
           <button
             onclick="toggleModal('listing-modal', false)"
-            class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+            class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:text-gray-800 hover:bg-gray-100 transition-colors"
           >
-            <i data-lucide="x" class="w-5 h-5"></i>
+            <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
-        <div class="p-8 overflow-y-auto max-h-[70vh]">
-          <div class="space-y-6">
+
+        <div class="p-7 overflow-y-auto flex-grow">
+          <div class="space-y-5">
+            <!-- Image Upload Area -->
             <div>
               <label
-                class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
-                >Item Title</label
+                class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Item Photo</label
+              >
+              <div
+                id="listing-img-preview"
+                class="w-full h-36 rounded-2xl bg-gray-50 border-2 border-dashed border-gray-200 flex flex-col items-center justify-center cursor-pointer hover:border-[#1a5b6e]/40 transition-colors relative overflow-hidden"
+              >
+                <img
+                  id="listing-img-thumb"
+                  src=""
+                  class="absolute inset-0 w-full h-full object-cover rounded-2xl hidden"
+                />
+                <i
+                  data-lucide="image-plus"
+                  class="w-8 h-8 text-gray-300 mb-2"
+                  id="listing-img-icon"
+                ></i>
+                <p
+                  class="text-xs text-gray-400 font-medium"
+                  id="listing-img-label"
+                >
+                  Click or paste an image URL below
+                </p>
+              </div>
+              <input
+                type="text"
+                id="listing-image-url"
+                placeholder="https://images.unsplash.com/..."
+                oninput="previewListingImage()"
+                class="mt-2 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium placeholder-gray-300"
+              />
+            </div>
+
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Item Title *</label
               >
               <input
                 type="text"
                 id="listing-title"
-                placeholder="e.g., Sony A6400"
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all text-gray-900 font-medium"
+                placeholder="e.g., Sony A6400 Camera"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
               />
             </div>
+
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Category</label
+              >
+              <select
+                id="listing-category"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
+              >
+                <option value="Tech">Tech</option>
+                <option value="Outdoors">Outdoors</option>
+                <option value="Tools">Tools</option>
+                <option value="Books">Books</option>
+              </select>
+            </div>
+
             <button
               id="ai-trigger-btn"
               onclick="generateListingDetails()"
-              class="w-full bg-gradient-to-r from-[#1a5b6e] to-[#25768e] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(26,91,110,0.3)] transition-all active:scale-[0.98] group relative overflow-hidden"
+              class="w-full bg-gradient-to-r from-[#1a5b6e] to-[#25768e] text-white py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:shadow-[0_8px_25px_rgba(26,91,110,0.3)] transition-all active:scale-[0.98]"
             >
               <i
                 data-lucide="sparkles"
                 id="ai-icon"
-                class="w-5 h-5 text-[#9cd353] relative z-10"
+                class="w-4 h-4 text-[#9cd353]"
               ></i>
-              <span id="ai-btn-text" class="relative z-10"
-                >✨ Auto-Fill Details with AI</span
-              >
+              <span id="ai-btn-text">✨ Auto-Fill Details with AI</span>
             </button>
+
             <div>
               <label
-                class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
-                >Description</label
+                class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Description *</label
               >
               <textarea
                 id="listing-description"
                 rows="3"
-                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none text-gray-900 font-medium"
+                placeholder="Describe your item..."
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none font-medium text-sm"
               ></textarea>
             </div>
-            <div class="grid grid-cols-2 gap-6">
+
+            <div>
+              <label
+                class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                >Location</label
+              >
+              <input
+                type="text"
+                id="listing-location"
+                placeholder="e.g., USC Main, Talamban"
+                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
-                  class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
-                  >Daily Rate (₱)</label
+                  class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                  >Daily Rate (₱) *</label
                 >
                 <input
                   type="number"
                   id="listing-price"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
+                  placeholder="150"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold text-sm"
                 />
               </div>
               <div>
                 <label
-                  class="block text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide"
+                  class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                   >Deposit (₱)</label
                 >
                 <input
                   type="number"
                   id="listing-deposit"
-                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3.5 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold"
+                  placeholder="500"
+                  class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none transition-all font-bold text-sm"
                 />
               </div>
             </div>
           </div>
         </div>
+
         <div
-          class="px-8 py-5 border-t border-gray-100 bg-gray-50 flex justify-end gap-3"
+          class="px-7 py-4 border-t border-gray-100 bg-gray-50 rounded-b-3xl flex justify-end gap-3 shrink-0"
         >
           <button
             onclick="toggleModal('listing-modal', false)"
-            class="px-6 py-3 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
+            class="px-5 py-2.5 text-gray-600 font-bold hover:bg-gray-200 rounded-xl transition-colors text-sm"
           >
             Cancel
           </button>
           <button
             onclick="publishListing()"
-            class="bg-[#9cd353] text-[#1a5b6e] px-8 py-3 rounded-xl font-extrabold hover:bg-[#8bc34a] transition-all shadow-[0_4px_14px_0_rgba(156,211,83,0.39)]"
+            class="bg-[#9cd353] text-[#1a5b6e] px-7 py-2.5 rounded-xl font-extrabold hover:bg-[#8bc34a] transition-all shadow-[0_4px_14px_0_rgba(156,211,83,0.4)] text-sm"
           >
-            Publish
+            Publish Listing
           </button>
         </div>
       </div>
@@ -966,58 +1286,60 @@
     <!-- LOGIN MODAL -->
     <div
       id="login-modal"
-      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+      class="fixed inset-0 bg-[#0f3440]/70 z-[100] flex items-center justify-center p-4 modal-backdrop transition-opacity duration-300 opacity-0 pointer-events-none hidden"
     >
       <div
         id="login-modal-content"
-        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out p-8 text-center"
+        class="bg-white rounded-3xl shadow-2xl w-full max-w-sm flex flex-col transform translate-y-8 transition-transform duration-500 ease-out p-8 text-center"
       >
         <div
-          class="w-16 h-16 bg-[#1a5b6e]/10 rounded-2xl flex items-center justify-center mx-auto mb-6 text-[#1a5b6e]"
+          class="w-14 h-14 bg-[#1a5b6e]/10 rounded-2xl flex items-center justify-center mx-auto mb-5 text-[#1a5b6e]"
         >
-          <i data-lucide="lock" class="w-8 h-8"></i>
+          <i data-lucide="lock" class="w-7 h-7"></i>
         </div>
-        <h3 class="text-3xl font-extrabold text-gray-900 tracking-tight mb-2">
+        <h3 class="text-2xl font-extrabold text-gray-900 tracking-tight mb-1.5">
           Welcome Back
         </h3>
-        <p class="text-gray-500 mb-8">
-          Sign in to rent items or list your own gear.
+        <p class="text-gray-500 text-sm mb-7">
+          Sign in to rent items or list your gear.
         </p>
 
-        <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
+        <form onsubmit="handleLogin(event)" class="space-y-3.5 text-left">
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1"
-              >Email (Use any email)</label
+            <label
+              class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide"
+              >Email</label
             >
             <input
               type="email"
               id="login-email"
               required
-              placeholder="student@university.edu"
-              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+              placeholder="student@usc.edu.ph"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
             />
           </div>
           <div>
-            <label class="block text-sm font-bold text-gray-700 mb-1"
+            <label
+              class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide"
               >Password</label
             >
             <input
               type="password"
               required
               placeholder="••••••••"
-              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-5 py-3 focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
+              class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
             />
           </div>
           <button
             type="submit"
-            class="w-full bg-[#1a5b6e] text-white py-4 mt-4 rounded-xl font-bold shadow-[0_8px_20px_rgba(26,91,110,0.2)] hover:shadow-[0_12px_25px_rgba(26,91,110,0.3)] hover:-translate-y-0.5 transition-all"
+            class="w-full bg-[#1a5b6e] text-white py-3.5 mt-2 rounded-xl font-bold text-sm shadow-[0_8px_20px_rgba(26,91,110,0.2)] hover:shadow-[0_12px_25px_rgba(26,91,110,0.3)] hover:-translate-y-0.5 transition-all"
           >
-            Log In
+            Log In to HULAM
           </button>
         </form>
         <button
           onclick="toggleModal('login-modal', false)"
-          class="mt-6 text-gray-400 hover:text-gray-600 font-medium text-sm"
+          class="mt-5 text-gray-400 hover:text-gray-600 font-medium text-xs"
         >
           Close
         </button>
@@ -1027,78 +1349,82 @@
     <!-- CHECKOUT MODAL -->
     <div
       id="checkout-modal"
-      class="fixed inset-0 bg-[#0f3440]/60 z-[100] flex items-center justify-center p-4 backdrop-blur-md transition-opacity duration-300 opacity-0 pointer-events-none hidden"
+      class="fixed inset-0 bg-[#0f3440]/70 z-[100] flex items-center justify-center p-4 modal-backdrop transition-opacity duration-300 opacity-0 pointer-events-none hidden"
     >
       <div
         id="checkout-modal-content"
-        class="bg-white rounded-[2rem] shadow-2xl w-full max-w-lg overflow-hidden flex flex-col transform translate-y-8 transition-transform duration-500 ease-out"
+        class="bg-white rounded-3xl shadow-2xl w-full max-w-md flex flex-col transform translate-y-8 transition-transform duration-500 ease-out max-h-[90vh] overflow-hidden"
       >
         <div
-          class="px-8 py-6 border-b border-gray-100 flex items-center justify-between bg-white"
+          class="px-7 py-5 border-b border-gray-100 flex items-center justify-between shrink-0"
         >
-          <h3 class="text-2xl font-extrabold text-[#1a5b6e] tracking-tight">
+          <h3 class="text-xl font-extrabold text-[#1a5b6e] tracking-tight">
             Secure Booking
           </h3>
           <button
             onclick="toggleModal('checkout-modal', false)"
-            class="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100"
+            class="w-9 h-9 rounded-full bg-gray-50 flex items-center justify-center text-gray-400 hover:bg-gray-100 transition-colors"
           >
-            <i data-lucide="x" class="w-5 h-5"></i>
+            <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
 
-        <div id="checkout-form" class="p-8">
+        <div id="checkout-form" class="p-7 overflow-y-auto">
           <div
-            class="flex gap-4 mb-8 bg-gray-50 p-4 rounded-xl border border-gray-100"
+            class="flex gap-4 mb-7 bg-gray-50 p-4 rounded-2xl border border-gray-100"
           >
             <img
               id="co-image"
               src=""
-              class="w-20 h-20 rounded-lg object-cover"
+              class="w-18 h-18 rounded-xl object-cover bg-gray-200 shrink-0"
+              style="width: 72px; height: 72px"
             />
-            <div>
+            <div class="min-w-0">
               <h4
                 id="co-title"
-                class="font-bold text-gray-900 text-lg line-clamp-1"
+                class="font-bold text-gray-900 text-base truncate"
               >
                 Item Title
               </h4>
-              <p class="text-sm text-gray-500">
+              <p class="text-sm text-gray-500 mt-0.5">
                 ₱<span id="co-rate">0</span> / day
               </p>
             </div>
           </div>
 
-          <div class="space-y-4 mb-8">
-            <div>
-              <label class="block text-sm font-bold text-gray-700 mb-1"
-                >Rental Duration (Days)</label
-              >
-              <input
-                type="number"
-                id="co-days"
-                value="1"
-                min="1"
-                onchange="calculateTotal()"
-                class="w-full bg-white border border-gray-200 rounded-xl px-5 py-3 focus:ring-4 focus:border-[#1a5b6e] outline-none font-bold text-lg"
-              />
-            </div>
+          <div class="mb-6">
+            <label
+              class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
+              >Rental Duration (Days)</label
+            >
+            <input
+              type="number"
+              id="co-days"
+              value="1"
+              min="1"
+              oninput="calculateTotal()"
+              class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:border-[#1a5b6e] outline-none font-bold text-lg"
+            />
           </div>
 
           <div
-            class="bg-gray-50 rounded-xl p-5 border border-gray-200 mb-8 space-y-3"
+            class="bg-gray-50 rounded-2xl p-5 border border-gray-100 mb-6 space-y-2.5"
           >
-            <div class="flex justify-between text-gray-600">
+            <div class="flex justify-between text-gray-600 text-sm">
               <span>Rental Fee (<span id="co-calc-days">1</span> days)</span>
-              <span class="font-medium">₱<span id="co-calc-fee">0</span></span>
+              <span class="font-semibold"
+                >₱<span id="co-calc-fee">0</span></span
+              >
             </div>
-            <div class="flex justify-between text-gray-600">
+            <div class="flex justify-between text-gray-600 text-sm">
               <span>Security Deposit (Refundable)</span>
-              <span class="font-medium">₱<span id="co-calc-dep">0</span></span>
+              <span class="font-semibold"
+                >₱<span id="co-calc-dep">0</span></span
+              >
             </div>
-            <div class="h-px bg-gray-200 my-2"></div>
+            <div class="h-px bg-gray-200"></div>
             <div
-              class="flex justify-between text-[#1a5b6e] font-extrabold text-xl"
+              class="flex justify-between text-[#1a5b6e] font-extrabold text-lg"
             >
               <span>Total to Pay</span>
               <span>₱<span id="co-total">0</span></span>
@@ -1107,9 +1433,9 @@
 
           <button
             onclick="confirmBooking()"
-            class="w-full bg-[#9cd353] text-[#1a5b6e] py-4 rounded-xl font-extrabold text-lg hover:bg-[#8bc34a] shadow-[0_4px_14px_0_rgba(156,211,83,0.39)] transition-all active:scale-95"
+            class="w-full bg-[#9cd353] text-[#1a5b6e] py-4 rounded-2xl font-extrabold text-base hover:bg-[#8bc34a] shadow-[0_4px_14px_0_rgba(156,211,83,0.4)] transition-all active:scale-95"
           >
-            Confirm & Pay
+            Confirm &amp; Pay Securely
           </button>
         </div>
 
@@ -1119,20 +1445,23 @@
           class="hidden p-10 text-center flex flex-col items-center justify-center"
         >
           <div
-            class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-6"
+            class="w-18 h-18 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-5"
+            style="width: 72px; height: 72px"
           >
             <i data-lucide="check-circle" class="w-10 h-10"></i>
           </div>
-          <h3 class="text-3xl font-extrabold text-gray-900 mb-2">
+          <h3 class="text-2xl font-extrabold text-gray-900 mb-2">
             Booking Confirmed!
           </h3>
-          <p class="text-gray-500 mb-8">
-            Your payment is held securely in escrow. Contact the owner to
-            arrange pickup.
+          <p class="text-gray-500 text-sm mb-7">
+            Your payment is held in escrow. Contact the owner to arrange pickup.
           </p>
           <button
-            onclick="toggleModal('checkout-modal', false); switchView('dashboard');"
-            class="bg-[#1a5b6e] text-white px-8 py-3 rounded-full font-bold"
+            onclick="
+              toggleModal('checkout-modal', false);
+              switchView('dashboard');
+            "
+            class="bg-[#1a5b6e] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#25768e] transition-colors"
           >
             Go to Dashboard
           </button>
@@ -1140,13 +1469,20 @@
       </div>
     </div>
 
+    <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
     <script>
-      // --- DATA ---
+      // ─── DATA ───────────────────────────────────────────────
       const CATEGORIES = ["All", "Tech", "Outdoors", "Tools", "Books"];
       let currentCategory = "All";
+      let currentView = "home";
       let currentItemForCheckout = null;
+      let nextId = 100;
 
-      const ALL_ITEMS = [
+      // In-memory store for user-published listings
+      let MY_LISTINGS = [];
+
+      // Seed items with reliable Unsplash images
+      let ALL_ITEMS = [
         {
           id: 1,
           category: "Tech",
@@ -1156,8 +1492,11 @@
           location: "USC Main",
           distance: "3 mins away",
           rating: 5.0,
-          image: "https://images.unsplash.com/photo-1535016120720-40c746a6580c?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "High definition projector, perfect for movie nights or presentations.",
+          image:
+            "https://images.unsplash.com/photo-1626379801357-537572d5f6be?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "High definition projector, perfect for movie nights or presentations. Includes HDMI cable and remote.",
+          isOwn: false,
         },
         {
           id: 2,
@@ -1168,8 +1507,11 @@
           location: "Talamban",
           distance: "5 mins away",
           rating: 5.0,
-          image: "https://images.unsplash.com/photo-1504280650530-9b45df5a5c69?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Good for 4 persons. Easy to set up and highly durable.",
+          image:
+            "https://images.unsplash.com/photo-1504280650530-9b45df5a5c69?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Good for 4 persons. Easy to set up and highly durable. Waterproof with full rainfly.",
+          isOwn: false,
         },
         {
           id: 3,
@@ -1180,8 +1522,11 @@
           location: "Lahug",
           distance: "15 mins away",
           rating: 4.8,
-          image: "https://images.unsplash.com/photo-1594956106602-d9646bb6f780?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Portable sewing machine for quick fixes and design projects.",
+          image:
+            "https://images.unsplash.com/photo-1558171813-0e6e89eaedde?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Portable sewing machine for quick fixes and design projects. Comes with assorted threads and needles.",
+          isOwn: false,
         },
         {
           id: 4,
@@ -1192,8 +1537,11 @@
           location: "Cebu City",
           distance: "10 mins away",
           rating: 5.0,
-          image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Complete set with various bits. Great for DIY dorm projects.",
+          image:
+            "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Complete set with various bits. Great for DIY dorm projects. Battery fully charged.",
+          isOwn: false,
         },
         {
           id: 5,
@@ -1204,8 +1552,11 @@
           location: "IT Park",
           distance: "12 mins away",
           rating: 4.9,
-          image: "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Mirrorless camera ideal for video projects.",
+          image:
+            "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Mirrorless camera ideal for video projects and photography. Includes 18-55mm kit lens and two batteries.",
+          isOwn: false,
         },
         {
           id: 6,
@@ -1216,8 +1567,11 @@
           location: "USC Main",
           distance: "1 min away",
           rating: 4.5,
-          image: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Required textbook for Physics 101. Clean pages.",
+          image:
+            "https://images.unsplash.com/photo-1532012197267-da84d127e765?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Required textbook for Physics 101. Clean pages with no markings. Includes practice problem sets.",
+          isOwn: false,
         },
         {
           id: 7,
@@ -1228,8 +1582,11 @@
           location: "Talamban",
           distance: "8 mins away",
           rating: 5.0,
-          image: "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=400&h=300",
-          description: "Casio FX-991EX. Essential for engineering midterms.",
+          image:
+            "https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=800&h=600",
+          description:
+            "Casio FX-991EX. Essential for engineering midterms and board exams. Batteries included.",
+          isOwn: false,
         },
       ];
 
@@ -1237,32 +1594,30 @@
         {
           icon: "wallet",
           color: "text-[#1a5b6e]",
-          bg: "bg-[#1a5b6e]/5",
+          bg: "bg-[#1a5b6e]/8",
           title: "Save Money",
           desc: "Access tools, electronics, and gear without paying the full purchase price.",
         },
         {
-          icon: "globe",
-          color: "text-blue-500",
-          bg: "bg-blue-50",
+          icon: "leaf",
+          color: "text-emerald-500",
+          bg: "bg-emerald-50",
           title: "Reduce Waste",
-          desc: "Promote sustainability by maximizing the lifecycle of existing items.",
+          desc: "Promote sustainability by maximizing the lifecycle of existing items on campus.",
         },
         {
-          icon: "shield",
+          icon: "shield-check",
           color: "text-[#9cd353]",
           bg: "bg-[#9cd353]/10",
           title: "Secure & Trusted",
-          desc: "Our community system ensures safe transactions and verified profiles.",
+          desc: "Scholar-verified profiles and escrow payments ensure safe transactions.",
         },
       ];
 
-      // --- STATE ---
-      let currentView = "home";
-
-      // --- INIT ---
+      // ─── INIT ───────────────────────────────────────────────
       document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("current-year").textContent = new Date().getFullYear();
+        document.getElementById("current-year").textContent =
+          new Date().getFullYear();
         renderFeatures();
         renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
         renderBrowseCategories();
@@ -1273,193 +1628,45 @@
         handleScroll();
       });
 
-      // --- UI RENDERERS ---
-      function renderFeatures() {
-        const grid = document.getElementById("features-grid");
-        grid.innerHTML = FEATURES.map(
-          (f, i) => `
-          <div class="reveal-up bg-white p-10 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-500 border border-gray-100" style="transition-delay: ${i * 150}ms">
-            <div class="w-16 h-16 rounded-2xl flex items-center justify-center mb-8 ${f.bg}"><i data-lucide="${f.icon}" class="w-8 h-8 ${f.color}"></i></div>
-            <h4 class="text-2xl font-bold mb-4 tracking-tight">${f.title}</h4>
-            <p class="text-gray-500 leading-relaxed font-light text-lg">${f.desc}</p>
-          </div>`
-        ).join("");
+      // ─── TOAST ──────────────────────────────────────────────
+      function showToast(msg, icon = "check-circle") {
+        const toast = document.getElementById("toast");
+        document.getElementById("toast-msg").textContent = msg;
+        toast.classList.add("show");
+        setTimeout(() => toast.classList.remove("show"), 3000);
       }
 
-      function renderItems(items, containerId) {
-        const grid = document.getElementById(containerId);
-        const emptyState = document.getElementById("browse-empty");
-
-        if (items.length === 0) {
-          grid.innerHTML = "";
-          if (emptyState) emptyState.classList.remove("hidden");
-          return;
-        }
-
-        if (emptyState) emptyState.classList.add("hidden");
-
-        grid.innerHTML = items.map(
-          (item, i) => `
-          <div class="reveal-up bg-white rounded-3xl border border-gray-100 overflow-hidden cursor-pointer shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.12)] hover:-translate-y-2 transition-all duration-500 group flex flex-col h-full" onclick="openItemDetail(${item.id})" style="transition-delay: ${i * 50}ms">
-            <div class="relative h-56 bg-gray-50/50 overflow-hidden">
-              <img src="${item.image}" class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700 ease-out"/>
-              <div class="absolute top-4 left-4 bg-white/90 backdrop-blur text-xs font-bold px-3 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
-            </div>
-            <div class="p-6 flex flex-col flex-grow">
-              <h4 class="font-bold text-gray-900 text-xl leading-tight line-clamp-1 mb-2">${item.title}</h4>
-              <div class="flex items-center text-sm text-gray-500 mb-6 font-medium"><i data-lucide="map-pin" class="w-3.5 h-3.5 mr-1 text-[#1a5b6e]"></i> ${item.distance}</div>
-              <div class="mt-auto flex items-end justify-between pt-4 border-t border-gray-100">
-                <div><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Daily</p><p class="text-2xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p></div>
-                <div class="text-right"><p class="text-xs text-gray-400 font-semibold uppercase mb-1">Deposit</p><p class="text-sm font-bold text-gray-600">₱${item.deposit}</p></div>
-              </div>
-            </div>
-          </div>`
-        ).join("");
-        lucide.createIcons();
+      // ─── AUTH ───────────────────────────────────────────────
+      function getUser() {
+        return localStorage.getItem("hulam_user");
       }
 
-      // --- BROWSE LOGIC ---
-      function renderBrowseCategories() {
-        const container = document.getElementById("category-filters");
-        container.innerHTML = CATEGORIES.map(
-          (cat) => `
-          <button onclick="setCategory('${cat}')" class="px-5 py-2.5 rounded-full font-bold whitespace-nowrap transition-colors border ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">${cat}</button>`
-        ).join("");
-      }
-
-      function setCategory(cat) {
-        currentCategory = cat;
-        renderBrowseCategories();
-        filterItems();
-      }
-
-      function filterItems() {
-        const query = document.getElementById("search-input").value.toLowerCase();
-        const filtered = ALL_ITEMS.filter((item) => {
-          const matchCat = currentCategory === "All" || item.category === currentCategory;
-          const matchSearch =
-            item.title.toLowerCase().includes(query) ||
-            item.description.toLowerCase().includes(query);
-          return matchCat && matchSearch;
-        });
-        renderItems(filtered, "browse-grid");
-        initScrollReveal();
-      }
-
-      function clearFilters() {
-        document.getElementById("search-input").value = "";
-        setCategory("All");
-      }
-
-      // --- NAVIGATION ---
-      function switchView(view) {
-        currentView = view;
-        ["home-view", "browse-view", "item-detail-view", "dashboard-view", "messages-view"].forEach((id) => {
-          const el = document.getElementById(id);
-          if (el) {
-            el.classList.add("hidden");
-            el.classList.remove("flex", "block");
-          }
-        });
-
-        const activeEl = document.getElementById(`${view}-view`);
-        if (activeEl) {
-          activeEl.classList.remove("hidden");
-          activeEl.classList.add("block"); // ✅ FIXED: always block, never flex
-        }
-
-        window.scrollTo(0, 0);
-        handleScroll();
-        initScrollReveal();
-      }
-
-      function openItemDetail(id) {
-        currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
-        if (!currentItemForCheckout) return;
-
-        document.getElementById("detail-image").src = currentItemForCheckout.image;
-        document.getElementById("detail-title").textContent = currentItemForCheckout.title;
-        document.getElementById("detail-price").textContent = `₱${currentItemForCheckout.pricePerDay}`;
-        document.getElementById("detail-rating").textContent = currentItemForCheckout.rating.toFixed(1);
-        document.getElementById("detail-description").textContent = currentItemForCheckout.description;
-        document.getElementById("detail-location").textContent = currentItemForCheckout.location;
-        document.getElementById("detail-distance").textContent = currentItemForCheckout.distance;
-        document.getElementById("detail-deposit").textContent = `₱${currentItemForCheckout.deposit} (Refundable)`;
-
-        switchView("item-detail");
-      }
-
-      // --- MODALS & CHECKOUT ---
-      function toggleModal(modalId, show) {
-        const modal = document.getElementById(modalId);
-        const content = document.getElementById(`${modalId}-content`);
-
-        if (modalId === "checkout-modal" && show) {
-          document.getElementById("checkout-form").classList.remove("hidden");
-          document.getElementById("checkout-success").classList.add("hidden");
-        }
-
-        if (show) {
-          modal.classList.remove("hidden");
-          setTimeout(() => {
-            modal.classList.remove("opacity-0", "pointer-events-none");
-            content.classList.remove("translate-y-8");
-          }, 10);
-        } else {
-          modal.classList.add("opacity-0", "pointer-events-none");
-          content.classList.add("translate-y-8");
-          setTimeout(() => modal.classList.add("hidden"), 300);
-        }
-      }
-
-      function openCheckout() {
-        if (!currentItemForCheckout) return;
-        document.getElementById("co-image").src = currentItemForCheckout.image;
-        document.getElementById("co-title").textContent = currentItemForCheckout.title;
-        document.getElementById("co-rate").textContent = currentItemForCheckout.pricePerDay;
-        document.getElementById("co-days").value = 1;
-        calculateTotal();
-        toggleModal("checkout-modal", true);
-      }
-
-      function calculateTotal() {
-        if (!currentItemForCheckout) return;
-        const days = parseInt(document.getElementById("co-days").value) || 1;
-        const rate = currentItemForCheckout.pricePerDay;
-        const dep = currentItemForCheckout.deposit;
-        const fee = days * rate;
-
-        document.getElementById("co-calc-days").textContent = days;
-        document.getElementById("co-calc-fee").textContent = fee;
-        document.getElementById("co-calc-dep").textContent = dep;
-        document.getElementById("co-total").textContent = fee + dep;
-      }
-
-      function confirmBooking() {
-        document.getElementById("checkout-form").classList.add("hidden");
-        document.getElementById("checkout-success").classList.remove("hidden");
-      }
-
-      function publishListing() {
-        toggleModal("listing-modal", false);
-        alert("Your item has been successfully published!");
-        switchView("dashboard");
-      }
-
-      // --- AUTHENTICATION (MOCK) ---
       function checkAuth() {
-        const user = localStorage.getItem("hulam_user");
+        const user = getUser();
+        const out = document.getElementById("auth-logged-out");
+        const inn = document.getElementById("auth-logged-in");
+        const name = document.getElementById("user-display-name");
+        const dn = document.getElementById("dashboard-user-name");
+        const av = document.getElementById("dash-avatar");
+
         if (user) {
-          document.getElementById("auth-logged-out").classList.add("hidden");
-          document.getElementById("auth-logged-in").classList.remove("hidden");
-          document.getElementById("auth-logged-in").classList.add("flex");
-          document.getElementById("dashboard-user-name").textContent = user.split("@")[0];
-          document.getElementById("user-display-name").textContent = user.split("@")[0];
+          out?.classList.add("hidden");
+          out?.classList.remove("flex");
+          inn?.classList.remove("hidden");
+          inn?.classList.add("flex");
+          const uname = user.split("@")[0];
+          if (name) name.textContent = uname;
+          if (dn) dn.textContent = uname;
+          if (av) av.textContent = uname.charAt(0).toUpperCase();
+          const se = document.getElementById("settings-name");
+          const em = document.getElementById("settings-email");
+          if (se) se.value = uname;
+          if (em) em.value = user;
         } else {
-          document.getElementById("auth-logged-in").classList.add("hidden");
-          document.getElementById("auth-logged-in").classList.remove("flex");
-          document.getElementById("auth-logged-out").classList.remove("hidden");
-          document.getElementById("auth-logged-out").classList.add("flex");
+          inn?.classList.add("hidden");
+          inn?.classList.remove("flex");
+          out?.classList.remove("hidden");
+          out?.classList.add("flex");
         }
         handleScroll();
       }
@@ -1471,53 +1678,493 @@
         toggleModal("login-modal", false);
         checkAuth();
         switchView("dashboard");
+        showToast("Welcome to HULAM!");
       }
 
       function handleLogout() {
         localStorage.removeItem("hulam_user");
-        checkAuth();
         switchView("home");
+        checkAuth();
+        showToast("Logged out successfully.");
       }
 
-      function requireAuth(actionFunction) {
-        if (localStorage.getItem("hulam_user")) {
-          actionFunction();
+      function requireAuth(fn) {
+        if (getUser()) fn();
+        else toggleModal("login-modal", true);
+      }
+
+      // ─── MODALS ──────────────────────────────────────────────
+      function toggleModal(id, show) {
+        const modal = document.getElementById(id);
+        const content = document.getElementById(`${id}-content`);
+        if (!modal || !content) return;
+
+        if (id === "checkout-modal" && show) {
+          document.getElementById("checkout-form")?.classList.remove("hidden");
+          document.getElementById("checkout-success")?.classList.add("hidden");
+        }
+
+        if (show) {
+          modal.classList.remove("hidden");
+          requestAnimationFrame(() => {
+            modal.classList.remove("opacity-0", "pointer-events-none");
+            content.classList.remove("translate-y-8");
+          });
         } else {
-          toggleModal("login-modal", true);
+          modal.classList.add("opacity-0", "pointer-events-none");
+          content.classList.add("translate-y-8");
+          setTimeout(() => modal.classList.add("hidden"), 300);
         }
       }
 
-      // --- SCROLL EFFECTS ---
-      window.addEventListener("scroll", handleScroll);
+      // Close on backdrop click
+      document.addEventListener("click", (e) => {
+        ["login-modal", "listing-modal", "checkout-modal"].forEach((id) => {
+          const modal = document.getElementById(id);
+          if (modal && e.target === modal) toggleModal(id, false);
+        });
+      });
+
+      // ─── LISTING PUBLISH ─────────────────────────────────────
+      function publishListing() {
+        const title = document.getElementById("listing-title").value.trim();
+        const desc = document
+          .getElementById("listing-description")
+          .value.trim();
+        const price = parseInt(document.getElementById("listing-price").value);
+        const dep =
+          parseInt(document.getElementById("listing-deposit").value) || 0;
+        const cat = document.getElementById("listing-category").value;
+        const loc =
+          document.getElementById("listing-location").value.trim() || "Campus";
+        const imgUrl = document
+          .getElementById("listing-image-url")
+          .value.trim();
+
+        if (!title) {
+          showToast("Please enter an item title.");
+          return;
+        }
+        if (!desc) {
+          showToast("Please add a description.");
+          return;
+        }
+        if (!price || price <= 0) {
+          showToast("Please set a valid daily rate.");
+          return;
+        }
+
+        // Default image by category if none provided
+        const defaultImages = {
+          Tech: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800&h=600",
+          Outdoors:
+            "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80&w=800&h=600",
+          Tools:
+            "https://images.unsplash.com/photo-1581166397057-b44b06c0d53d?auto=format&fit=crop&q=80&w=800&h=600",
+          Books:
+            "https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&q=80&w=800&h=600",
+        };
+
+        const newItem = {
+          id: nextId++,
+          category: cat,
+          title,
+          pricePerDay: price,
+          deposit: dep,
+          location: loc,
+          distance: "Your listing",
+          rating: 5.0,
+          image: imgUrl || defaultImages[cat] || defaultImages["Tech"],
+          description: desc,
+          isOwn: true,
+        };
+
+        ALL_ITEMS.push(newItem);
+        MY_LISTINGS.push(newItem);
+
+        // Reset form
+        document.getElementById("listing-title").value = "";
+        document.getElementById("listing-description").value = "";
+        document.getElementById("listing-price").value = "";
+        document.getElementById("listing-deposit").value = "";
+        document.getElementById("listing-location").value = "";
+        document.getElementById("listing-image-url").value = "";
+        document.getElementById("listing-img-thumb").classList.add("hidden");
+        document.getElementById("listing-img-icon").style.display = "";
+        document.getElementById("listing-img-label").style.display = "";
+
+        toggleModal("listing-modal", false);
+
+        // Refresh grids
+        renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
+        filterItems();
+        renderMyListings();
+
+        showToast(`"${title}" is now live!`);
+        switchView("dashboard");
+        setTimeout(() => showDashTab("listings"), 200);
+      }
+
+      function previewListingImage() {
+        const url = document.getElementById("listing-image-url").value.trim();
+        const thumb = document.getElementById("listing-img-thumb");
+        const icon = document.getElementById("listing-img-icon");
+        const label = document.getElementById("listing-img-label");
+        if (url) {
+          thumb.src = url;
+          thumb.classList.remove("hidden");
+          icon.style.display = "none";
+          label.style.display = "none";
+        } else {
+          thumb.classList.add("hidden");
+          icon.style.display = "";
+          label.style.display = "";
+        }
+      }
+
+      // ─── AI AUTO-FILL ─────────────────────────────────────────
+      async function generateListingDetails() {
+        const title = document.getElementById("listing-title").value.trim();
+        if (!title) {
+          showToast("Please enter a title first.");
+          return;
+        }
+
+        const btn = document.getElementById("ai-trigger-btn");
+        const icon = document.getElementById("ai-icon");
+        const txt = document.getElementById("ai-btn-text");
+
+        btn.disabled = true;
+        icon.setAttribute("data-lucide", "loader-2");
+        icon.classList.add("animate-spin");
+        txt.textContent = "Analyzing market data…";
+        lucide.createIcons();
+
+        await new Promise((r) => setTimeout(r, 1500));
+
+        const suggestions = {
+          price: Math.round((80 + Math.random() * 320) / 10) * 10,
+          deposit: Math.round((300 + Math.random() * 1200) / 100) * 100,
+        };
+        document.getElementById("listing-description").value =
+          `A well-maintained ${title} in excellent condition, perfect for student projects and short-term needs. Must be returned with all original accessories and in the same condition as received.`;
+        document.getElementById("listing-price").value = suggestions.price;
+        document.getElementById("listing-deposit").value = suggestions.deposit;
+
+        icon.setAttribute("data-lucide", "sparkles");
+        icon.classList.remove("animate-spin");
+        txt.textContent = "✨ Auto-Fill Details with AI";
+        btn.disabled = false;
+        lucide.createIcons();
+        showToast("AI has filled in the details!");
+      }
+
+      // ─── RENDER ───────────────────────────────────────────────
+      function renderFeatures() {
+        const grid = document.getElementById("features-grid");
+        grid.innerHTML = FEATURES.map(
+          (f, i) => `
+          <div class="reveal-up bg-white p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-500 border border-gray-100" style="transition-delay:${i * 120}ms">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${f.bg}">
+              <i data-lucide="${f.icon}" class="w-7 h-7 ${f.color}"></i>
+            </div>
+            <h4 class="text-xl font-bold mb-3 tracking-tight">${f.title}</h4>
+            <p class="text-gray-500 leading-relaxed font-light">${f.desc}</p>
+          </div>`,
+        ).join("");
+      }
+
+      function renderItems(items, containerId) {
+        const grid = document.getElementById(containerId);
+        const empty = document.getElementById("browse-empty");
+        if (!grid) return;
+
+        if (items.length === 0) {
+          grid.innerHTML = "";
+          empty?.classList.remove("hidden");
+          return;
+        }
+        empty?.classList.add("hidden");
+
+        grid.innerHTML = items
+          .map(
+            (item, i) => `
+          <div class="item-card reveal-up bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer
+               shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-400 group flex flex-col"
+               onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
+            <div class="relative bg-gray-100 overflow-hidden" style="height:200px">
+              <img src="${item.image}" alt="${item.title}"
+                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-600 ease-out"
+                onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+              <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-2.5 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
+              ${item.isOwn ? '<div class="absolute top-3 right-3 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">Your Listing</div>' : ""}
+            </div>
+            <div class="p-5 flex flex-col flex-grow">
+              <h4 class="font-bold text-gray-900 text-base leading-tight line-clamp-1 mb-1.5">${item.title}</h4>
+              <div class="flex items-center text-xs text-gray-500 mb-4 font-medium">
+                <i data-lucide="map-pin" class="w-3 h-3 mr-1 text-[#1a5b6e]"></i>${item.distance}
+              </div>
+              <div class="mt-auto flex items-end justify-between pt-3.5 border-t border-gray-100">
+                <div>
+                  <p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Daily</p>
+                  <p class="text-xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Deposit</p>
+                  <p class="text-sm font-bold text-gray-600">₱${item.deposit}</p>
+                </div>
+              </div>
+            </div>
+          </div>`,
+          )
+          .join("");
+        lucide.createIcons();
+        initScrollReveal();
+      }
+
+      function renderMyListings() {
+        const grid = document.getElementById("my-listings-grid");
+        const empty = document.getElementById("my-listings-empty");
+        if (!grid) return;
+
+        if (MY_LISTINGS.length === 0) {
+          grid.innerHTML = "";
+          empty?.classList.remove("hidden");
+          return;
+        }
+        empty?.classList.add("hidden");
+
+        grid.innerHTML = MY_LISTINGS.map(
+          (item) => `
+          <div class="border border-gray-100 rounded-2xl overflow-hidden hover:border-[#1a5b6e]/20 transition-colors">
+            <div class="h-36 bg-gray-100 overflow-hidden relative">
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover"
+                onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+              <div class="absolute top-2 left-2 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2 py-0.5 rounded-full">Active</div>
+            </div>
+            <div class="p-4">
+              <h4 class="font-bold text-gray-900 text-sm line-clamp-1 mb-1">${item.title}</h4>
+              <div class="flex items-center justify-between">
+                <span class="text-[#1a5b6e] font-black text-base">₱${item.pricePerDay}<span class="text-gray-400 font-medium text-xs">/day</span></span>
+                <button onclick="removeMyListing(${item.id})" class="text-xs text-red-400 hover:text-red-600 font-semibold transition-colors">Remove</button>
+              </div>
+            </div>
+          </div>`,
+        ).join("");
+      }
+
+      function removeMyListing(id) {
+        MY_LISTINGS = MY_LISTINGS.filter((i) => i.id !== id);
+        ALL_ITEMS = ALL_ITEMS.filter((i) => i.id !== id);
+        renderMyListings();
+        renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
+        filterItems();
+        showToast("Listing removed.");
+      }
+
+      // ─── BROWSE LOGIC ─────────────────────────────────────────
+      function renderBrowseCategories() {
+        const container = document.getElementById("category-filters");
+        container.innerHTML = CATEGORIES.map(
+          (cat) => `
+          <button onclick="setCategory('${cat}')"
+            class="px-4 py-2 rounded-full font-bold whitespace-nowrap transition-colors border text-xs
+              ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">
+            ${cat}
+          </button>`,
+        ).join("");
+      }
+
+      function setCategory(cat) {
+        currentCategory = cat;
+        renderBrowseCategories();
+        filterItems();
+      }
+
+      function filterItems() {
+        const q = (
+          document.getElementById("search-input")?.value || ""
+        ).toLowerCase();
+        const filtered = ALL_ITEMS.filter((item) => {
+          const mc =
+            currentCategory === "All" || item.category === currentCategory;
+          const ms =
+            item.title.toLowerCase().includes(q) ||
+            item.description.toLowerCase().includes(q);
+          return mc && ms;
+        });
+        renderItems(filtered, "browse-grid");
+      }
+
+      function clearFilters() {
+        document.getElementById("search-input").value = "";
+        setCategory("All");
+      }
+
+      // ─── NAVIGATION ───────────────────────────────────────────
+      function switchView(view) {
+        currentView = view;
+        const views = [
+          "home",
+          "browse",
+          "item-detail",
+          "dashboard",
+          "messages",
+        ];
+        views.forEach((v) => {
+          const el = document.getElementById(`${v}-view`);
+          if (el) {
+            el.classList.add("hidden");
+            el.classList.remove("block");
+          }
+        });
+        const active = document.getElementById(`${view}-view`);
+        if (active) {
+          active.classList.remove("hidden");
+          active.classList.add("block");
+        }
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        handleScroll();
+        setTimeout(initScrollReveal, 50);
+
+        if (view === "dashboard") {
+          checkAuth();
+          renderMyListings();
+        }
+      }
+
+      // ─── DASHBOARD TABS ───────────────────────────────────────
+      function showDashTab(tab) {
+        ["rentals", "listings", "settings"].forEach((t) => {
+          const panel = document.getElementById(`dash-${t}`);
+          const btn = document.getElementById(`tab-${t}`);
+          if (panel) {
+            panel.classList.toggle("hidden", t !== tab);
+          }
+          if (btn) {
+            btn.className = btn.className.replace(
+              /bg-\[#1a5b6e\]\/\d+ text-\[#1a5b6e\] font-\w+/g,
+              "",
+            );
+            btn.classList.remove(
+              "bg-[#1a5b6e]/8",
+              "text-[#1a5b6e]",
+              "font-semibold",
+              "font-bold",
+            );
+            if (t === tab) {
+              btn.classList.add(
+                "bg-[#1a5b6e]/8",
+                "text-[#1a5b6e]",
+                "font-semibold",
+              );
+              btn.classList.remove("text-gray-600", "font-medium");
+            } else {
+              btn.classList.add("text-gray-600", "font-medium");
+            }
+          }
+        });
+      }
+
+      // ─── ITEM DETAIL ──────────────────────────────────────────
+      function openItemDetail(id) {
+        currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
+        if (!currentItemForCheckout) return;
+
+        const item = currentItemForCheckout;
+        document.getElementById("detail-image").src = item.image;
+        document.getElementById("detail-title").textContent = item.title;
+        document.getElementById("detail-price").textContent =
+          `₱${item.pricePerDay}`;
+        document.getElementById("detail-rating").textContent =
+          item.rating.toFixed(1);
+        document.getElementById("detail-description").textContent =
+          item.description;
+        document.getElementById("detail-location").textContent = item.location;
+        document.getElementById("detail-distance").textContent = item.distance;
+        document.getElementById("detail-deposit").textContent =
+          `₱${item.deposit} (Refundable)`;
+        document.getElementById("detail-category-badge").textContent =
+          item.category;
+
+        switchView("item-detail");
+      }
+
+      // ─── CHECKOUT ─────────────────────────────────────────────
+      function openCheckout() {
+        if (!currentItemForCheckout) return;
+        const item = currentItemForCheckout;
+        document.getElementById("co-image").src = item.image;
+        document.getElementById("co-title").textContent = item.title;
+        document.getElementById("co-rate").textContent = item.pricePerDay;
+        document.getElementById("co-days").value = 1;
+        calculateTotal();
+        toggleModal("checkout-modal", true);
+      }
+
+      function calculateTotal() {
+        if (!currentItemForCheckout) return;
+        const days = parseInt(document.getElementById("co-days").value) || 1;
+        const rate = currentItemForCheckout.pricePerDay;
+        const dep = currentItemForCheckout.deposit;
+        const fee = days * rate;
+        document.getElementById("co-calc-days").textContent = days;
+        document.getElementById("co-calc-fee").textContent =
+          fee.toLocaleString();
+        document.getElementById("co-calc-dep").textContent =
+          dep.toLocaleString();
+        document.getElementById("co-total").textContent = (
+          fee + dep
+        ).toLocaleString();
+      }
+
+      function confirmBooking() {
+        document.getElementById("checkout-form").classList.add("hidden");
+        document.getElementById("checkout-success").classList.remove("hidden");
+      }
+
+      // ─── SCROLL EFFECTS ───────────────────────────────────────
       function handleScroll() {
         const header = document.getElementById("main-header");
-        const logoText = document.getElementById("header-logo-text");
+        const logo = document.getElementById("header-logo-text");
         const nav = document.getElementById("header-nav");
+        if (!header) return;
 
         const isScrolled = window.scrollY > 20 || currentView !== "home";
+        const btnList = document.getElementById("header-btn-list");
+        const btnLogin = document.getElementById("header-btn-login");
 
         if (isScrolled) {
           header.classList.remove("bg-transparent", "py-4");
-          header.classList.add("bg-white/90", "backdrop-blur-lg", "border-b", "border-gray-200/50", "shadow-sm", "py-2");
-          logoText.classList.replace("text-white", "text-[#1a5b6e]");
-          nav.classList.replace("text-white/90", "text-gray-600");
-
-          const btnList = document.getElementById("header-btn-list");
-          const btnLogin = document.getElementById("header-btn-login");
-          if (btnList) btnList.classList.replace("text-white", "text-[#1a5b6e]");
+          header.classList.add(
+            "bg-white/95",
+            "backdrop-blur-xl",
+            "border-b",
+            "border-gray-200/60",
+            "shadow-sm",
+            "py-2",
+          );
+          logo?.classList.replace("text-white", "text-[#1a5b6e]");
+          nav?.classList.replace("text-white/90", "text-gray-600");
+          btnList?.classList.replace("text-white", "text-[#1a5b6e]");
           if (btnLogin) {
             btnLogin.classList.replace("bg-white/20", "bg-gray-100");
             btnLogin.classList.replace("text-white", "text-[#1a5b6e]");
           }
         } else {
           header.classList.add("bg-transparent", "py-4");
-          header.classList.remove("bg-white/90", "backdrop-blur-lg", "border-b", "border-gray-200/50", "shadow-sm", "py-2");
-          logoText.classList.replace("text-[#1a5b6e]", "text-white");
-          nav.classList.replace("text-gray-600", "text-white/90");
-
-          const btnList = document.getElementById("header-btn-list");
-          const btnLogin = document.getElementById("header-btn-login");
-          if (btnList) btnList.classList.replace("text-[#1a5b6e]", "text-white");
+          header.classList.remove(
+            "bg-white/95",
+            "backdrop-blur-xl",
+            "border-b",
+            "border-gray-200/60",
+            "shadow-sm",
+            "py-2",
+          );
+          logo?.classList.replace("text-[#1a5b6e]", "text-white");
+          nav?.classList.replace("text-gray-600", "text-white/90");
+          btnList?.classList.replace("text-[#1a5b6e]", "text-white");
           if (btnLogin) {
             btnLogin.classList.replace("bg-gray-100", "bg-white/20");
             btnLogin.classList.replace("text-[#1a5b6e]", "text-white");
@@ -1525,49 +2172,24 @@
         }
       }
 
+      window.addEventListener("scroll", handleScroll);
+
       function initScrollReveal() {
-        const elements = document.querySelectorAll(".reveal-up, .reveal-right, .reveal-none");
-        const observer = new IntersectionObserver(
+        const els = document.querySelectorAll(
+          ".reveal-up:not(.reveal-visible), .reveal-right:not(.reveal-visible), .reveal-none:not(.reveal-visible)",
+        );
+        const io = new IntersectionObserver(
           (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add("reveal-visible");
-                observer.unobserve(entry.target);
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add("reveal-visible");
+                io.unobserve(e.target);
               }
             });
           },
-          { threshold: 0.1, rootMargin: "0px 0px -50px 0px" }
+          { threshold: 0.08, rootMargin: "0px 0px -40px 0px" },
         );
-        elements.forEach((el) => observer.observe(el));
-      }
-
-      // --- AI LISTING ---
-      async function generateListingDetails() {
-        const title = document.getElementById("listing-title").value;
-        if (!title.trim()) {
-          alert("Please enter a title");
-          return;
-        }
-
-        const btnIcon = document.getElementById("ai-icon");
-        const btnText = document.getElementById("ai-btn-text");
-
-        btnIcon.setAttribute("data-lucide", "loader-2");
-        btnIcon.classList.add("animate-spin");
-        btnText.textContent = "Analyzing market data...";
-        lucide.createIcons();
-
-        setTimeout(() => {
-          document.getElementById("listing-description").value =
-            `A high quality ${title} in excellent condition. Perfect for student projects. Must be returned with all original accessories.`;
-          document.getElementById("listing-price").value = 150;
-          document.getElementById("listing-deposit").value = 500;
-
-          btnIcon.setAttribute("data-lucide", "sparkles");
-          btnIcon.classList.remove("animate-spin");
-          btnText.textContent = "✨ Auto-Fill Details with AI";
-          lucide.createIcons();
-        }, 1500);
+        els.forEach((el) => io.observe(el));
       }
     </script>
   </body>
