@@ -107,7 +107,6 @@
       #listing-img-preview {
         transition: opacity 0.3s;
       }
-      /* Agreement card animation */
       @keyframes slideUp {
         0% {
           transform: translateY(20px);
@@ -655,6 +654,7 @@
       class="hidden w-full pt-28 pb-20 px-5 min-h-screen bg-[#f8f9fa]"
     >
       <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
+        <!-- Sidebar -->
         <div class="w-full md:w-56 shrink-0">
           <div
             class="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24 shadow-sm"
@@ -715,6 +715,8 @@
             </div>
           </div>
         </div>
+
+        <!-- Main Panel -->
         <div class="flex-grow">
           <div
             id="dash-rentals"
@@ -725,47 +727,26 @@
             >
               Active Rentals
             </h2>
-            <div
-              class="border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 items-center hover:border-[#1a5b6e]/20 transition-colors"
-            >
-              <img
-                src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&q=80&w=200&h=200"
-                alt="Camera"
-                class="w-24 h-24 object-cover rounded-xl bg-gray-100 shrink-0"
-              />
-              <div class="flex-grow text-center sm:text-left">
-                <div
-                  class="flex items-center justify-center sm:justify-start gap-2 mb-2"
-                >
-                  <span
-                    class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full"
-                    >Active</span
-                  ><span class="text-sm text-gray-500 font-medium"
-                    >Due in 2 days</span
-                  >
-                </div>
-                <h4 class="text-lg font-bold text-gray-900 mb-1">
-                  Sony A6400 Camera
-                </h4>
-                <p class="text-gray-500 mb-4 text-sm">
-                  Rented from: <span class="font-semibold">Maria Santos</span>
-                </p>
-                <div
-                  class="flex gap-2 justify-center sm:justify-start flex-wrap"
-                >
-                  <button
-                    onclick="switchView('messages')"
-                    class="bg-[#1a5b6e]/10 text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#1a5b6e]/20 transition-colors"
-                  >
-                    Message Owner
-                  </button>
-                  <button
-                    class="bg-[#9cd353] text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#8bc34a] transition-colors"
-                  >
-                    Return Item
-                  </button>
-                </div>
+            <!-- Dynamic rentals -->
+            <div id="rentals-list" class="space-y-4"></div>
+            <div id="rentals-empty" class="hidden text-center py-10">
+              <div
+                class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4"
+              >
+                <i data-lucide="package-open" class="w-8 h-8 text-gray-400"></i>
               </div>
+              <h3 class="text-lg font-bold text-gray-900 mb-2">
+                No active rentals
+              </h3>
+              <p class="text-gray-500 text-sm mb-5">
+                Browse items and request a rental to get started.
+              </p>
+              <button
+                onclick="switchView('browse')"
+                class="bg-[#1a5b6e] text-white px-6 py-2.5 rounded-xl font-bold text-sm hover:bg-[#25768e] transition-colors"
+              >
+                Browse Items
+              </button>
             </div>
           </div>
           <div
@@ -1374,7 +1355,7 @@
           </p>
         </div>
 
-        <!-- Borrower's Agreement Card (NEW) -->
+        <!-- Borrower's Agreement Card -->
         <div
           id="checkout-agreement"
           class="hidden p-7 overflow-y-auto agreement-enter"
@@ -1392,8 +1373,6 @@
               Please read and accept the terms before confirming.
             </p>
           </div>
-
-          <!-- Agreement Terms Card -->
           <div
             class="bg-amber-50/50 border border-amber-200 rounded-2xl p-5 mb-5 max-h-48 overflow-y-auto chat-scroll space-y-3"
           >
@@ -1448,8 +1427,7 @@
                 </p>
                 <p class="text-xs text-gray-600 mt-0.5">
                   You are responsible for any damage beyond normal wear. Your
-                  security deposit may be partially or fully forfeited to cover
-                  repairs or replacement.
+                  security deposit may be partially or fully forfeited.
                 </p>
               </div>
             </div>
@@ -1462,15 +1440,12 @@
               <div>
                 <p class="text-sm font-bold text-gray-800">Secure Escrow</p>
                 <p class="text-xs text-gray-600 mt-0.5">
-                  Your payment is held securely in escrow. The owner only
-                  receives the rental fee once the item is returned and
-                  confirmed.
+                  Your payment is held securely in escrow until the item is
+                  returned and confirmed.
                 </p>
               </div>
             </div>
           </div>
-
-          <!-- Acknowledgment Checkbox -->
           <label
             class="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors mb-5 border border-gray-200"
           >
@@ -1486,8 +1461,6 @@
               these terms may result in forfeiture of my security deposit.</span
             >
           </label>
-
-          <!-- Action Buttons -->
           <div class="flex gap-3">
             <button
               onclick="backToCheckoutForm()"
@@ -1522,7 +1495,8 @@
             Booking Confirmed!
           </h3>
           <p class="text-gray-500 text-sm mb-7">
-            Your payment is held in escrow. Contact the owner to arrange pickup.
+            Your payment is held in escrow. The rental now appears in your
+            dashboard.
           </p>
           <button
             onclick="
@@ -1539,13 +1513,34 @@
 
     <!-- ═══════════════════════ SCRIPTS ═══════════════════════ -->
     <script>
-      // ─── DATA ───────────────────────────────────────────────
+      // --- DATA ---
       const CATEGORIES = ["All", "Tech", "Outdoors", "Tools", "Books"];
       let currentCategory = "All";
       let currentView = "home";
       let currentItemForCheckout = null;
       let nextId = 100;
       let MY_LISTINGS = [];
+
+      // Active rentals – loaded from localStorage
+      let userActiveRentals = [];
+
+      function loadRentals() {
+        const stored = localStorage.getItem("hulam_rentals");
+        if (stored) {
+          try {
+            userActiveRentals = JSON.parse(stored);
+          } catch (e) {
+            userActiveRentals = [];
+          }
+        }
+      }
+
+      function saveRentals() {
+        localStorage.setItem(
+          "hulam_rentals",
+          JSON.stringify(userActiveRentals),
+        );
+      }
 
       let ALL_ITEMS = [
         {
@@ -1679,10 +1674,11 @@
         },
       ];
 
-      // ─── INIT ───────────────────────────────────────────────
+      // --- INIT ---
       document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("current-year").textContent =
           new Date().getFullYear();
+        loadRentals(); // load rentals from localStorage
         renderFeatures();
         renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
         renderBrowseCategories();
@@ -1693,7 +1689,7 @@
         handleScroll();
       });
 
-      // ─── TOAST ──────────────────────────────────────────────
+      // --- TOAST ---
       function showToast(msg, icon = "check-circle") {
         const toast = document.getElementById("toast");
         document.getElementById("toast-msg").textContent = msg;
@@ -1701,13 +1697,12 @@
         setTimeout(() => toast.classList.remove("show"), 3000);
       }
 
-      // ─── CMU EMAIL CHECK ────────────────────────────────────
+      // --- CMU EMAIL CHECK ---
       function isCMUEmail(email) {
-        if (!email) return false;
-        return email.toLowerCase().endsWith("@cmu.edu.ph");
+        return email && email.toLowerCase().endsWith("@cmu.edu.ph");
       }
 
-      // ─── AUTH ───────────────────────────────────────────────
+      // --- AUTH ---
       function getUser() {
         return localStorage.getItem("hulam_user");
       }
@@ -1735,7 +1730,6 @@
           if (se) se.value = uname;
           if (em) em.value = user;
 
-          // Toggle Scholar Verified badges based on email domain
           document
             .querySelectorAll(".scholar-verified-badge")
             .forEach((badge) => {
@@ -1753,13 +1747,10 @@
           inn?.classList.remove("flex");
           out?.classList.remove("hidden");
           out?.classList.add("flex");
-          // Hide all scholar badges
-          document.querySelectorAll(".scholar-verified-badge").forEach((b) => {
-            b.classList.add("hidden");
-            b.classList.remove("flex");
-          });
           document
-            .querySelectorAll(".scholar-unverified-badge")
+            .querySelectorAll(
+              ".scholar-verified-badge, .scholar-unverified-badge",
+            )
             .forEach((b) => {
               b.classList.add("hidden");
               b.classList.remove("flex");
@@ -1775,14 +1766,11 @@
         toggleModal("login-modal", false);
         checkAuth();
         switchView("dashboard");
-        const isCMU = isCMUEmail(email);
-        if (isCMU) {
-          showToast("Welcome, Scholar! 🎓");
-        } else {
-          showToast(
-            "Welcome to HULAM! Note: Scholar verification requires a @cmu.edu.ph email.",
-          );
-        }
+        showToast(
+          isCMUEmail(email)
+            ? "Welcome, Scholar! 🎓"
+            : "Welcome to HULAM! Note: Scholar verification requires a @cmu.edu.ph email.",
+        );
       }
 
       function handleLogout() {
@@ -1797,24 +1785,21 @@
         else toggleModal("login-modal", true);
       }
 
-      // ─── MODALS ──────────────────────────────────────────────
+      // --- MODALS ---
       function toggleModal(id, show) {
         const modal = document.getElementById(id);
         const content = document.getElementById(`${id}-content`);
         if (!modal || !content) return;
-
         if (id === "checkout-modal" && show) {
           document.getElementById("checkout-form")?.classList.remove("hidden");
           document
             .getElementById("checkout-agreement")
             ?.classList.add("hidden");
           document.getElementById("checkout-success")?.classList.add("hidden");
-          // Reset agreement checkbox
           const checkbox = document.getElementById("agreement-checkbox");
           if (checkbox) checkbox.checked = false;
           updateAgreementButton();
         }
-
         if (show) {
           modal.classList.remove("hidden");
           requestAnimationFrame(() => {
@@ -1835,16 +1820,13 @@
         });
       });
 
-      // ─── AGREEMENT FLOW ──────────────────────────────────────
+      // --- AGREEMENT FLOW ---
       function showAgreement() {
         document.getElementById("checkout-form").classList.add("hidden");
         const agreement = document.getElementById("checkout-agreement");
         agreement.classList.remove("hidden");
-        // Reset checkbox
-        const checkbox = document.getElementById("agreement-checkbox");
-        if (checkbox) checkbox.checked = false;
+        document.getElementById("agreement-checkbox").checked = false;
         updateAgreementButton();
-        // Re-trigger animation
         agreement.classList.remove("agreement-enter");
         void agreement.offsetWidth;
         agreement.classList.add("agreement-enter");
@@ -1873,12 +1855,27 @@
       }
 
       function finalizeBooking() {
+        if (!currentItemForCheckout) return;
+        const days = parseInt(document.getElementById("co-days").value) || 1;
+        const dueIn = days === 1 ? "1 day" : `${days} days`;
+        const rental = {
+          id: Date.now(),
+          title: currentItemForCheckout.title,
+          image: currentItemForCheckout.image,
+          days: days,
+          total: document.getElementById("co-total").textContent,
+          owner: "Maria Santos", // demo owner – replace with real data if available
+          dueIn: dueIn,
+        };
+        userActiveRentals.push(rental);
+        saveRentals(); // persist
+
         document.getElementById("checkout-agreement").classList.add("hidden");
         document.getElementById("checkout-success").classList.remove("hidden");
         lucide.createIcons();
       }
 
-      // ─── LISTING PUBLISH ─────────────────────────────────────
+      // --- LISTING PUBLISH ---
       function publishListing() {
         const title = document.getElementById("listing-title").value.trim();
         const desc = document
@@ -1970,7 +1967,6 @@
         }
       }
 
-      // ─── AI AUTO-FILL ─────────────────────────────────────────
       async function generateListingDetails() {
         const title = document.getElementById("listing-title").value.trim();
         if (!title) {
@@ -1986,14 +1982,12 @@
         txt.textContent = "Analyzing market data…";
         lucide.createIcons();
         await new Promise((r) => setTimeout(r, 1500));
-        const suggestions = {
-          price: Math.round((80 + Math.random() * 320) / 10) * 10,
-          deposit: Math.round((300 + Math.random() * 1200) / 100) * 100,
-        };
         document.getElementById("listing-description").value =
           `A well-maintained ${title} in excellent condition, perfect for student projects and short-term needs. Must be returned with all original accessories and in the same condition as received.`;
-        document.getElementById("listing-price").value = suggestions.price;
-        document.getElementById("listing-deposit").value = suggestions.deposit;
+        document.getElementById("listing-price").value =
+          Math.round((80 + Math.random() * 320) / 10) * 10;
+        document.getElementById("listing-deposit").value =
+          Math.round((300 + Math.random() * 1200) / 100) * 100;
         icon.setAttribute("data-lucide", "sparkles");
         icon.classList.remove("animate-spin");
         txt.textContent = "✨ Auto-Fill Details with AI";
@@ -2002,15 +1996,14 @@
         showToast("AI has filled in the details!");
       }
 
-      // ─── RENDER ───────────────────────────────────────────────
+      // --- RENDER ---
       function renderFeatures() {
         const grid = document.getElementById("features-grid");
         grid.innerHTML = FEATURES.map(
           (f, i) => `
           <div class="reveal-up bg-white p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-500 border border-gray-100" style="transition-delay:${i * 120}ms">
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${f.bg}"><i data-lucide="${f.icon}" class="w-7 h-7 ${f.color}"></i></div>
-            <h4 class="text-xl font-bold mb-3 tracking-tight">${f.title}</h4>
-            <p class="text-gray-500 leading-relaxed font-light">${f.desc}</p>
+            <h4 class="text-xl font-bold mb-3 tracking-tight">${f.title}</h4><p class="text-gray-500 leading-relaxed font-light">${f.desc}</p>
           </div>`,
         ).join("");
       }
@@ -2028,7 +2021,8 @@
         grid.innerHTML = items
           .map(
             (item, i) => `
-          <div class="item-card reveal-up bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-400 group flex flex-col" onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
+          <div class="item-card reveal-up bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-400 group flex flex-col"
+               onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
             <div class="relative bg-gray-100 overflow-hidden" style="height:200px">
               <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-600 ease-out" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
               <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-2.5 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
@@ -2086,7 +2080,43 @@
         showToast("Listing removed.");
       }
 
-      // ─── BROWSE LOGIC ─────────────────────────────────────────
+      // --- DASHBOARD RENTALS RENDERING ---
+      function renderActiveRentals() {
+        const listEl = document.getElementById("rentals-list");
+        const emptyEl = document.getElementById("rentals-empty");
+        if (!listEl) return;
+
+        if (userActiveRentals.length === 0) {
+          listEl.innerHTML = "";
+          emptyEl.classList.remove("hidden");
+          return;
+        }
+        emptyEl.classList.add("hidden");
+        listEl.innerHTML = userActiveRentals
+          .map(
+            (rental) => `
+          <div class="border border-gray-100 rounded-2xl p-5 flex flex-col sm:flex-row gap-5 items-center hover:border-[#1a5b6e]/20 transition-colors">
+            <img src="${rental.image}" alt="${rental.title}" class="w-24 h-24 object-cover rounded-xl bg-gray-100 shrink-0" />
+            <div class="flex-grow text-center sm:text-left">
+              <div class="flex items-center justify-center sm:justify-start gap-2 mb-2">
+                <span class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full">Active</span>
+                <span class="text-sm text-gray-500 font-medium">Due in ${rental.dueIn}</span>
+              </div>
+              <h4 class="text-lg font-bold text-gray-900 mb-1">${rental.title}</h4>
+              <p class="text-gray-500 mb-4 text-sm">Rented from: <span class="font-semibold">${rental.owner}</span></p>
+              <div class="flex gap-2 justify-center sm:justify-start flex-wrap">
+                <button onclick="switchView('messages')" class="bg-[#1a5b6e]/10 text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#1a5b6e]/20 transition-colors">Message Owner</button>
+                <button class="bg-[#9cd353] text-[#1a5b6e] px-4 py-2 rounded-xl font-bold text-xs hover:bg-[#8bc34a] transition-colors">Return Item</button>
+              </div>
+            </div>
+          </div>
+        `,
+          )
+          .join("");
+        lucide.createIcons();
+      }
+
+      // --- BROWSE LOGIC ---
       function renderBrowseCategories() {
         const container = document.getElementById("category-filters");
         container.innerHTML = CATEGORIES.map(
@@ -2121,7 +2151,7 @@
         setCategory("All");
       }
 
-      // ─── NAVIGATION ───────────────────────────────────────────
+      // --- NAVIGATION ---
       function switchView(view) {
         currentView = view;
         ["home", "browse", "item-detail", "dashboard", "messages"].forEach(
@@ -2144,10 +2174,11 @@
         if (view === "dashboard") {
           checkAuth();
           renderMyListings();
+          renderActiveRentals(); // 👈 always refresh
         }
       }
 
-      // ─── DASHBOARD TABS ───────────────────────────────────────
+      // --- DASHBOARD TABS ---
       function showDashTab(tab) {
         ["rentals", "listings", "settings"].forEach((t) => {
           const panel = document.getElementById(`dash-${t}`);
@@ -2178,7 +2209,7 @@
         });
       }
 
-      // ─── ITEM DETAIL ──────────────────────────────────────────
+      // --- ITEM DETAIL ---
       function openItemDetail(id) {
         currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
         if (!currentItemForCheckout) return;
@@ -2200,13 +2231,14 @@
         switchView("item-detail");
       }
 
-      // ─── CHECKOUT ─────────────────────────────────────────────
+      // --- CHECKOUT ---
       function openCheckout() {
         if (!currentItemForCheckout) return;
-        const item = currentItemForCheckout;
-        document.getElementById("co-image").src = item.image;
-        document.getElementById("co-title").textContent = item.title;
-        document.getElementById("co-rate").textContent = item.pricePerDay;
+        document.getElementById("co-image").src = currentItemForCheckout.image;
+        document.getElementById("co-title").textContent =
+          currentItemForCheckout.title;
+        document.getElementById("co-rate").textContent =
+          currentItemForCheckout.pricePerDay;
         document.getElementById("co-days").value = 1;
         calculateTotal();
         toggleModal("checkout-modal", true);
@@ -2215,9 +2247,8 @@
       function calculateTotal() {
         if (!currentItemForCheckout) return;
         const days = parseInt(document.getElementById("co-days").value) || 1;
-        const rate = currentItemForCheckout.pricePerDay;
+        const fee = days * currentItemForCheckout.pricePerDay;
         const dep = currentItemForCheckout.deposit;
-        const fee = days * rate;
         document.getElementById("co-calc-days").textContent = days;
         document.getElementById("co-calc-fee").textContent =
           fee.toLocaleString();
@@ -2228,7 +2259,7 @@
         ).toLocaleString();
       }
 
-      // ─── SCROLL EFFECTS ───────────────────────────────────────
+      // --- SCROLL EFFECTS ---
       function handleScroll() {
         const header = document.getElementById("main-header");
         const logo = document.getElementById("header-logo-text");
@@ -2273,7 +2304,6 @@
           }
         }
       }
-
       window.addEventListener("scroll", handleScroll);
 
       function initScrollReveal() {
