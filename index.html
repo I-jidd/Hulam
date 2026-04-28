@@ -19,7 +19,6 @@
       body {
         font-family: "Plus Jakarta Sans", sans-serif;
       }
-
       @keyframes slowPan {
         0% {
           transform: scale(1.05) translate(0, 0);
@@ -31,7 +30,6 @@
       .animate-slowPan {
         animation: slowPan 22s ease-in-out infinite alternate;
       }
-
       .reveal-up {
         opacity: 0;
         transform: translateY(2.5rem);
@@ -51,7 +49,6 @@
         opacity: 1 !important;
         transform: translate(0, 0) scale(1) !important;
       }
-
       .hide-scrollbar::-webkit-scrollbar {
         display: none;
       }
@@ -59,7 +56,6 @@
         -ms-overflow-style: none;
         scrollbar-width: none;
       }
-
       .chat-scroll::-webkit-scrollbar {
         width: 5px;
       }
@@ -70,27 +66,18 @@
         background-color: #e5e7eb;
         border-radius: 20px;
       }
-
       .nav-link-active {
         color: #9cd353 !important;
       }
-
-      /* Image fallback */
       img {
         background: #f3f4f6;
       }
-
-      /* Card hover fix - avoid content shift */
       .item-card {
         will-change: transform;
       }
-
-      /* Smooth modal backdrop */
       .modal-backdrop {
         backdrop-filter: blur(8px);
       }
-
-      /* Toast */
       #toast {
         position: fixed;
         bottom: 2rem;
@@ -112,17 +99,27 @@
       #toast.show {
         transform: translateX(-50%) translateY(0);
       }
-
-      /* Dashboard tab active state */
       .dash-tab-active {
         background: #f0f7f9;
         color: #1a5b6e !important;
         font-weight: 700;
       }
-
-      /* Listing image preview */
       #listing-img-preview {
         transition: opacity 0.3s;
+      }
+      /* Agreement card animation */
+      @keyframes slideUp {
+        0% {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        100% {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .agreement-enter {
+        animation: slideUp 0.35s ease-out;
       }
     </style>
   </head>
@@ -143,7 +140,6 @@
       <div
         class="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4"
       >
-        <!-- Logo -->
         <div
           class="flex items-center cursor-pointer group shrink-0"
           onclick="switchView('home')"
@@ -167,8 +163,6 @@
             </h1>
           </div>
         </div>
-
-        <!-- Nav Links -->
         <nav
           id="header-nav"
           class="hidden md:flex items-center gap-8 font-semibold text-sm tracking-wide transition-colors text-white/90"
@@ -186,8 +180,6 @@
             >Browse Items</a
           >
         </nav>
-
-        <!-- Auth Logged OUT -->
         <div id="auth-logged-out" class="flex items-center gap-3">
           <button
             onclick="toggleModal('login-modal', true)"
@@ -203,8 +195,6 @@
             Sign Up
           </button>
         </div>
-
-        <!-- Auth Logged IN -->
         <div id="auth-logged-in" class="hidden items-center gap-3">
           <button
             onclick="requireAuth(() => toggleModal('listing-modal', true))"
@@ -220,7 +210,6 @@
             >
               <i data-lucide="user" class="w-4 h-4"></i>
             </div>
-            <!-- Dropdown -->
             <div
               class="absolute right-0 mt-2 w-52 bg-white rounded-2xl shadow-2xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform origin-top-right scale-95 group-hover:scale-100 z-50"
             >
@@ -232,10 +221,15 @@
                   User
                 </p>
                 <p
-                  class="text-xs text-[#9cd353] font-bold flex items-center gap-1 mt-1"
+                  class="scholar-verified-badge text-xs text-[#9cd353] font-bold flex items-center gap-1 mt-1"
                 >
                   <i data-lucide="shield-check" class="w-3 h-3"></i> Scholar
                   Verified
+                </p>
+                <p
+                  class="scholar-unverified-badge hidden text-xs text-gray-400 font-medium flex items-center gap-1 mt-1"
+                >
+                  <i data-lucide="user" class="w-3 h-3"></i> Community Member
                 </p>
               </div>
               <div class="p-2">
@@ -275,7 +269,6 @@
 
     <!-- ═══════════════════════ HOME VIEW ═══════════════════════ -->
     <div id="home-view" class="block">
-      <!-- Hero -->
       <section
         class="relative min-h-[88vh] w-full flex items-center justify-center pt-20 overflow-hidden"
       >
@@ -297,7 +290,6 @@
             ></div>
           </div>
         </div>
-
         <div class="relative z-10 text-center px-5 max-w-4xl mx-auto">
           <div class="reveal-up" style="transition-delay: 100ms">
             <div
@@ -345,8 +337,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Stats Bar -->
           <div class="reveal-up mt-14" style="transition-delay: 550ms">
             <div class="flex items-center justify-center gap-8 md:gap-16">
               <div class="text-center">
@@ -379,12 +369,9 @@
           </div>
         </div>
       </section>
-
-      <!-- Content section -->
       <div
         class="bg-[#f8f9fa] relative z-10 -mt-10 rounded-t-[2.5rem] px-4 sm:px-6 pb-24"
       >
-        <!-- Why HULAM -->
         <section class="pt-24 pb-16 max-w-6xl mx-auto">
           <div class="reveal-up text-center mb-14">
             <span
@@ -406,8 +393,6 @@
             id="features-grid"
           ></div>
         </section>
-
-        <!-- Trending -->
         <section class="pb-16 max-w-6xl mx-auto">
           <div class="reveal-up flex items-end justify-between mb-10">
             <div>
@@ -436,8 +421,6 @@
             id="items-grid"
           ></div>
         </section>
-
-        <!-- CTA Banner -->
         <section class="max-w-6xl mx-auto">
           <div
             class="reveal-none bg-gradient-to-br from-[#1a5b6e] to-[#0f3440] rounded-3xl p-10 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative"
@@ -477,8 +460,6 @@
             Find exactly what you need for your next project or adventure.
           </p>
         </div>
-
-        <!-- Search + Filter -->
         <div
           class="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-gray-100 mb-8 flex flex-col sm:flex-row gap-3"
         >
@@ -500,14 +481,10 @@
             id="category-filters"
           ></div>
         </div>
-
-        <!-- Browse Grid -->
         <div
           class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
           id="browse-grid"
         ></div>
-
-        <!-- Empty State -->
         <div id="browse-empty" class="hidden text-center py-20">
           <div
             class="w-16 h-16 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-5"
@@ -543,11 +520,9 @@
             Back to marketplace
           </button>
         </div>
-
         <div
           class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden"
         >
-          <!-- Image Banner -->
           <div class="relative h-72 sm:h-96 overflow-hidden bg-gray-100">
             <img
               id="detail-image"
@@ -576,11 +551,8 @@
               <span id="detail-rating">5.0</span>
             </div>
           </div>
-
-          <!-- Content -->
           <div class="p-7 sm:p-10">
             <div class="flex flex-col lg:flex-row gap-10">
-              <!-- Left -->
               <div class="flex-grow">
                 <h1
                   id="detail-title"
@@ -590,7 +562,6 @@
                   id="detail-description"
                   class="text-gray-600 text-base leading-relaxed mb-8"
                 ></p>
-
                 <div class="grid grid-cols-2 gap-4">
                   <div
                     class="bg-gray-50 rounded-2xl p-4 flex items-center gap-3"
@@ -641,8 +612,6 @@
                   </div>
                 </div>
               </div>
-
-              <!-- Right - Booking Card -->
               <div class="lg:w-72 shrink-0">
                 <div
                   class="bg-gray-50 rounded-2xl p-6 border border-gray-100 sticky top-28"
@@ -657,8 +626,7 @@
                       id="detail-price"
                       class="text-4xl font-black text-[#1a5b6e] tracking-tighter"
                       >₱0</span
-                    >
-                    <span class="text-gray-500 font-medium mb-1">/ day</span>
+                    ><span class="text-gray-500 font-medium mb-1">/ day</span>
                   </div>
                   <button
                     onclick="requireAuth(() => openCheckout())"
@@ -687,7 +655,6 @@
       class="hidden w-full pt-28 pb-20 px-5 min-h-screen bg-[#f8f9fa]"
     >
       <div class="max-w-5xl mx-auto flex flex-col md:flex-row gap-6">
-        <!-- Sidebar -->
         <div class="w-full md:w-56 shrink-0">
           <div
             class="bg-white rounded-2xl border border-gray-100 p-5 sticky top-24 shadow-sm"
@@ -705,10 +672,15 @@
               User Name
             </h3>
             <p
-              class="text-xs text-center text-[#9cd353] font-bold flex items-center justify-center gap-1 mt-1 mb-5"
+              class="scholar-verified-badge text-xs text-center text-[#9cd353] font-bold flex items-center justify-center gap-1 mt-1 mb-5"
             >
               <i data-lucide="shield-check" class="w-3 h-3"></i> Scholar
               Verified
+            </p>
+            <p
+              class="scholar-unverified-badge hidden text-xs text-center text-gray-400 font-medium flex items-center justify-center gap-1 mt-1 mb-5"
+            >
+              <i data-lucide="user" class="w-3 h-3"></i> Community Member
             </p>
             <div class="space-y-1">
               <button
@@ -743,10 +715,7 @@
             </div>
           </div>
         </div>
-
-        <!-- Main -->
         <div class="flex-grow">
-          <!-- Rentals Tab -->
           <div
             id="dash-rentals"
             class="bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
@@ -771,8 +740,7 @@
                   <span
                     class="bg-green-100 text-green-700 text-xs font-bold px-2.5 py-1 rounded-full"
                     >Active</span
-                  >
-                  <span class="text-sm text-gray-500 font-medium"
+                  ><span class="text-sm text-gray-500 font-medium"
                     >Due in 2 days</span
                   >
                 </div>
@@ -800,8 +768,6 @@
               </div>
             </div>
           </div>
-
-          <!-- Listings Tab -->
           <div
             id="dash-listings"
             class="hidden bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
@@ -820,9 +786,7 @@
             <div
               id="my-listings-grid"
               class="grid grid-cols-1 sm:grid-cols-2 gap-4"
-            >
-              <!-- Filled by JS -->
-            </div>
+            ></div>
             <div id="my-listings-empty" class="hidden text-center py-14">
               <div
                 class="w-14 h-14 bg-gray-100 rounded-2xl flex items-center justify-center mx-auto mb-4"
@@ -843,8 +807,6 @@
               </button>
             </div>
           </div>
-
-          <!-- Settings Tab -->
           <div
             id="dash-settings"
             class="hidden bg-white rounded-2xl border border-gray-100 p-7 shadow-sm"
@@ -858,8 +820,7 @@
               <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1.5"
                   >Display Name</label
-                >
-                <input
+                ><input
                   type="text"
                   id="settings-name"
                   class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none"
@@ -868,8 +829,7 @@
               <div>
                 <label class="block text-sm font-bold text-gray-700 mb-1.5"
                   >Email</label
-                >
-                <input
+                ><input
                   type="email"
                   id="settings-email"
                   class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none"
@@ -896,7 +856,6 @@
           class="bg-white rounded-2xl shadow-sm border border-gray-100 flex overflow-hidden"
           style="height: calc(100vh - 8rem)"
         >
-          <!-- Contacts Sidebar -->
           <div
             class="w-72 border-r border-gray-100 flex flex-col bg-white shrink-0 hidden sm:flex"
           >
@@ -940,10 +899,7 @@
               </div>
             </div>
           </div>
-
-          <!-- Chat Area -->
           <div class="flex-grow flex flex-col bg-[#f8f9fa] min-w-0">
-            <!-- Chat Header -->
             <div
               class="p-4 bg-white border-b border-gray-100 flex items-center gap-3 shrink-0"
             >
@@ -957,8 +913,6 @@
                 <p class="text-xs text-gray-500">Sony A6400 Camera Rental</p>
               </div>
             </div>
-
-            <!-- Messages -->
             <div class="flex-grow p-5 overflow-y-auto chat-scroll space-y-3">
               <div class="flex justify-start">
                 <div
@@ -985,8 +939,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- Input -->
             <div class="p-4 bg-white border-t border-gray-100 shrink-0">
               <div
                 class="flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full p-1.5 focus-within:border-[#1a5b6e] focus-within:ring-2 ring-[#1a5b6e]/20 transition-all"
@@ -1128,10 +1080,8 @@
             <i data-lucide="x" class="w-4 h-4"></i>
           </button>
         </div>
-
         <div class="p-7 overflow-y-auto flex-grow">
           <div class="space-y-5">
-            <!-- Image Upload Area -->
             <div>
               <label
                 class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
@@ -1166,26 +1116,22 @@
                 class="mt-2 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium placeholder-gray-300"
               />
             </div>
-
             <div>
               <label
                 class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                 >Item Title *</label
-              >
-              <input
+              ><input
                 type="text"
                 id="listing-title"
                 placeholder="e.g., Sony A6400 Camera"
                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
               />
             </div>
-
             <div>
               <label
                 class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                 >Category</label
-              >
-              <select
+              ><select
                 id="listing-category"
                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
               >
@@ -1195,7 +1141,6 @@
                 <option value="Books">Books</option>
               </select>
             </div>
-
             <button
               id="ai-trigger-btn"
               onclick="generateListingDetails()"
@@ -1208,40 +1153,34 @@
               ></i>
               <span id="ai-btn-text">✨ Auto-Fill Details with AI</span>
             </button>
-
             <div>
               <label
                 class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                 >Description *</label
-              >
-              <textarea
+              ><textarea
                 id="listing-description"
                 rows="3"
                 placeholder="Describe your item..."
                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all resize-none font-medium text-sm"
               ></textarea>
             </div>
-
             <div>
               <label
                 class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                 >Location</label
-              >
-              <input
+              ><input
                 type="text"
                 id="listing-location"
                 placeholder="e.g., USC Main, Talamban"
                 class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium text-sm"
               />
             </div>
-
             <div class="grid grid-cols-2 gap-4">
               <div>
                 <label
                   class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                   >Daily Rate (₱) *</label
-                >
-                <input
+                ><input
                   type="number"
                   id="listing-price"
                   placeholder="150"
@@ -1252,8 +1191,7 @@
                 <label
                   class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
                   >Deposit (₱)</label
-                >
-                <input
+                ><input
                   type="number"
                   id="listing-deposit"
                   placeholder="500"
@@ -1263,7 +1201,6 @@
             </div>
           </div>
         </div>
-
         <div
           class="px-7 py-4 border-t border-gray-100 bg-gray-50 rounded-b-3xl flex justify-end gap-3 shrink-0"
         >
@@ -1303,18 +1240,16 @@
         <p class="text-gray-500 text-sm mb-7">
           Sign in to rent items or list your gear.
         </p>
-
         <form onsubmit="handleLogin(event)" class="space-y-3.5 text-left">
           <div>
             <label
               class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide"
               >Email</label
-            >
-            <input
+            ><input
               type="email"
               id="login-email"
               required
-              placeholder="student@usc.edu.ph"
+              placeholder="student@cmu.edu.ph"
               class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:bg-white focus:ring-4 focus:border-[#1a5b6e] outline-none font-medium"
             />
           </div>
@@ -1322,8 +1257,7 @@
             <label
               class="block text-xs font-bold text-gray-700 mb-1.5 uppercase tracking-wide"
               >Password</label
-            >
-            <input
+            ><input
               type="password"
               required
               placeholder="••••••••"
@@ -1346,7 +1280,7 @@
       </div>
     </div>
 
-    <!-- CHECKOUT MODAL -->
+    <!-- CHECKOUT MODAL (with Borrower's Agreement) -->
     <div
       id="checkout-modal"
       class="fixed inset-0 bg-[#0f3440]/70 z-[100] flex items-center justify-center p-4 modal-backdrop transition-opacity duration-300 opacity-0 pointer-events-none hidden"
@@ -1369,6 +1303,7 @@
           </button>
         </div>
 
+        <!-- Checkout Form -->
         <div id="checkout-form" class="p-7 overflow-y-auto">
           <div
             class="flex gap-4 mb-7 bg-gray-50 p-4 rounded-2xl border border-gray-100"
@@ -1391,7 +1326,6 @@
               </p>
             </div>
           </div>
-
           <div class="mb-6">
             <label
               class="block text-xs font-bold text-gray-700 mb-2 uppercase tracking-wide"
@@ -1406,19 +1340,18 @@
               class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 focus:ring-4 focus:border-[#1a5b6e] outline-none font-bold text-lg"
             />
           </div>
-
           <div
             class="bg-gray-50 rounded-2xl p-5 border border-gray-100 mb-6 space-y-2.5"
           >
             <div class="flex justify-between text-gray-600 text-sm">
-              <span>Rental Fee (<span id="co-calc-days">1</span> days)</span>
-              <span class="font-semibold"
+              <span>Rental Fee (<span id="co-calc-days">1</span> days)</span
+              ><span class="font-semibold"
                 >₱<span id="co-calc-fee">0</span></span
               >
             </div>
             <div class="flex justify-between text-gray-600 text-sm">
-              <span>Security Deposit (Refundable)</span>
-              <span class="font-semibold"
+              <span>Security Deposit (Refundable)</span
+              ><span class="font-semibold"
                 >₱<span id="co-calc-dep">0</span></span
               >
             </div>
@@ -1426,17 +1359,152 @@
             <div
               class="flex justify-between text-[#1a5b6e] font-extrabold text-lg"
             >
-              <span>Total to Pay</span>
-              <span>₱<span id="co-total">0</span></span>
+              <span>Total to Pay</span
+              ><span>₱<span id="co-total">0</span></span>
+            </div>
+          </div>
+          <button
+            onclick="showAgreement()"
+            class="w-full bg-[#9cd353] text-[#1a5b6e] py-4 rounded-2xl font-extrabold text-base hover:bg-[#8bc34a] shadow-[0_4px_14px_0_rgba(156,211,83,0.4)] transition-all active:scale-95"
+          >
+            Continue to Agreement
+          </button>
+          <p class="text-xs text-gray-400 text-center mt-3">
+            You'll review the borrower's agreement next.
+          </p>
+        </div>
+
+        <!-- Borrower's Agreement Card (NEW) -->
+        <div
+          id="checkout-agreement"
+          class="hidden p-7 overflow-y-auto agreement-enter"
+        >
+          <div class="text-center mb-6">
+            <div
+              class="w-16 h-16 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-4"
+            >
+              <i data-lucide="file-text" class="w-8 h-8 text-amber-600"></i>
+            </div>
+            <h3 class="text-xl font-extrabold text-gray-900 tracking-tight">
+              Borrower's Agreement
+            </h3>
+            <p class="text-sm text-gray-500 mt-1">
+              Please read and accept the terms before confirming.
+            </p>
+          </div>
+
+          <!-- Agreement Terms Card -->
+          <div
+            class="bg-amber-50/50 border border-amber-200 rounded-2xl p-5 mb-5 max-h-48 overflow-y-auto chat-scroll space-y-3"
+          >
+            <div class="flex items-start gap-3">
+              <div
+                class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i
+                  data-lucide="shield-check"
+                  class="w-3.5 h-3.5 text-amber-700"
+                ></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Return in Same Condition
+                </p>
+                <p class="text-xs text-gray-600 mt-0.5">
+                  The item must be returned in the same condition as received,
+                  excluding normal wear and tear.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div
+                class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i
+                  data-lucide="calendar"
+                  class="w-3.5 h-3.5 text-amber-700"
+                ></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">Return On Time</p>
+                <p class="text-xs text-gray-600 mt-0.5">
+                  Late returns incur a penalty of
+                  <strong>1.5× the daily rate</strong> for each additional day.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div
+                class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i
+                  data-lucide="alert-triangle"
+                  class="w-3.5 h-3.5 text-amber-700"
+                ></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">
+                  Damage & Loss Liability
+                </p>
+                <p class="text-xs text-gray-600 mt-0.5">
+                  You are responsible for any damage beyond normal wear. Your
+                  security deposit may be partially or fully forfeited to cover
+                  repairs or replacement.
+                </p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <div
+                class="w-6 h-6 rounded-full bg-amber-100 flex items-center justify-center shrink-0 mt-0.5"
+              >
+                <i data-lucide="lock" class="w-3.5 h-3.5 text-amber-700"></i>
+              </div>
+              <div>
+                <p class="text-sm font-bold text-gray-800">Secure Escrow</p>
+                <p class="text-xs text-gray-600 mt-0.5">
+                  Your payment is held securely in escrow. The owner only
+                  receives the rental fee once the item is returned and
+                  confirmed.
+                </p>
+              </div>
             </div>
           </div>
 
-          <button
-            onclick="confirmBooking()"
-            class="w-full bg-[#9cd353] text-[#1a5b6e] py-4 rounded-2xl font-extrabold text-base hover:bg-[#8bc34a] shadow-[0_4px_14px_0_rgba(156,211,83,0.4)] transition-all active:scale-95"
+          <!-- Acknowledgment Checkbox -->
+          <label
+            class="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl cursor-pointer hover:bg-gray-100 transition-colors mb-5 border border-gray-200"
           >
-            Confirm &amp; Pay Securely
-          </button>
+            <input
+              type="checkbox"
+              id="agreement-checkbox"
+              onchange="updateAgreementButton()"
+              class="w-5 h-5 accent-[#1a5b6e] rounded mt-0.5 shrink-0"
+            />
+            <span class="text-sm text-gray-700 font-medium"
+              >I have read and agree to the
+              <strong>Borrower's Agreement</strong>. I understand that violating
+              these terms may result in forfeiture of my security deposit.</span
+            >
+          </label>
+
+          <!-- Action Buttons -->
+          <div class="flex gap-3">
+            <button
+              onclick="backToCheckoutForm()"
+              class="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-xl font-bold text-sm hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+            >
+              <i data-lucide="chevron-left" class="w-4 h-4"></i> Back
+            </button>
+            <button
+              id="agreement-confirm-btn"
+              onclick="finalizeBooking()"
+              disabled
+              class="flex-1 bg-[#9cd353] text-[#1a5b6e] px-4 py-3 rounded-xl font-extrabold text-sm transition-all flex items-center justify-center gap-2 opacity-50 cursor-not-allowed shadow-[0_4px_14px_0_rgba(156,211,83,0.4)]"
+            >
+              <i data-lucide="check-circle" class="w-4 h-4"></i> I Agree &
+              Confirm
+            </button>
+          </div>
         </div>
 
         <!-- Success State -->
@@ -1477,18 +1545,15 @@
       let currentView = "home";
       let currentItemForCheckout = null;
       let nextId = 100;
-
-      // In-memory store for user-published listings
       let MY_LISTINGS = [];
 
-      // Seed items with reliable Unsplash images
       let ALL_ITEMS = [
         {
           id: 1,
           category: "Tech",
           title: "HD Projector",
           pricePerDay: 150,
-          deposit: 200,
+          deposit: 500,
           location: "USC Main",
           distance: "3 mins away",
           rating: 5.0,
@@ -1502,8 +1567,8 @@
           id: 2,
           category: "Outdoors",
           title: "Camping Tent",
-          pricePerDay: 150,
-          deposit: 200,
+          pricePerDay: 200,
+          deposit: 1000,
           location: "Talamban",
           distance: "5 mins away",
           rating: 5.0,
@@ -1518,7 +1583,7 @@
           category: "Tools",
           title: "Sewing Machine",
           pricePerDay: 100,
-          deposit: 200,
+          deposit: 800,
           location: "Lahug",
           distance: "15 mins away",
           rating: 4.8,
@@ -1532,8 +1597,8 @@
           id: 4,
           category: "Tools",
           title: "Power Drill Set",
-          pricePerDay: 100,
-          deposit: 250,
+          pricePerDay: 150,
+          deposit: 800,
           location: "Cebu City",
           distance: "10 mins away",
           rating: 5.0,
@@ -1547,8 +1612,8 @@
           id: 5,
           category: "Tech",
           title: "Sony A6400 Camera",
-          pricePerDay: 250,
-          deposit: 300,
+          pricePerDay: 400,
+          deposit: 2000,
           location: "IT Park",
           distance: "12 mins away",
           rating: 4.9,
@@ -1563,7 +1628,7 @@
           category: "Books",
           title: "Physics 101 Textbook",
           pricePerDay: 20,
-          deposit: 50,
+          deposit: 300,
           location: "USC Main",
           distance: "1 min away",
           rating: 4.5,
@@ -1577,8 +1642,8 @@
           id: 7,
           category: "Tech",
           title: "Scientific Calculator",
-          pricePerDay: 25,
-          deposit: 100,
+          pricePerDay: 50,
+          deposit: 500,
           location: "Talamban",
           distance: "8 mins away",
           rating: 5.0,
@@ -1636,6 +1701,12 @@
         setTimeout(() => toast.classList.remove("show"), 3000);
       }
 
+      // ─── CMU EMAIL CHECK ────────────────────────────────────
+      function isCMUEmail(email) {
+        if (!email) return false;
+        return email.toLowerCase().endsWith("@cmu.edu.ph");
+      }
+
       // ─── AUTH ───────────────────────────────────────────────
       function getUser() {
         return localStorage.getItem("hulam_user");
@@ -1648,6 +1719,7 @@
         const name = document.getElementById("user-display-name");
         const dn = document.getElementById("dashboard-user-name");
         const av = document.getElementById("dash-avatar");
+        const isCMU = isCMUEmail(user);
 
         if (user) {
           out?.classList.add("hidden");
@@ -1662,11 +1734,36 @@
           const em = document.getElementById("settings-email");
           if (se) se.value = uname;
           if (em) em.value = user;
+
+          // Toggle Scholar Verified badges based on email domain
+          document
+            .querySelectorAll(".scholar-verified-badge")
+            .forEach((badge) => {
+              badge.classList.toggle("hidden", !isCMU);
+              badge.classList.toggle("flex", isCMU);
+            });
+          document
+            .querySelectorAll(".scholar-unverified-badge")
+            .forEach((badge) => {
+              badge.classList.toggle("hidden", isCMU);
+              badge.classList.toggle("flex", !isCMU);
+            });
         } else {
           inn?.classList.add("hidden");
           inn?.classList.remove("flex");
           out?.classList.remove("hidden");
           out?.classList.add("flex");
+          // Hide all scholar badges
+          document.querySelectorAll(".scholar-verified-badge").forEach((b) => {
+            b.classList.add("hidden");
+            b.classList.remove("flex");
+          });
+          document
+            .querySelectorAll(".scholar-unverified-badge")
+            .forEach((b) => {
+              b.classList.add("hidden");
+              b.classList.remove("flex");
+            });
         }
         handleScroll();
       }
@@ -1678,7 +1775,14 @@
         toggleModal("login-modal", false);
         checkAuth();
         switchView("dashboard");
-        showToast("Welcome to HULAM!");
+        const isCMU = isCMUEmail(email);
+        if (isCMU) {
+          showToast("Welcome, Scholar! 🎓");
+        } else {
+          showToast(
+            "Welcome to HULAM! Note: Scholar verification requires a @cmu.edu.ph email.",
+          );
+        }
       }
 
       function handleLogout() {
@@ -1701,7 +1805,14 @@
 
         if (id === "checkout-modal" && show) {
           document.getElementById("checkout-form")?.classList.remove("hidden");
+          document
+            .getElementById("checkout-agreement")
+            ?.classList.add("hidden");
           document.getElementById("checkout-success")?.classList.add("hidden");
+          // Reset agreement checkbox
+          const checkbox = document.getElementById("agreement-checkbox");
+          if (checkbox) checkbox.checked = false;
+          updateAgreementButton();
         }
 
         if (show) {
@@ -1717,13 +1828,55 @@
         }
       }
 
-      // Close on backdrop click
       document.addEventListener("click", (e) => {
         ["login-modal", "listing-modal", "checkout-modal"].forEach((id) => {
           const modal = document.getElementById(id);
           if (modal && e.target === modal) toggleModal(id, false);
         });
       });
+
+      // ─── AGREEMENT FLOW ──────────────────────────────────────
+      function showAgreement() {
+        document.getElementById("checkout-form").classList.add("hidden");
+        const agreement = document.getElementById("checkout-agreement");
+        agreement.classList.remove("hidden");
+        // Reset checkbox
+        const checkbox = document.getElementById("agreement-checkbox");
+        if (checkbox) checkbox.checked = false;
+        updateAgreementButton();
+        // Re-trigger animation
+        agreement.classList.remove("agreement-enter");
+        void agreement.offsetWidth;
+        agreement.classList.add("agreement-enter");
+        lucide.createIcons();
+      }
+
+      function backToCheckoutForm() {
+        document.getElementById("checkout-agreement").classList.add("hidden");
+        document.getElementById("checkout-form").classList.remove("hidden");
+      }
+
+      function updateAgreementButton() {
+        const checkbox = document.getElementById("agreement-checkbox");
+        const btn = document.getElementById("agreement-confirm-btn");
+        if (checkbox && btn) {
+          if (checkbox.checked) {
+            btn.disabled = false;
+            btn.classList.remove("opacity-50", "cursor-not-allowed");
+            btn.classList.add("hover:bg-[#8bc34a]");
+          } else {
+            btn.disabled = true;
+            btn.classList.add("opacity-50", "cursor-not-allowed");
+            btn.classList.remove("hover:bg-[#8bc34a]");
+          }
+        }
+      }
+
+      function finalizeBooking() {
+        document.getElementById("checkout-agreement").classList.add("hidden");
+        document.getElementById("checkout-success").classList.remove("hidden");
+        lucide.createIcons();
+      }
 
       // ─── LISTING PUBLISH ─────────────────────────────────────
       function publishListing() {
@@ -1754,7 +1907,6 @@
           return;
         }
 
-        // Default image by category if none provided
         const defaultImages = {
           Tech: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800&h=600",
           Outdoors:
@@ -1782,7 +1934,6 @@
         ALL_ITEMS.push(newItem);
         MY_LISTINGS.push(newItem);
 
-        // Reset form
         document.getElementById("listing-title").value = "";
         document.getElementById("listing-description").value = "";
         document.getElementById("listing-price").value = "";
@@ -1794,12 +1945,9 @@
         document.getElementById("listing-img-label").style.display = "";
 
         toggleModal("listing-modal", false);
-
-        // Refresh grids
         renderItems(ALL_ITEMS.slice(0, 4), "items-grid");
         filterItems();
         renderMyListings();
-
         showToast(`"${title}" is now live!`);
         switchView("dashboard");
         setTimeout(() => showDashTab("listings"), 200);
@@ -1829,19 +1977,15 @@
           showToast("Please enter a title first.");
           return;
         }
-
         const btn = document.getElementById("ai-trigger-btn");
         const icon = document.getElementById("ai-icon");
         const txt = document.getElementById("ai-btn-text");
-
         btn.disabled = true;
         icon.setAttribute("data-lucide", "loader-2");
         icon.classList.add("animate-spin");
         txt.textContent = "Analyzing market data…";
         lucide.createIcons();
-
         await new Promise((r) => setTimeout(r, 1500));
-
         const suggestions = {
           price: Math.round((80 + Math.random() * 320) / 10) * 10,
           deposit: Math.round((300 + Math.random() * 1200) / 100) * 100,
@@ -1850,7 +1994,6 @@
           `A well-maintained ${title} in excellent condition, perfect for student projects and short-term needs. Must be returned with all original accessories and in the same condition as received.`;
         document.getElementById("listing-price").value = suggestions.price;
         document.getElementById("listing-deposit").value = suggestions.deposit;
-
         icon.setAttribute("data-lucide", "sparkles");
         icon.classList.remove("animate-spin");
         txt.textContent = "✨ Auto-Fill Details with AI";
@@ -1865,9 +2008,7 @@
         grid.innerHTML = FEATURES.map(
           (f, i) => `
           <div class="reveal-up bg-white p-8 rounded-2xl shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-500 border border-gray-100" style="transition-delay:${i * 120}ms">
-            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${f.bg}">
-              <i data-lucide="${f.icon}" class="w-7 h-7 ${f.color}"></i>
-            </div>
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 ${f.bg}"><i data-lucide="${f.icon}" class="w-7 h-7 ${f.color}"></i></div>
             <h4 class="text-xl font-bold mb-3 tracking-tight">${f.title}</h4>
             <p class="text-gray-500 leading-relaxed font-light">${f.desc}</p>
           </div>`,
@@ -1878,41 +2019,27 @@
         const grid = document.getElementById(containerId);
         const empty = document.getElementById("browse-empty");
         if (!grid) return;
-
         if (items.length === 0) {
           grid.innerHTML = "";
           empty?.classList.remove("hidden");
           return;
         }
         empty?.classList.add("hidden");
-
         grid.innerHTML = items
           .map(
             (item, i) => `
-          <div class="item-card reveal-up bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer
-               shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-400 group flex flex-col"
-               onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
+          <div class="item-card reveal-up bg-white rounded-2xl border border-gray-100 overflow-hidden cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-400 group flex flex-col" onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
             <div class="relative bg-gray-100 overflow-hidden" style="height:200px">
-              <img src="${item.image}" alt="${item.title}"
-                class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-600 ease-out"
-                onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-600 ease-out" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
               <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-2.5 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
               ${item.isOwn ? '<div class="absolute top-3 right-3 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">Your Listing</div>' : ""}
             </div>
             <div class="p-5 flex flex-col flex-grow">
               <h4 class="font-bold text-gray-900 text-base leading-tight line-clamp-1 mb-1.5">${item.title}</h4>
-              <div class="flex items-center text-xs text-gray-500 mb-4 font-medium">
-                <i data-lucide="map-pin" class="w-3 h-3 mr-1 text-[#1a5b6e]"></i>${item.distance}
-              </div>
+              <div class="flex items-center text-xs text-gray-500 mb-4 font-medium"><i data-lucide="map-pin" class="w-3 h-3 mr-1 text-[#1a5b6e]"></i>${item.distance}</div>
               <div class="mt-auto flex items-end justify-between pt-3.5 border-t border-gray-100">
-                <div>
-                  <p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Daily</p>
-                  <p class="text-xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p>
-                </div>
-                <div class="text-right">
-                  <p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Deposit</p>
-                  <p class="text-sm font-bold text-gray-600">₱${item.deposit}</p>
-                </div>
+                <div><p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Daily</p><p class="text-xl font-black text-[#1a5b6e]">₱${item.pricePerDay}</p></div>
+                <div class="text-right"><p class="text-xs text-gray-400 font-semibold uppercase mb-0.5">Deposit</p><p class="text-sm font-bold text-gray-600">₱${item.deposit}</p></div>
               </div>
             </div>
           </div>`,
@@ -1926,20 +2053,17 @@
         const grid = document.getElementById("my-listings-grid");
         const empty = document.getElementById("my-listings-empty");
         if (!grid) return;
-
         if (MY_LISTINGS.length === 0) {
           grid.innerHTML = "";
           empty?.classList.remove("hidden");
           return;
         }
         empty?.classList.add("hidden");
-
         grid.innerHTML = MY_LISTINGS.map(
           (item) => `
           <div class="border border-gray-100 rounded-2xl overflow-hidden hover:border-[#1a5b6e]/20 transition-colors">
             <div class="h-36 bg-gray-100 overflow-hidden relative">
-              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover"
-                onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
               <div class="absolute top-2 left-2 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2 py-0.5 rounded-full">Active</div>
             </div>
             <div class="p-4">
@@ -1967,11 +2091,7 @@
         const container = document.getElementById("category-filters");
         container.innerHTML = CATEGORIES.map(
           (cat) => `
-          <button onclick="setCategory('${cat}')"
-            class="px-4 py-2 rounded-full font-bold whitespace-nowrap transition-colors border text-xs
-              ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">
-            ${cat}
-          </button>`,
+          <button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-full font-bold whitespace-nowrap transition-colors border text-xs ${currentCategory === cat ? "bg-[#1a5b6e] text-white border-[#1a5b6e]" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}">${cat}</button>`,
         ).join("");
       }
 
@@ -2004,30 +2124,23 @@
       // ─── NAVIGATION ───────────────────────────────────────────
       function switchView(view) {
         currentView = view;
-        const views = [
-          "home",
-          "browse",
-          "item-detail",
-          "dashboard",
-          "messages",
-        ];
-        views.forEach((v) => {
-          const el = document.getElementById(`${v}-view`);
-          if (el) {
-            el.classList.add("hidden");
-            el.classList.remove("block");
-          }
-        });
+        ["home", "browse", "item-detail", "dashboard", "messages"].forEach(
+          (v) => {
+            const el = document.getElementById(`${v}-view`);
+            if (el) {
+              el.classList.add("hidden");
+              el.classList.remove("block");
+            }
+          },
+        );
         const active = document.getElementById(`${view}-view`);
         if (active) {
           active.classList.remove("hidden");
           active.classList.add("block");
         }
-
         window.scrollTo({ top: 0, behavior: "smooth" });
         handleScroll();
         setTimeout(initScrollReveal, 50);
-
         if (view === "dashboard") {
           checkAuth();
           renderMyListings();
@@ -2039,9 +2152,7 @@
         ["rentals", "listings", "settings"].forEach((t) => {
           const panel = document.getElementById(`dash-${t}`);
           const btn = document.getElementById(`tab-${t}`);
-          if (panel) {
-            panel.classList.toggle("hidden", t !== tab);
-          }
+          if (panel) panel.classList.toggle("hidden", t !== tab);
           if (btn) {
             btn.className = btn.className.replace(
               /bg-\[#1a5b6e\]\/\d+ text-\[#1a5b6e\] font-\w+/g,
@@ -2071,7 +2182,6 @@
       function openItemDetail(id) {
         currentItemForCheckout = ALL_ITEMS.find((i) => i.id === id);
         if (!currentItemForCheckout) return;
-
         const item = currentItemForCheckout;
         document.getElementById("detail-image").src = item.image;
         document.getElementById("detail-title").textContent = item.title;
@@ -2087,7 +2197,6 @@
           `₱${item.deposit} (Refundable)`;
         document.getElementById("detail-category-badge").textContent =
           item.category;
-
         switchView("item-detail");
       }
 
@@ -2119,22 +2228,15 @@
         ).toLocaleString();
       }
 
-      function confirmBooking() {
-        document.getElementById("checkout-form").classList.add("hidden");
-        document.getElementById("checkout-success").classList.remove("hidden");
-      }
-
       // ─── SCROLL EFFECTS ───────────────────────────────────────
       function handleScroll() {
         const header = document.getElementById("main-header");
         const logo = document.getElementById("header-logo-text");
         const nav = document.getElementById("header-nav");
         if (!header) return;
-
         const isScrolled = window.scrollY > 20 || currentView !== "home";
         const btnList = document.getElementById("header-btn-list");
         const btnLogin = document.getElementById("header-btn-login");
-
         if (isScrolled) {
           header.classList.remove("bg-transparent", "py-4");
           header.classList.add(
