@@ -178,10 +178,10 @@
     <!-- FIX 4: Start header as scrolled (white) immediately, not transparent -->
     <header
       id="main-header"
-      class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-sm py-2"
+      class="fixed top-0 w-full z-50 transition-all duration-300 bg-white/95 backdrop-blur-xl border-b border-gray-200/60 shadow-sm pt-4 pb-3"
     >
       <div
-        class="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4"
+        class="max-w-7xl mx-auto px-5 flex items-center justify-between gap-4 pt-4"
       >
         <!-- FIX 1: Unified logo mark -->
         <div
@@ -191,10 +191,11 @@
           <div
             class="flex items-center gap-2.5 transform transition-transform group-hover:scale-105 duration-300"
           >
-            <div class="logo-mark">
-              <div class="logo-bar-1"></div>
-              <div class="logo-bar-2"></div>
-            </div>
+            <img
+              src="assets/hulam-logo.png"
+              alt="HULAM logo"
+              class="w-10 h-10 object-contain object-center rounded-md p-0.5"
+            />
             <h1
               id="header-logo-text"
               class="text-xl font-extrabold tracking-tighter text-[#1a5b6e] transition-colors duration-300 leading-none"
@@ -330,6 +331,7 @@
             <div
               class="absolute inset-0 bg-gradient-to-t from-[#0f3440]/98 via-[#1a5b6e]/65 to-[#1a5b6e]/20"
             ></div>
+            <div class="absolute inset-0 bg-black/15"></div>
           </div>
         </div>
 
@@ -1263,6 +1265,20 @@
                 oninput="previewListingImage()"
                 class="mt-2 w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-xs focus:bg-white focus:ring-4 focus:ring-[#9cd353]/20 focus:border-[#1a5b6e] outline-none transition-all font-medium placeholder-gray-300"
               />
+              <input
+                type="file"
+                id="listing-image-file"
+                accept="image/*"
+                onchange="handleListingImageFile(event)"
+                class="hidden"
+              />
+              <button
+                type="button"
+                onclick="document.getElementById('listing-image-file').click()"
+                class="mt-2 w-full bg-gray-100 text-[#1a5b6e] border border-gray-200 rounded-xl px-4 py-2.5 text-xs font-bold hover:bg-gray-200 transition-colors"
+              >
+                Upload from device
+              </button>
             </div>
             <div>
               <label
@@ -1690,6 +1706,15 @@
       let nextId = 100;
       let MY_LISTINGS = [];
       let userActiveRentals = [];
+      const DESIGNATED_ITEM_IMAGES = {
+        1: "https://images.unsplash.com/photo-1535016120720-40c646be5580?auto=format&fit=crop&q=80&w=800&h=600",
+        2: "https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?auto=format&fit=crop&q=80&w=800&h=600",
+        3: "https://images.unsplash.com/photo-1612883135012-1f4c8c39be09?auto=format&fit=crop&q=80&w=800&h=600",
+        4: "https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&q=80&w=800&h=600",
+        5: "https://images.unsplash.com/photo-1516724562728-afc824a36e84?auto=format&fit=crop&q=80&w=800&h=600",
+        6: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&q=80&w=800&h=600",
+        7: "https://images.unsplash.com/photo-1564473185935-581acb58c2e2?auto=format&fit=crop&q=80&w=800&h=600",
+      };
 
       function loadRentals() {
         const stored = localStorage.getItem("hulam_rentals");
@@ -1815,6 +1840,10 @@
           isOwn: false,
         },
       ];
+      ALL_ITEMS = ALL_ITEMS.map((item) => ({
+        ...item,
+        image: DESIGNATED_ITEM_IMAGES[item.id] || item.image,
+      }));
 
       const FEATURES = [
         {
@@ -2099,6 +2128,7 @@
           "listing-deposit",
           "listing-location",
           "listing-image-url",
+          "listing-image-file",
         ].forEach((id) => {
           const el = document.getElementById(id);
           if (el) el.value = "";
@@ -2131,6 +2161,32 @@
           icon.style.display = "";
           label.style.display = "";
         }
+      }
+
+      function handleListingImageFile(event) {
+        const file = event.target?.files?.[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+          showToast("Please select an image file.");
+          event.target.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = typeof reader.result === "string" ? reader.result : "";
+          if (!result) {
+            showToast("Couldn't read that image. Try another file.");
+            return;
+          }
+          document.getElementById("listing-image-url").value = result;
+          previewListingImage();
+          showToast("Photo uploaded successfully.");
+        };
+        reader.onerror = () => {
+          showToast("Image upload failed. Please try again.");
+        };
+        reader.readAsDataURL(file);
       }
 
       async function generateListingDetails() {
@@ -2211,7 +2267,7 @@
                onclick="openItemDetail(${item.id})" style="transition-delay:${i * 40}ms">
             <div class="relative bg-gray-100 overflow-hidden" style="height:200px">
               <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-600 ease-out"
-                onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+                onerror="this.src='https://picsum.photos/seed/hulam-item-${item.id}/400/300'"/>
               <div class="absolute top-3 left-3 bg-white/90 backdrop-blur text-xs font-bold px-2.5 py-1 rounded-full shadow-sm text-gray-700">${item.category}</div>
               ${item.isOwn ? '<div class="absolute top-3 right-3 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2.5 py-1 rounded-full shadow-sm">Your Listing</div>' : ""}
             </div>
@@ -2251,7 +2307,7 @@
           (item) => `
           <div class="border border-gray-100 rounded-2xl overflow-hidden hover:border-[#1a5b6e]/20 transition-colors">
             <div class="h-36 bg-gray-100 overflow-hidden relative">
-              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=400&h=300'"/>
+              <img src="${item.image}" alt="${item.title}" class="w-full h-full object-cover" onerror="this.src='https://picsum.photos/seed/hulam-my-item-${item.id}/400/300'"/>
               <div class="absolute top-2 left-2 bg-[#9cd353] text-[#1a5b6e] text-xs font-bold px-2 py-0.5 rounded-full">Active</div>
             </div>
             <div class="p-4">
