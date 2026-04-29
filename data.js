@@ -23,7 +23,7 @@ const ALL_ITEMS = [
     id: 3, category: 'Tools', title: 'Sewing Machine',
     pricePerDay: 100, deposit: 800,
     location: 'Lahug', distance: '15 mins away', rating: 4.8,
-    image: 'https://images.unsplash.com/photo-1594956106602-d9646bb6f780?auto=format&fit=crop&q=80&w=400&h=300',
+    image: 'assets/sewing%20machine.png',
     description: 'Portable sewing machine for quick fixes and design projects. Comes with assorted threads and needles.'
   },
   {
@@ -51,8 +51,15 @@ const ALL_ITEMS = [
     id: 7, category: 'Tech', title: 'Scientific Calculator',
     pricePerDay: 50, deposit: 500,
     location: 'Talamban', distance: '8 mins away', rating: 5.0,
-    image: 'https://images.unsplash.com/photo-1587145820266-a5951ee6f620?auto=format&fit=crop&q=80&w=400&h=300',
+    image: 'assets/scientific%20calculator.jpg',
     description: 'Casio FX-991EX. Essential for engineering midterms and board exams. Batteries included.'
+  },
+  {
+    id: 8, category: 'Outdoors', title: 'Yoga Mat',
+    pricePerDay: 30, deposit: 200,
+    location: 'USC Main', distance: '2 mins away', rating: 4.9,
+    image: 'assets/yoga%20mat.png',
+    description: 'Non-slip exercise mat, easy to roll and carry. Cleaned between rentals.'
   }
 ];
 
